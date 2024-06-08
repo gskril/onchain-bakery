@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 export const buttonStyles = cva(
-  'w-fit min-w-52 bg-neutral-500 p-2 text-center text-white'
+  'w-fit min-w-52 bg-neutral-500 p-2 text-center text-white disabled:bg-neutral-400 disabled:cursor-not-allowed'
 )
 
 export function Button({

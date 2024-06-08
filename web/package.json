@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "^1.0.7",
     "@rainbow-me/rainbowkit": "^2.1.2",
     "@tanstack/react-query": "^5.40.1",
     "class-variance-authority": "^0.7.0",
@@ -18,6 +19,7 @@
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.3.0",
+    "usehooks-ts": "^3.1.0",
     "viem": "^2.13.7",
     "wagmi": "^2.9.10"
   },

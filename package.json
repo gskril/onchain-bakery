@@ -1,0 +1,12 @@
+{
+  "name": "onchain-bakery",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "prettier": "^3.3.1",
+    "typescript": "^5.2.2"
+  }
+}

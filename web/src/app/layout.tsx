@@ -1,5 +1,8 @@
+import '@rainbow-me/rainbowkit/styles.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+
+import { ClientProviders } from '@/components/ClientProviders'
 
 import './globals.css'
 
@@ -16,7 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <ClientProviders>
+        <body className={inter.className}>{children}</body>
+      </ClientProviders>
     </html>
   )
 }

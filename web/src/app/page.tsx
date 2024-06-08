@@ -3,9 +3,9 @@
 import { Button, buttonStyles } from '@/components/Button'
 
 const products = [
-  { name: 'chocolate sourdough loaf', image: '/loaf.png' },
-  { name: 'chocolate babka', image: '/pan.png' },
-  { name: 'snack pass', image: '/pass.png' },
+  { name: 'chocolate sourdough loaf', image: '/loaf.png', price: '15' },
+  { name: 'chocolate babka', image: '/pan.png', price: '10' },
+  { name: 'snack pass', image: '/pass.png', price: '5' },
 ]
 
 export default function Home() {

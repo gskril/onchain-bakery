@@ -54,6 +54,8 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
     event CreditAdded(address account, uint256 amount);
 
+    event InventoryUpdated(uint256 id, uint256 quantity, uint256 price);
+
     /*//////////////////////////////////////////////////////////////
                                PARAMETERS
     //////////////////////////////////////////////////////////////*/
@@ -156,6 +158,23 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
             );
     }
 
+    /**
+     * @notice Get the avaiable quantity of a batch of tokens.
+     *
+     * @param ids The token IDs to check the inventory for.
+     */
+    function inventoryBatch(
+        uint256[] calldata ids
+    ) public view returns (Inventory[] memory) {
+        Inventory[] memory data = new Inventory[](ids.length);
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            data[i] = inventory[ids[i]];
+        }
+
+        return data;
+    }
+
     /*//////////////////////////////////////////////////////////////
                             ADMIN FUNCTIONS
     //////////////////////////////////////////////////////////////*/
@@ -173,6 +192,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256 _price
     ) public onlyOwner {
         inventory[id] = Inventory(quantity, _price);
+        emit InventoryUpdated(id, quantity, _price);
     }
 
     /**

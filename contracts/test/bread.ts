@@ -155,4 +155,21 @@ describe('Bread.sol tests', function () {
     // It's not exactly the price of the bread because of gas fees
     expect(Number(afterBalance)).to.be.gt(Number(beforeBalance))
   })
+
+  it('should return the inventory in a batch', async function () {
+    const { breadContract } = await loadFixture(deploy)
+    await breadContract.write.updateInventory([1n, 1n, 1000n], { account })
+    await breadContract.write.updateInventory([2n, 1n, 1000n], { account })
+    await breadContract.write.updateInventory([3n, 1n, 1000n], { account })
+
+    const batchInventory = await breadContract.read.inventoryBatch([
+      [1n, 2n, 3n],
+    ])
+
+    expect(batchInventory).to.deep.equal([
+      { quantity: 1n, price: 1000n },
+      { quantity: 1n, price: 1000n },
+      { quantity: 1n, price: 1000n },
+    ])
+  })
 })

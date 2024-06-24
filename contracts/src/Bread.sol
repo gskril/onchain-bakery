@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
+import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 ///////////////////////////////////////////////////////////
 //                                                       //
@@ -38,6 +39,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     error SoldOut(uint256 id);
     error InsufficientValue();
     error TransferFailed();
+    error Unauthorized();
 
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
@@ -54,6 +56,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                                PARAMETERS
     //////////////////////////////////////////////////////////////*/
 
+    bytes23 public allowlist;
     address public proofOfBread;
     mapping(address => uint256) public credit;
     mapping(uint256 id => Inventory) public inventory;
@@ -77,12 +80,17 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     function orderBread(
         address account,
         uint256 id,
-        uint256 amount
+        uint256 amount,
+        bytes32[] calldata proof
     ) public payable {
         uint256 _price = price(account, id) * amount;
 
         if (msg.value < _price) {
             revert InsufficientValue();
+        }
+
+        if (!canOrder(account, proof)) {
+            revert Unauthorized();
         }
 
         _mintAndUpdateInventory(account, id, amount);
@@ -99,6 +107,24 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256 fullPrice = inventory[id].price;
         uint256 discount = Math.min(credit[account], fullPrice);
         return fullPrice - discount;
+    }
+
+    function canOrder(
+        address _account,
+        bytes32[] calldata _proof
+    ) public view returns (bool) {
+        // If the allowlist is disabled, anyone can order
+        if (allowlist == bytes32(0)) {
+            return true;
+        }
+
+        // Otherwise, verify that the account is part of the merkle tree
+        return
+            MerkleProof.verify(
+                _proof,
+                allowlist,
+                keccak256(abi.encodePacked(_account))
+            );
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -128,6 +154,10 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
     function setProofOfBread(address _proofOfBread) public onlyOwner {
         proofOfBread = _proofOfBread;
+    }
+
+    function setAllowlist(bytes23 _allowlist) public onlyOwner {
+        allowlist = _allowlist;
     }
 
     function setURI(string memory _uri) public onlyOwner {

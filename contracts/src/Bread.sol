@@ -200,6 +200,22 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         _addCredit(account, amount);
     }
 
+    /**
+     * @notice Revoke an NFT, essentially canceling an order.
+     *
+     * @param account The address of the account to revoke the NFT from.
+     * @param id The token ID to revoke.
+     * @param amount The amount of tokens to revoke.
+     */
+    function revokeOrder(
+        address account,
+        uint256 id,
+        uint256 amount
+    ) public onlyOwner {
+        _burn(account, id, amount);
+        inventory[id].quantity += amount;
+    }
+
     function setProofOfBread(address _proofOfBread) public onlyOwner {
         proofOfBread = _proofOfBread;
     }
@@ -212,16 +228,33 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         _setURI(_uri);
     }
 
-    function withdraw(uint256 amount) public onlyOwner {
-        (bool success, ) = owner().call{value: amount}("");
+    /**
+     * @notice Withdraw ETH from the contract.
+     *
+     * @param account The address to withdraw the ETH to.
+     * @param amount The amount of ETH to transfer.
+     */
+    function withdraw(address account, uint256 amount) public onlyOwner {
+        (bool success, ) = account.call{value: amount}("");
 
         if (!success) {
             revert TransferFailed();
         }
     }
 
-    function recoverERC20(address token, uint256 amount) public onlyOwner {
-        IERC20(token).transfer(owner(), amount);
+    /**
+     * @notice Recover ERC20 tokens sent to the contract by mistake.
+     *
+     * @param account The address to send the tokens to.
+     * @param token  The address of the ERC20 token to recover.
+     * @param amount  The amount of tokens to transfer.
+     */
+    function recoverERC20(
+        address account,
+        address token,
+        uint256 amount
+    ) public onlyOwner {
+        IERC20(token).transfer(account, amount);
     }
 
     function pause() public onlyOwner {

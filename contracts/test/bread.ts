@@ -2,7 +2,8 @@ import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpe
 import { expect } from 'chai'
 import hre from 'hardhat'
 
-const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // contract owner
+const customer = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // bakery customer
 
 const deploy = async () => {
   const breadContract = await hre.viem.deployContract('Bread', [
@@ -101,5 +102,57 @@ describe('Bread.sol tests', function () {
 
     const afterPrice = await breadContract.read.price([account, 1n])
     expect(afterPrice).to.equal(0n)
+  })
+
+  it('should revoke a token', async function () {
+    const { breadContract } = await loadFixture(deploy)
+
+    await breadContract.write.updateInventory([1n, 1n, 0n], { account })
+    await breadContract.write.orderBread([customer, 1n, 1n, []])
+
+    const balanceOfBefore = await breadContract.read.balanceOf([customer, 1n])
+    expect(balanceOfBefore).to.equal(1n)
+
+    await breadContract.write.revokeOrder([customer, 1n, 1n], { account })
+
+    const balanceOfAfter = await breadContract.read.balanceOf([account, 1n])
+    expect(balanceOfAfter).to.equal(0n)
+  })
+
+  it('should withdraw ETH', async function () {
+    const { breadContract } = await loadFixture(deploy)
+    const price = 100000000000000n
+    await breadContract.write.updateInventory([1n, 1n, price], { account })
+
+    // customer orders a bread
+    await breadContract.write.orderBread([account, 1n, 1n, []], {
+      value: price,
+      account: customer,
+    })
+
+    // Check the balance of the owner
+    const beforeBalance = await (
+      await hre.viem.getPublicClient()
+    ).getBalance({ address: account })
+
+    // Check the balance of the contract
+    const contractBalance = await (
+      await hre.viem.getPublicClient()
+    ).getBalance({ address: breadContract.address })
+
+    // The contract should have collected the price of the bread
+    expect(contractBalance).to.equal(price)
+
+    // Withdraw the funds to the owner
+    await breadContract.write.withdraw([account, price], { account })
+
+    // Check the balance of the owner after the withdrawal
+    const afterBalance = await (
+      await hre.viem.getPublicClient()
+    ).getBalance({ address: account })
+
+    // The owner should have more funds after the withdrawal
+    // It's not exactly the price of the bread because of gas fees
+    expect(Number(afterBalance)).to.be.gt(Number(beforeBalance))
   })
 })

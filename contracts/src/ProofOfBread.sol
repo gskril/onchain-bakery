@@ -4,7 +4,10 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
+import {MessageHashUtils} from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
+import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
 ///////////////////////////////////////////////////////////
 //                                                       //
@@ -18,15 +21,30 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 //                                                       //
 ///////////////////////////////////////////////////////////
 
-contract ProofOfBread is ERC1155, Ownable, ERC1155Supply {
+contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
+    /*//////////////////////////////////////////////////////////////
+                                 ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    error Unauthorized();
+
+    /*//////////////////////////////////////////////////////////////
+                               PARAMETERS
+    //////////////////////////////////////////////////////////////*/
+
+    address public signer;
+
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
     constructor(
         address _owner,
+        address _signer,
         string memory _uri
-    ) ERC1155(_uri) Ownable(_owner) {}
+    ) ERC1155(_uri) Ownable(_owner) {
+        signer = _signer;
+    }
 
     /*//////////////////////////////////////////////////////////////
                             PUBLIC FUNCTIONS
@@ -37,8 +55,16 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Supply {
         uint256 id,
         bytes memory data
     ) public onlyOwner {
-        // TODO: Verify the signature `data` to ensure it's signed by the backend
-        _mint(account, id, 1, data);
+        (bytes memory message, bytes memory signature) = abi.decode(
+            data,
+            (bytes, bytes)
+        );
+
+        if (!isValidSignature(message, signature)) {
+            revert Unauthorized();
+        }
+
+        _mint(account, id, 1, "");
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -62,8 +88,32 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Supply {
         _burn(account, id, amount);
     }
 
+    function setSigner(address _signer) public onlyOwner {
+        signer = _signer;
+    }
+
     function setURI(string memory _uri) public onlyOwner {
         _setURI(_uri);
+    }
+
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                            HELPER FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
+
+    function isValidSignature(
+        bytes memory message,
+        bytes memory signature
+    ) public view returns (bool) {
+        bytes32 digest = MessageHashUtils.toEthSignedMessageHash(message);
+        return SignatureChecker.isValidSignatureNow(signer, digest, signature);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -75,7 +125,7 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Supply {
         address to,
         uint256[] memory ids,
         uint256[] memory values
-    ) internal override(ERC1155, ERC1155Supply) {
+    ) internal override(ERC1155, ERC1155Pausable, ERC1155Supply) {
         super._update(from, to, ids, values);
     }
 }

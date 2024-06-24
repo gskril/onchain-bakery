@@ -20,7 +20,7 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 
 contract ProofOfBread is ERC1155, Ownable, ERC1155Supply {
     /*//////////////////////////////////////////////////////////////
-                              CONSTRUCTOR                          
+                              CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
     constructor(
@@ -29,7 +29,7 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Supply {
     ) ERC1155(_uri) Ownable(_owner) {}
 
     /*//////////////////////////////////////////////////////////////
-                             PUBLIC ACTIONS
+                            PUBLIC FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
     function collectBread(
@@ -42,12 +42,8 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Supply {
     }
 
     /*//////////////////////////////////////////////////////////////
-                          PERMISSIONED ACTIONS
+                            ADMIN FUNCTIONS
     //////////////////////////////////////////////////////////////*/
-
-    function setURI(string memory _uri) public onlyOwner {
-        _setURI(_uri);
-    }
 
     function adminMint(
         address account,
@@ -56,6 +52,18 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Supply {
         bytes memory data
     ) public onlyOwner {
         _mint(account, id, amount, data);
+    }
+
+    function revokeBread(
+        address account,
+        uint256 id,
+        uint256 amount
+    ) public onlyOwner {
+        _burn(account, id, amount);
+    }
+
+    function setURI(string memory _uri) public onlyOwner {
+        _setURI(_uri);
     }
 
     /*//////////////////////////////////////////////////////////////

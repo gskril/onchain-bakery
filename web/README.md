@@ -1,6 +1,6 @@
-# Next.js Project
+# Web
 
-Run the development server:
+Next.js app for the frontend, backend, and Farcaster Frame.
 
 ```bash
 pnpm dev

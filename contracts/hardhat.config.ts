@@ -4,10 +4,10 @@ import 'dotenv/config'
 import { HardhatUserConfig } from 'hardhat/config'
 
 const DEPLOYER_KEY = process.env.DEPLOYER_KEY
-const OP_ETHERSCAN_API_KEY = process.env.OP_ETHERSCAN_API_KEY
+const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY
 
 if (!DEPLOYER_KEY) throw new Error('DEPLOYER_KEY must be set')
-if (!OP_ETHERSCAN_API_KEY) throw new Error('OP_ETHERSCAN_API_KEY must be set')
+if (!BASESCAN_API_KEY) throw new Error('OP_ETHERSCAN_API_KEY must be set')
 
 const config: HardhatUserConfig = {
   networks: {
@@ -31,8 +31,8 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      optimisticGoerli: OP_ETHERSCAN_API_KEY,
-      optimisticEthereum: OP_ETHERSCAN_API_KEY,
+      base: BASESCAN_API_KEY,
+      baseGoerli: 'BASESCAN_API_KEY', // don't need a key for Base Goerli
     },
   },
   paths: {

@@ -1,5 +1,5 @@
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
-import { assert, expect } from 'chai'
+import { expect } from 'chai'
 import hre from 'hardhat'
 
 const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'

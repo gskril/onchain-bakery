@@ -38,6 +38,17 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     error InsufficientValue();
 
     /*//////////////////////////////////////////////////////////////
+                                 EVENTS
+    //////////////////////////////////////////////////////////////*/
+
+    event OrderPlaced(
+        address account,
+        uint256 id,
+        uint256 amount,
+        uint256 price
+    );
+
+    /*//////////////////////////////////////////////////////////////
                                PARAMETERS
     //////////////////////////////////////////////////////////////*/
 
@@ -73,6 +84,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         }
 
         _mintAndUpdateInventory(account, id, amount);
+        emit OrderPlaced(account, id, amount, _price);
 
         // Store overflow value as credit for future purchases
         uint256 remainder = msg.value - _price;
@@ -105,6 +117,11 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256 amount
     ) public onlyOwner {
         _mintAndUpdateInventory(account, id, amount);
+        emit OrderPlaced(account, id, amount, 0);
+    }
+
+    function addCredit(address account, uint256 amount) public onlyOwner {
+        credit[account] += amount;
     }
 
     function setURI(string memory _uri) public onlyOwner {
@@ -132,7 +149,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256 id,
         uint256 amount
     ) internal {
-        if ((inventory[id].quantity - amount) < 1) {
+        if ((inventory[id].quantity - amount) < 0) {
             revert SoldOut(id);
         }
 

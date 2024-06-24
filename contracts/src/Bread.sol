@@ -56,7 +56,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                                PARAMETERS
     //////////////////////////////////////////////////////////////*/
 
-    bytes23 public allowlist;
+    bytes32 public allowlist;
     address public proofOfBread;
     mapping(address => uint256) public credit;
     mapping(uint256 id => Inventory) public inventory;
@@ -156,7 +156,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         proofOfBread = _proofOfBread;
     }
 
-    function setAllowlist(bytes23 _allowlist) public onlyOwner {
+    function setAllowlist(bytes32 _allowlist) public onlyOwner {
         allowlist = _allowlist;
     }
 

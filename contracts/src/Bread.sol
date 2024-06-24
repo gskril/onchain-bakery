@@ -52,13 +52,22 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256 price
     );
 
+    event CreditAdded(address account, uint256 amount);
+
     /*//////////////////////////////////////////////////////////////
                                PARAMETERS
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice A Merkle root that controls which accounts can place orders. If set to 0x00, anyone can order.
     bytes32 public allowlist;
+
+    /// @notice The ProofOfBread NFT contract.
     address public proofOfBread;
+
+    /// @notice A mapping of account addresses to their credit balance.
     mapping(address => uint256) public credit;
+
+    /// @notice A mapping of token IDs to their inventory.
     mapping(uint256 id => Inventory) public inventory;
 
     /*//////////////////////////////////////////////////////////////
@@ -77,6 +86,15 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                             PUBLIC FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
+    /**
+     * @notice Place an order.
+     *
+     * @param account The address of the account to mint the NFT to.
+     * @param id The token ID to mint.
+     * @param amount The amount of tokens to mint.
+     * @param proof A Merkle proof to verify the account is allowed to order.
+     *              Only required if an allowlist is set.
+     */
     function orderBread(
         address account,
         uint256 id,
@@ -93,37 +111,48 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
             revert Unauthorized();
         }
 
-        _mintAndUpdateInventory(account, id, amount);
-        emit OrderPlaced(account, id, amount, _price);
+        _mintAndUpdateInventory(account, id, amount, _price);
 
         // Store overflow value as credit for future purchases
         uint256 remainder = msg.value - _price;
         if (remainder > 0) {
-            credit[account] += remainder;
+            _addCredit(account, remainder);
         }
     }
 
+    /**
+     * @notice Get the price of a token for a given account, taking into account any credit they have.
+     *
+     * @param account The address of the account to check the price for.
+     * @param id The token ID to check the price for.
+     */
     function price(address account, uint256 id) public view returns (uint256) {
         uint256 fullPrice = inventory[id].price;
         uint256 discount = Math.min(credit[account], fullPrice);
         return fullPrice - discount;
     }
 
+    /**
+     * @notice Check if an account is allowed to order.
+     *
+     * @param account The address of the account to check.
+     * @param proof A Merkle proof to check if the account is part of the allowlist.
+     */
     function canOrder(
-        address _account,
-        bytes32[] calldata _proof
+        address account,
+        bytes32[] calldata proof
     ) public view returns (bool) {
         // If the allowlist is disabled, anyone can order
         if (allowlist == bytes32(0)) {
             return true;
         }
 
-        // Otherwise, verify that the account is part of the merkle tree
+        // Otherwise, verify that the account is part of the Merkle tree
         return
             MerkleProof.verify(
-                _proof,
+                proof,
                 allowlist,
-                keccak256(abi.encodePacked(_account))
+                keccak256(abi.encodePacked(account))
             );
     }
 
@@ -131,6 +160,13 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                             ADMIN FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
+    /**
+     * @notice Update the inventory for a token. This does not mint or burn any tokens.
+     *
+     * @param id The token ID to update.
+     * @param quantity The new quantity of the token.
+     * @param _price The new price of the token in wei.
+     */
     function updateInventory(
         uint256 id,
         uint256 quantity,
@@ -139,17 +175,29 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         inventory[id] = Inventory(quantity, _price);
     }
 
+    /**
+     * @notice Mint a token to an account for free.
+     *
+     * @param account The address of the account to mint the token to.
+     * @param id The token ID to mint.
+     * @param amount The amount of tokens to mint.
+     */
     function adminOrder(
         address account,
         uint256 id,
         uint256 amount
     ) public onlyOwner {
-        _mintAndUpdateInventory(account, id, amount);
-        emit OrderPlaced(account, id, amount, 0);
+        _mintAndUpdateInventory(account, id, amount, 0);
     }
 
+    /**
+     * @notice Add credit to an account. This can be used to give discounts.
+     *
+     * @param account The address of the account to add credit to.
+     * @param amount The amount of credit to add.
+     */
     function addCredit(address account, uint256 amount) public onlyOwner {
-        credit[account] += amount;
+        _addCredit(account, amount);
     }
 
     function setProofOfBread(address _proofOfBread) public onlyOwner {
@@ -191,7 +239,8 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     function _mintAndUpdateInventory(
         address account,
         uint256 id,
-        uint256 amount
+        uint256 amount,
+        uint256 _price
     ) internal {
         if ((inventory[id].quantity - amount) < 0) {
             revert SoldOut(id);
@@ -199,6 +248,12 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
         _mint(account, id, amount, "");
         inventory[id].quantity -= amount;
+        emit OrderPlaced(account, id, amount, _price);
+    }
+
+    function _addCredit(address account, uint256 amount) internal {
+        credit[account] += amount;
+        emit CreditAdded(account, amount);
     }
 
     /*//////////////////////////////////////////////////////////////

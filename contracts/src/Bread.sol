@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
 ///////////////////////////////////////////////////////////
@@ -36,6 +37,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
     error SoldOut(uint256 id);
     error InsufficientValue();
+    error TransferFailed();
 
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
@@ -124,12 +126,24 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         credit[account] += amount;
     }
 
+    function setProofOfBread(address _proofOfBread) public onlyOwner {
+        proofOfBread = _proofOfBread;
+    }
+
     function setURI(string memory _uri) public onlyOwner {
         _setURI(_uri);
     }
 
-    function setProofOfBread(address _proofOfBread) public onlyOwner {
-        proofOfBread = _proofOfBread;
+    function withdraw(uint256 amount) public onlyOwner {
+        (bool success, ) = owner().call{value: amount}("");
+
+        if (!success) {
+            revert TransferFailed();
+        }
+    }
+
+    function recoverERC20(address token, uint256 amount) public onlyOwner {
+        IERC20(token).transfer(owner(), amount);
     }
 
     function pause() public onlyOwner {

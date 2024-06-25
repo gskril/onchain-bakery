@@ -198,4 +198,34 @@ describe('Bread.sol tests', function () {
 
     await expect(updateInventoryCall).to.be.rejectedWith('InvalidInput()')
   })
+
+  it('should mint multiple NFTs', async function () {
+    const { breadContract } = await loadFixture(deploy)
+    await breadContract.write.updateInventory(
+      [
+        [1n, 2n],
+        [1n, 1n],
+        [1000n, 1000n],
+      ],
+      {
+        account,
+      }
+    )
+
+    const buyBreadsCall = breadContract.write.buyBreads(
+      [account, [1n, 2n], []],
+      {
+        value: 2000n,
+      }
+    )
+
+    await expect(buyBreadsCall).to.be.fulfilled
+
+    const balanceOf = await breadContract.read.balanceOfBatch([
+      [account, account],
+      [1n, 2n],
+    ])
+
+    expect(balanceOf).to.be.deep.equal([1n, 1n])
+  })
 })

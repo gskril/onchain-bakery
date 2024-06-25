@@ -41,12 +41,11 @@ describe('Bread.sol tests', function () {
       account,
     })
 
-    const orderBreadCall = breadContract.write.orderBread(
-      [account, 1n, 1n, []],
-      { value: 1000n }
-    )
+    const buyBreadCall = breadContract.write.buyBread([account, 1n, 1n, []], {
+      value: 1000n,
+    })
 
-    await expect(orderBreadCall).to.be.fulfilled
+    await expect(buyBreadCall).to.be.fulfilled
 
     const balanceOf = await breadContract.read.balanceOf([account, 1n])
     expect(balanceOf).to.be.equal(1n)
@@ -58,12 +57,11 @@ describe('Bread.sol tests', function () {
       account,
     })
 
-    const orderBreadCall = breadContract.write.orderBread(
-      [account, 1n, 1n, []],
-      { value: 999n }
-    )
+    const buyBreadCall = breadContract.write.buyBread([account, 1n, 1n, []], {
+      value: 999n,
+    })
 
-    await expect(orderBreadCall).to.rejectedWith('InsufficientValue()')
+    await expect(buyBreadCall).to.rejectedWith('InsufficientValue()')
   })
 
   it('should not be able to mint when allowlist is enabled', async function () {
@@ -116,7 +114,7 @@ describe('Bread.sol tests', function () {
     const { breadContract } = await loadFixture(deploy)
 
     await breadContract.write.updateInventory([[1n], [1n], [0n]], { account })
-    await breadContract.write.orderBread([customer, 1n, 1n, []])
+    await breadContract.write.buyBread([customer, 1n, 1n, []])
 
     const balanceOfBefore = await breadContract.read.balanceOf([customer, 1n])
     expect(balanceOfBefore).to.equal(1n)
@@ -135,7 +133,7 @@ describe('Bread.sol tests', function () {
     })
 
     // customer orders a bread
-    await breadContract.write.orderBread([account, 1n, 1n, []], {
+    await breadContract.write.buyBread([account, 1n, 1n, []], {
       value: price,
       account: customer,
     })

@@ -96,9 +96,8 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      * @param id The token ID to mint.
      * @param quantity The amount of tokens to mint.
      * @param proof A Merkle proof to verify the account is allowed to order.
-     *              Only required if an allowlist is set.
      */
-    function orderBread(
+    function buyBread(
         address account,
         uint256 id,
         uint256 quantity,
@@ -120,6 +119,23 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256 remainder = msg.value - _price;
         if (remainder > 0) {
             _addCredit(account, remainder);
+        }
+    }
+
+    /**
+     * @notice Place an order with multiple items.
+     *
+     * @param account The address of the account to mint the NFTs to.
+     * @param ids The token IDs to mint.
+     * @param proof A Merkle proof to verify the account is allowed to order.
+     */
+    function buyBreads(
+        address account,
+        uint256[] calldata ids,
+        bytes32[] calldata proof
+    ) public payable {
+        for (uint256 i = 0; i < ids.length; i++) {
+            buyBread(account, ids[i], 1, proof);
         }
     }
 

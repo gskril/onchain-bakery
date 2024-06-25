@@ -21,11 +21,26 @@ interface IBread {
     ) external payable;
 }
 
-contract CrossChainBread {
-    IBread public bread;
+interface IWETH {
+    /// @notice Deposit ether to get wrapped ether
+    function deposit() external payable;
 
-    constructor(address _bread) {
+    /// @notice Withdraw wrapped ether to get ether
+    function withdraw(uint256) external;
+}
+
+contract CrossChainBread {
+    error Unauthorized();
+    error NotWETH();
+
+    IWETH public immutable weth;
+    IBread public immutable bread;
+    address public immutable acrossSpokePool;
+
+    constructor(address _weth, address _bread, address _acrossSpokePool) {
+        weth = IWETH(_weth);
         bread = IBread(_bread);
+        acrossSpokePool = _acrossSpokePool;
     }
 
     function handleV3AcrossMessage(
@@ -34,7 +49,10 @@ contract CrossChainBread {
         address relayer,
         bytes memory message
     ) external {
-        // TODO: Check that the tokenSent is WETH, and unwrap it
+        if (msg.sender != acrossSpokePool) revert Unauthorized();
+        if (tokenSent != address(weth)) revert NotWETH();
+
+        weth.withdraw(amount);
 
         (address account, uint256[] memory ids, bytes32[] memory proof) = abi
             .decode(message, (address, uint256[], bytes32[]));

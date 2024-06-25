@@ -40,6 +40,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     error InsufficientValue();
     error TransferFailed();
     error Unauthorized();
+    error InvalidInput();
 
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
@@ -48,11 +49,11 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     event OrderPlaced(
         address account,
         uint256 id,
-        uint256 amount,
+        uint256 quantity,
         uint256 price
     );
 
-    event CreditAdded(address account, uint256 amount);
+    event CreditAdded(address account, uint256 quantity);
 
     event InventoryUpdated(uint256 id, uint256 quantity, uint256 price);
 
@@ -93,17 +94,17 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      *
      * @param account The address of the account to mint the NFT to.
      * @param id The token ID to mint.
-     * @param amount The amount of tokens to mint.
+     * @param quantity The amount of tokens to mint.
      * @param proof A Merkle proof to verify the account is allowed to order.
      *              Only required if an allowlist is set.
      */
     function orderBread(
         address account,
         uint256 id,
-        uint256 amount,
+        uint256 quantity,
         bytes32[] calldata proof
     ) public payable {
-        uint256 _price = price(account, id) * amount;
+        uint256 _price = price(account, id) * quantity;
 
         if (msg.value < _price) {
             revert InsufficientValue();
@@ -113,7 +114,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
             revert Unauthorized();
         }
 
-        _mintAndUpdateInventory(account, id, amount, _price);
+        _mintAndUpdateInventory(account, id, quantity, _price);
 
         // Store overflow value as credit for future purchases
         uint256 remainder = msg.value - _price;
@@ -182,17 +183,23 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     /**
      * @notice Update the inventory for a token. This does not mint or burn any tokens.
      *
-     * @param id The token ID to update.
-     * @param quantity The new quantity of the token.
-     * @param _price The new price of the token in wei.
+     * @param ids The token IDs to update.
+     * @param quantities The new quantities of the tokens.
+     * @param prices The new prices of the tokens in wei.
      */
     function updateInventory(
-        uint256 id,
-        uint256 quantity,
-        uint256 _price
+        uint256[] calldata ids,
+        uint256[] calldata quantities,
+        uint256[] calldata prices
     ) public onlyOwner {
-        inventory[id] = Inventory(quantity, _price);
-        emit InventoryUpdated(id, quantity, _price);
+        if (ids.length != quantities.length || ids.length != prices.length) {
+            revert InvalidInput();
+        }
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            inventory[ids[i]] = Inventory(quantities[i], prices[i]);
+            emit InventoryUpdated(ids[i], quantities[i], prices[i]);
+        }
     }
 
     /**
@@ -200,14 +207,14 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      *
      * @param account The address of the account to mint the token to.
      * @param id The token ID to mint.
-     * @param amount The amount of tokens to mint.
+     * @param quantity The amount of tokens to mint.
      */
     function adminOrder(
         address account,
         uint256 id,
-        uint256 amount
+        uint256 quantity
     ) public onlyOwner {
-        _mintAndUpdateInventory(account, id, amount, 0);
+        _mintAndUpdateInventory(account, id, quantity, 0);
     }
 
     /**
@@ -225,15 +232,15 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      *
      * @param account The address of the account to revoke the NFT from.
      * @param id The token ID to revoke.
-     * @param amount The amount of tokens to revoke.
+     * @param quantity The amount of tokens to revoke.
      */
     function revokeOrder(
         address account,
         uint256 id,
-        uint256 amount
+        uint256 quantity
     ) public onlyOwner {
-        _burn(account, id, amount);
-        inventory[id].quantity += amount;
+        _burn(account, id, quantity);
+        inventory[id].quantity += quantity;
     }
 
     function setProofOfBread(address _proofOfBread) public onlyOwner {
@@ -292,16 +299,16 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     function _mintAndUpdateInventory(
         address account,
         uint256 id,
-        uint256 amount,
+        uint256 quantity,
         uint256 _price
     ) internal {
-        if ((inventory[id].quantity - amount) < 0) {
+        if ((inventory[id].quantity - quantity) < 0) {
             revert SoldOut(id);
         }
 
-        _mint(account, id, amount, "");
-        inventory[id].quantity -= amount;
-        emit OrderPlaced(account, id, amount, _price);
+        _mint(account, id, quantity, "");
+        inventory[id].quantity -= quantity;
+        emit OrderPlaced(account, id, quantity, _price);
     }
 
     function _addCredit(address account, uint256 amount) internal {

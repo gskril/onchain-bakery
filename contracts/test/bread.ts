@@ -21,7 +21,9 @@ describe('Bread.sol tests', function () {
     const [quantityBefore] = await breadContract.read.inventory([1n])
     expect(quantityBefore).to.equal(0n)
 
-    await breadContract.write.updateInventory([1n, 1n, 1000n], { account })
+    await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
+      account,
+    })
     const [quantityAfter] = await breadContract.read.inventory([1n])
     expect(quantityAfter).to.equal(1n)
   })
@@ -35,7 +37,9 @@ describe('Bread.sol tests', function () {
 
   it('should mint with sufficient funds', async function () {
     const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.updateInventory([1n, 1n, 1000n], { account })
+    await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
+      account,
+    })
 
     const orderBreadCall = breadContract.write.orderBread(
       [account, 1n, 1n, []],
@@ -50,7 +54,9 @@ describe('Bread.sol tests', function () {
 
   it('should revert when mint with insufficient funds', async function () {
     const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.updateInventory([1n, 1n, 1000n], { account })
+    await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
+      account,
+    })
 
     const orderBreadCall = breadContract.write.orderBread(
       [account, 1n, 1n, []],
@@ -93,7 +99,9 @@ describe('Bread.sol tests', function () {
 
   it('should get discount from credit', async function () {
     const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.updateInventory([1n, 1n, 1000n], { account })
+    await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
+      account,
+    })
 
     const beforePrice = await breadContract.read.price([account, 1n])
     expect(beforePrice).to.equal(1000n)
@@ -107,7 +115,7 @@ describe('Bread.sol tests', function () {
   it('should revoke a token', async function () {
     const { breadContract } = await loadFixture(deploy)
 
-    await breadContract.write.updateInventory([1n, 1n, 0n], { account })
+    await breadContract.write.updateInventory([[1n], [1n], [0n]], { account })
     await breadContract.write.orderBread([customer, 1n, 1n, []])
 
     const balanceOfBefore = await breadContract.read.balanceOf([customer, 1n])
@@ -122,7 +130,9 @@ describe('Bread.sol tests', function () {
   it('should withdraw ETH', async function () {
     const { breadContract } = await loadFixture(deploy)
     const price = 100000000000000n
-    await breadContract.write.updateInventory([1n, 1n, price], { account })
+    await breadContract.write.updateInventory([[1n], [1n], [price]], {
+      account,
+    })
 
     // customer orders a bread
     await breadContract.write.orderBread([account, 1n, 1n, []], {
@@ -158,9 +168,14 @@ describe('Bread.sol tests', function () {
 
   it('should return the inventory in a batch', async function () {
     const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.updateInventory([1n, 1n, 1000n], { account })
-    await breadContract.write.updateInventory([2n, 1n, 1000n], { account })
-    await breadContract.write.updateInventory([3n, 1n, 1000n], { account })
+    await breadContract.write.updateInventory(
+      [
+        [1n, 2n, 3n],
+        [1n, 1n, 1n],
+        [1000n, 1000n, 1000n],
+      ],
+      { account }
+    )
 
     const batchInventory = await breadContract.read.inventoryBatch([
       [1n, 2n, 3n],
@@ -171,5 +186,18 @@ describe('Bread.sol tests', function () {
       { quantity: 1n, price: 1000n },
       { quantity: 1n, price: 1000n },
     ])
+  })
+
+  it('should revert when inventory update has mismatched lengths', async function () {
+    const { breadContract } = await loadFixture(deploy)
+
+    const updateInventoryCall = breadContract.write.updateInventory(
+      [[1n], [1n, 2n], [1000n]],
+      {
+        account,
+      }
+    )
+
+    await expect(updateInventoryCall).to.be.rejectedWith('InvalidInput()')
   })
 })

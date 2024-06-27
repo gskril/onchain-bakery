@@ -6,6 +6,7 @@ import { Button } from '@/components/Button'
 import { Logo } from '@/components/Logo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
+import { Tagline } from '@/components/Tagline'
 import { useCart } from '@/hooks/useCart'
 
 const products = [
@@ -89,10 +90,12 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="flex justify-between gap-4 bg-neutral-200 px-6 py-2 text-sm">
-        <span>&copy; 2024 blah blah</span>
+      <Tagline className="mx-auto max-w-96 px-6 pb-12 pt-4" />
+
+      <footer className="bg-brand-primary text-brand-background flex justify-between gap-4 px-6 py-2 text-sm">
+        <span>&copy; 2024 Good Bread by Greg</span>
         <a href="https://warpcast.com/greg" target="_blank">
-          follow on farcaster &#8599;
+          Follow Greg on Farcaster &#8599;
         </a>
       </footer>
     </>

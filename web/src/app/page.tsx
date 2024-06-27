@@ -10,7 +10,7 @@ import { Tagline } from '@/components/Tagline'
 import { useCart } from '@/hooks/useCart'
 
 const products = [
-  { name: 'chocolate sourdough loaf', image: '/loaf.png', price: '15' },
+  { name: 'chocolate sourdough', image: '/loaf.png', price: '15' },
   { name: 'chocolate babka', image: '/pan.png', price: '10' },
   { name: 'snack pass', image: '/pass.png', price: '5' },
 ]
@@ -69,20 +69,23 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-6 py-12">
-        <div className="grid gap-4 md:grid-cols-3" id="items">
+      <main className="mx-auto max-w-5xl px-6 py-12">
+        <div className="grid gap-6 md:grid-cols-3">
           {products.map((product) => (
             <div
               key={product.name}
-              className="flex flex-col items-center"
+              className="flex flex-col gap-4"
               onClick={() => addToCart(product.name)}
             >
+              <h3 className="font-kelsi text-3xl">{product.name}</h3>
+
               <img
                 src={product.image}
                 alt={product.name}
                 className="h-24 w-24"
               />
-              <Button className="mt-4" disabled={cart.includes(product.name)}>
+
+              <Button disabled={cart.includes(product.name)}>
                 ADD TO CART
               </Button>
             </div>

@@ -3,6 +3,7 @@
 import Image from 'next/image'
 
 import { Button } from '@/components/Button'
+import { Carousel } from '@/components/Carousel'
 import { Logo } from '@/components/Logo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
@@ -53,7 +54,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative flex w-full justify-center lg:max-h-[90svh] lg:rotate-6 lg:scale-90">
+        {/* <div className="relative flex w-full justify-center lg:max-h-[90svh] lg:rotate-6 lg:scale-90">
           <BabkaSticker className="absolute -bottom-8 -left-6 w-32 -rotate-[60deg] lg:-bottom-14 lg:left-14 lg:w-48 lg:rotate-0" />
 
           <BaguetteSticker className="absolute -top-24 right-24 hidden w-56 lg:block" />
@@ -65,6 +66,11 @@ export default function Home() {
             height={800}
             className="border-brand-primary rounded-lg border-2 object-cover"
           />
+
+        </div> */}
+
+        <div className="w-full bg-red-200">
+          <Carousel />
         </div>
       </header>
 

@@ -57,6 +57,7 @@ importers:
       '@types/react-dom': ^18
       class-variance-authority: ^0.7.0
       clsx: ^2.1.1
+      keen-slider: ^6.8.6
       next: 14.2.3
       pino-pretty: ^11.1.0
       postcss: ^8
@@ -76,6 +77,7 @@ importers:
       '@tanstack/react-query': 5.48.0_react@18.3.1
       class-variance-authority: 0.7.0
       clsx: 2.1.1
+      keen-slider: 6.8.6
       next: 14.2.3_nnrd3gsncyragczmpvfhocinkq
       pino-pretty: 11.2.1
       react: 18.3.1
@@ -5014,6 +5016,10 @@ packages:
       node-addon-api: 2.0.2
       node-gyp-build: 4.8.1
       readable-stream: 3.6.2
+
+  /keen-slider/6.8.6:
+    resolution: {integrity: sha512-dcEQ7GDBpCjUQA8XZeWh3oBBLLmyn8aoeIQFGL/NTVkoEOsmlnXqA4QykUm/SncolAZYGsEk/PfUhLZ7mwMM2w==}
+    dev: false
 
   /keyvaluestorage-interface/1.0.0:
     resolution: {integrity: sha512-8t6Q3TclQ4uZynJY9IGr2+SsIGwK9JHcO6ootkHCGA0CrQCRy+VkouYNO2xicET6b9al7QKzpebNow+gkpCL8g==}

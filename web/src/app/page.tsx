@@ -1,7 +1,11 @@
 'use client'
 
-import { Button, buttonStyles } from '@/components/Button'
+import Image from 'next/image'
+
+import { Button } from '@/components/Button'
+import { Logo } from '@/components/Logo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
+import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
 import { useCart } from '@/hooks/useCart'
 
 const products = [
@@ -33,12 +37,35 @@ export default function Home() {
         </div>
       )}
 
-      <header className="flex h-svh max-h-[42rem] flex-col justify-end bg-neutral-200 p-6">
-        <h1 className="text-7xl">Title</h1>
-        <h2 className="mb-6 mt-1 text-xl">something about the bread</h2>
-        <a href="#items" className={buttonStyles()}>
-          BUY BREAD
-        </a>
+      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[2fr,3fr] lg:gap-12">
+        <div className="flex w-full flex-col justify-between">
+          <div />
+
+          <Logo className="max-w-44 sm:max-w-60 lg:mx-auto lg:max-w-96" />
+
+          <div className="sm:p0 py-8">
+            <h2 className="font-pangram mb-1 text-xl font-extrabold">
+              Made with love, built on Ethereum
+            </h2>
+            <p className="max-w-80">
+              This is Greg. He loves bread and he wants you to love bread too.
+            </p>
+          </div>
+        </div>
+
+        <div className="relative flex w-full justify-center lg:max-h-[90svh] lg:rotate-6 lg:scale-90">
+          <BabkaSticker className="absolute -bottom-8 -left-6 w-32 -rotate-[60deg] lg:-bottom-14 lg:left-14 lg:w-48 lg:rotate-0" />
+
+          <BaguetteSticker className="absolute -top-24 right-24 hidden w-56 lg:block" />
+
+          <Image
+            src="/gallery/babka.jpg"
+            alt="Babka"
+            width={600}
+            height={800}
+            className="border-brand-primary rounded-lg border-2 object-cover"
+          />
+        </div>
       </header>
 
       <main className="mx-auto max-w-4xl px-6 py-12">

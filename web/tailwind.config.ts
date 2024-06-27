@@ -5,7 +5,21 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  theme: {},
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['var(--font-pangram-sans-compact)'], // overrides the default
+        pangram: ['var(--font-pangram-sans)'],
+        kelsi: ['var(--font-kelsi)'],
+      },
+      colors: {
+        brand: {
+          primary: '#0033E6',
+          background: '#FFEED8',
+        },
+      },
+    },
+  },
   plugins: [],
 }
 

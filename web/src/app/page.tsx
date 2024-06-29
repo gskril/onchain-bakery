@@ -39,7 +39,7 @@ export default function Home() {
         </div>
       )}
 
-      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[2fr,3fr] lg:gap-12">
+      <header className="border-brand-primary relative grid border-b-2 p-6 sm:p-12 lg:h-svh lg:max-h-svh lg:grid-cols-[4fr,7fr] lg:gap-12">
         <div className="flex w-full flex-col justify-between">
           <div />
 
@@ -55,23 +55,15 @@ export default function Home() {
           </div>
         </div>
 
-        {/* <div className="relative flex w-full justify-center lg:max-h-[90svh] lg:rotate-6 lg:scale-90">
-          <BabkaSticker className="absolute -bottom-8 -left-6 w-32 -rotate-[60deg] lg:-bottom-14 lg:left-14 lg:w-48 lg:rotate-0" />
-
-          <BaguetteSticker className="absolute -top-24 right-24 hidden w-56 lg:block" />
-
-          <Image
-            src="/gallery/babka.jpg"
-            alt="Babka"
-            width={600}
-            height={800}
-            className="border-brand-primary rounded-lg border-2 object-cover"
-          />
-
-        </div> */}
-
-        <div className="w-full bg-red-200">
-          <Carousel />
+        <div className="flex justify-center bg-red-100 lg:overflow-hidden">
+          <div className="flex aspect-[3/4] h-full rotate-2 scale-95 bg-red-300 lg:rotate-3 lg:scale-[85%] xl:rotate-6 xl:scale-[92%]">
+            {/* <Carousel /> */}
+            <img
+              src="/gallery/babka.jpg"
+              alt="Babka"
+              className="border-brand-primary rounded-lg border-2 object-cover"
+            />
+          </div>
         </div>
       </header>
 

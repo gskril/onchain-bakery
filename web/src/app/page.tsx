@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
 import { Tagline } from '@/components/Tagline'
 import { useCart } from '@/hooks/useCart'
+import { cn } from '@/lib/utils'
 
 const products = [
   { name: 'chocolate sourdough', image: '/loaf.png', price: '15' },
@@ -55,14 +56,27 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex justify-center bg-red-100 lg:overflow-hidden">
-          <div className="flex aspect-[3/4] h-full rotate-2 scale-95 bg-red-300 lg:rotate-3 lg:scale-[85%] xl:rotate-6 xl:scale-[92%]">
-            {/* <Carousel /> */}
-            <img
-              src="/gallery/babka.jpg"
-              alt="Babka"
-              className="border-brand-primary rounded-lg border-2 object-cover"
+        <div className="flex justify-center lg:overflow-hidden">
+          <div className="aspect-[3/4] rotate-2 scale-95 lg:rotate-3 lg:scale-[83%] xl:rotate-6 xl:scale-[92%]">
+            <BabkaSticker
+              className={cn([
+                'absolute -bottom-10 -left-4 w-28 -rotate-[60deg]',
+                'lg:-bottom-16 lg:-left-[1.125rem] lg:w-44',
+                'xl:-left-16 xl:w-48 xl:rotate-0',
+              ])}
             />
+
+            <BaguetteSticker
+              className={cn([
+                'absolute -right-6 -top-10 w-28',
+                'lg:-right-6 lg:-top-16 lg:w-44',
+                'xl:-right-12 xl:-top-16 xl:w-56',
+              ])}
+            />
+
+            <div className="border-brand-primary overflow-hidden rounded-lg border-2">
+              <img src="/gallery/babka.jpg" alt="Babka" className="" />
+            </div>
           </div>
         </div>
       </header>
@@ -76,12 +90,12 @@ export default function Home() {
               onClick={() => addToCart(product.name)}
             >
               <h3 className="font-kelsi text-3xl">{product.name}</h3>
-
+              {/* 
               <img
                 src={product.image}
                 alt={product.name}
                 className="h-24 w-24"
-              />
+              /> */}
 
               <Button disabled={cart.includes(product.name)}>
                 ADD TO CART

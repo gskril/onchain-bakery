@@ -90,12 +90,11 @@ export default function Home() {
               onClick={() => addToCart(product.name)}
             >
               <h3 className="font-kelsi text-3xl">{product.name}</h3>
-              {/* 
               <img
                 src={product.image}
                 alt={product.name}
                 className="h-24 w-24"
-              /> */}
+              />
 
               <Button disabled={cart.includes(product.name)}>
                 ADD TO CART

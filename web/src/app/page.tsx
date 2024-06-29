@@ -40,7 +40,7 @@ export default function Home() {
         </div>
       )}
 
-      <header className="border-brand-primary relative grid border-b-2 p-6 sm:p-12 lg:h-svh lg:max-h-svh lg:grid-cols-[4fr,7fr] lg:gap-12">
+      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:h-svh lg:grid-cols-[4fr,7fr] lg:gap-12">
         <div className="flex w-full flex-col justify-between">
           <div />
 
@@ -70,7 +70,7 @@ export default function Home() {
               className={cn([
                 'absolute -right-6 -top-10 w-28',
                 'lg:-right-6 lg:-top-16 lg:w-44',
-                'xl:-right-12 xl:-top-16 xl:w-56',
+                'xl:-right-12 xl:w-56',
               ])}
             />
 

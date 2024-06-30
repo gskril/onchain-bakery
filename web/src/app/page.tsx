@@ -40,7 +40,7 @@ export default function Home() {
         </div>
       )}
 
-      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:h-svh lg:grid-cols-[4fr,7fr] lg:gap-12">
+      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[4fr,7fr] lg:gap-12">
         <div className="flex w-full flex-col justify-between">
           <div />
 
@@ -56,11 +56,11 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex justify-center lg:overflow-hidden">
+        <div className="flex max-h-[89svh] justify-center lg:overflow-hidden">
           <div className="aspect-[3/4] rotate-2 scale-95 lg:rotate-3 lg:scale-[83%] xl:rotate-6 xl:scale-[92%]">
             <BabkaSticker
               className={cn([
-                'absolute -bottom-10 -left-4 w-28 -rotate-[60deg]',
+                'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',
                 'lg:-bottom-16 lg:-left-[1.125rem] lg:w-44',
                 'xl:-left-16 xl:w-48 xl:rotate-0',
               ])}
@@ -68,13 +68,13 @@ export default function Home() {
 
             <BaguetteSticker
               className={cn([
-                'absolute -right-6 -top-10 w-28',
+                'absolute -right-6 -top-10 z-10 w-28',
                 'lg:-right-6 lg:-top-16 lg:w-44',
                 'xl:-right-12 xl:w-56',
               ])}
             />
 
-            <div className="border-brand-primary overflow-hidden rounded-lg border-2">
+            <div className="border-brand-primary bg-brand-primary z-0 flex h-full items-center overflow-hidden rounded-lg border-2">
               <img src="/gallery/babka.jpg" alt="Babka" className="" />
             </div>
           </div>

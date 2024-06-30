@@ -75,7 +75,7 @@ export default function Home() {
             />
 
             <div className="border-brand-primary bg-brand-primary z-0 flex h-full items-center overflow-hidden rounded-lg border-2">
-              <img src="/gallery/babka.jpg" alt="Babka" className="" />
+              <Carousel />
             </div>
           </div>
         </div>

@@ -53,7 +53,7 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         address account,
         uint256 id,
         bytes memory data
-    ) public onlyOwner {
+    ) public payable onlyOwner {
         (bytes memory message, bytes memory signature) = abi.decode(
             data,
             (bytes, bytes)
@@ -93,6 +93,35 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
     function setURI(string memory _uri) public onlyOwner {
         _setURI(_uri);
+    }
+
+    /**
+     * @notice Withdraw ETH from the contract.
+     *
+     * @param account The address to withdraw the ETH to.
+     * @param amount The amount of ETH to transfer.
+     */
+    function withdraw(address account, uint256 amount) public onlyOwner {
+        (bool success, ) = account.call{value: amount}("");
+
+        if (!success) {
+            revert TransferFailed();
+        }
+    }
+
+    /**
+     * @notice Recover ERC20 tokens sent to the contract by mistake.
+     *
+     * @param account The address to send the tokens to.
+     * @param token  The address of the ERC20 token to recover.
+     * @param amount  The amount of tokens to transfer.
+     */
+    function recoverERC20(
+        address account,
+        address token,
+        uint256 amount
+    ) public onlyOwner {
+        IERC20(token).transfer(account, amount);
     }
 
     function pause() public onlyOwner {

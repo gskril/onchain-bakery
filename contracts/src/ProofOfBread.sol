@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MessageHashUtils} from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
@@ -26,6 +27,7 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     //////////////////////////////////////////////////////////////*/
 
     error Unauthorized();
+    error TransferFailed();
 
     /*//////////////////////////////////////////////////////////////
                                PARAMETERS

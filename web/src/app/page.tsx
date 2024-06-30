@@ -1,13 +1,13 @@
 'use client'
 
-import Image from 'next/image'
-
 import { Button } from '@/components/Button'
+import { EmblaCarousel } from '@/components/EmblaCarousel'
 import { Logo } from '@/components/Logo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
 import { Tagline } from '@/components/Tagline'
 import { useCart } from '@/hooks/useCart'
+import { cn } from '@/lib/utils'
 
 const products = [
   { name: 'chocolate sourdough', image: '/loaf.png', price: '15' },
@@ -38,7 +38,7 @@ export default function Home() {
         </div>
       )}
 
-      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[2fr,3fr] lg:gap-12">
+      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[4fr,7fr] lg:gap-12">
         <div className="flex w-full flex-col justify-between">
           <div />
 
@@ -54,18 +54,28 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative flex w-full justify-center lg:max-h-[90svh] lg:rotate-6 lg:scale-90">
-          <BabkaSticker className="absolute -bottom-8 -left-6 w-32 -rotate-[60deg] lg:-bottom-14 lg:left-14 lg:w-48 lg:rotate-0" />
+        <div className="flex max-h-[89svh] justify-center lg:overflow-hidden">
+          <div className="aspect-[3/4] rotate-2 scale-95 lg:rotate-3 lg:scale-[83%] xl:rotate-6 xl:scale-[92%]">
+            <BabkaSticker
+              className={cn([
+                'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',
+                'lg:-bottom-16 lg:-left-[1.125rem] lg:w-44',
+                'xl:-left-16 xl:w-48 xl:rotate-0',
+              ])}
+            />
 
-          <BaguetteSticker className="absolute -top-24 right-24 hidden w-56 lg:block" />
+            <BaguetteSticker
+              className={cn([
+                'absolute -right-6 -top-10 z-10 w-28',
+                'lg:-right-6 lg:-top-16 lg:w-44',
+                'xl:-right-12 xl:w-56',
+              ])}
+            />
 
-          <Image
-            src="/gallery/babka.jpg"
-            alt="Babka"
-            width={600}
-            height={800}
-            className="border-brand-primary rounded-lg border-2 object-cover"
-          />
+            <div className="border-brand-primary bg-brand-primary z-0 flex h-full items-center overflow-hidden rounded-lg border-2">
+              <EmblaCarousel />
+            </div>
+          </div>
         </div>
       </header>
 
@@ -78,7 +88,6 @@ export default function Home() {
               onClick={() => addToCart(product.name)}
             >
               <h3 className="font-kelsi text-3xl">{product.name}</h3>
-
               <img
                 src={product.image}
                 alt={product.name}

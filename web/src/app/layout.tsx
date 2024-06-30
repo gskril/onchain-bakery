@@ -48,7 +48,14 @@ const pangramSansCompact = localFont({
 
 const kelsi = localFont({
   display: 'swap',
-  src: '../assets/fonts/kelsi/fill.otf',
+  src: [
+    {
+      path: '../assets/fonts/kelsi/regular.otf',
+      weight: '400',
+      style: 'normal',
+    },
+    { path: '../assets/fonts/kelsi/fill.otf', weight: '700', style: 'normal' },
+  ],
   variable: '--font-kelsi',
 })
 

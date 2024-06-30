@@ -109,3 +109,73 @@ export function Logo({ className }: { className?: string }) {
     </svg>
   )
 }
+
+export function FaceElements(props?: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      width="180"
+      height="266"
+      viewBox="0 0 180 266"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M32.6465 247.484C33.0381 250.951 38.4914 259.014 41.0336 260.89C46.5101 264.93 48.3607 262.671 53.9954 262.671C62.4135 262.671 66.2879 252.34 69.2446 245.797"
+        stroke="#0033E6"
+        stroke-width="4.77367"
+        stroke-linecap="round"
+      />
+      <path
+        d="M157.096 5.14941C159.682 8.02275 161.356 10.2205 164.886 12.3727C168.292 14.4496 172.941 15.8948 176.975 15.8948"
+        stroke="#0033E6"
+        stroke-width="4.77367"
+        stroke-linecap="round"
+      />
+      <path
+        d="M25.4638 3C23.721 3 21.9842 4.34008 20.509 5.14908C17.6077 6.74012 14.5371 8.18738 11.4351 9.32785C8.77491 10.3059 5.7315 11.0591 2.89844 11.0591"
+        stroke="#0033E6"
+        stroke-width="4.77367"
+        stroke-linecap="round"
+      />
+    </svg>
+  )
+}
+
+export function TextLogo({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn([
+        'relative w-fit leading-[2.3rem] sm:leading-[3rem] lg:leading-[4rem]',
+        className,
+      ])}
+    >
+      <FaceElements
+        className={cn([
+          'absolute',
+          '-top-[7.125rem] left-[4.5rem] w-[3.5rem]',
+          'sm:-top-[6.875rem] sm:left-[6rem] sm:w-[4.5rem]',
+          'lg:-top-[6.5rem] lg:left-32 lg:w-[6.25rem]',
+        ])}
+      />
+
+      <div>
+        <span className="font-pangram text-[4.5rem] font-extrabold sm:text-[6rem] lg:text-[8rem]">
+          G
+        </span>
+        <span className="font-kelsi text-[4.5rem] sm:text-[6rem] lg:text-[8rem]">
+          oo
+        </span>
+        <span className="font-pangram text-[4.5rem] font-extrabold uppercase sm:text-[6rem] lg:text-[8rem]">
+          d
+        </span>
+      </div>
+
+      <div>
+        <span className="font-pangram text-[3.875rem] font-extrabold lowercase sm:text-[5.2rem] lg:text-[6.9rem]">
+          Bread
+        </span>
+      </div>
+    </div>
+  )
+}

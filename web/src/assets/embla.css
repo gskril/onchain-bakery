@@ -1,0 +1,103 @@
+/* Mostly yoinked from https://codesandbox.io/s/dgnqct?file=/src/css/embla.css */
+.embla {
+  max-width: 48rem;
+  margin: auto;
+  position: relative;
+
+  --slide-size: 100%;
+  --text-body: rgb(54, 49, 61);
+  --text-high-contrast: rgb(49, 49, 49);
+  --detail-medium-contrast: rgb(234, 234, 234);
+  --text-high-contrast-rgb-value: 49, 49, 49;
+}
+
+.embla__viewport {
+  overflow: hidden;
+}
+
+.embla__container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+}
+
+.embla__slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+}
+
+.embla__controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  justify-content: space-between;
+  gap: 1.2rem;
+
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.embla__dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.embla__dot,
+.embla__dot--selected {
+  -webkit-tap-highlight-color: rgba(var(--text-high-contrast-rgb-value), 0.5);
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  touch-action: manipulation;
+  display: inline-flex;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  background-size: 100% !important;
+  background-repeat: no-repeat !important;
+}
+
+.embla__dot:nth-child(1) {
+  background: url('/carousel/dot1.svg');
+}
+
+.embla__dot--selected:nth-child(1) {
+  background: url('/carousel/dot1-filled.svg');
+}
+
+.embla__dot:nth-child(2) {
+  background: url('/carousel/dot2.svg');
+}
+
+.embla__dot--selected:nth-child(2) {
+  background: url('/carousel/dot2-filled.svg');
+}
+
+.embla__dot:nth-child(3) {
+  background: url('/carousel/dot3.svg');
+}
+
+.embla__dot--selected:nth-child(3) {
+  background: url('/carousel/dot3-filled.svg');
+}
+
+.embla__dot:nth-child(4) {
+  background: url('/carousel/dot4.svg');
+}
+
+.embla__dot--selected:nth-child(4) {
+  background: url('/carousel/dot4-filled.svg');
+}

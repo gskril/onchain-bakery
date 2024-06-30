@@ -1,9 +1,7 @@
 'use client'
 
-import Image from 'next/image'
-
 import { Button } from '@/components/Button'
-import { Carousel } from '@/components/Carousel'
+import { EmblaCarousel } from '@/components/EmblaCarousel'
 import { Logo } from '@/components/Logo'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
@@ -75,7 +73,7 @@ export default function Home() {
             />
 
             <div className="border-brand-primary bg-brand-primary z-0 flex h-full items-center overflow-hidden rounded-lg border-2">
-              <Carousel />
+              <EmblaCarousel />
             </div>
           </div>
         </div>

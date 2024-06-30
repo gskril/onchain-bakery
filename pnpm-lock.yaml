@@ -57,7 +57,8 @@ importers:
       '@types/react-dom': ^18
       class-variance-authority: ^0.7.0
       clsx: ^2.1.1
-      keen-slider: ^6.8.6
+      embla-carousel: ^8.1.5
+      embla-carousel-react: ^8.1.5
       next: 14.2.3
       pino-pretty: ^11.1.0
       postcss: ^8
@@ -77,7 +78,8 @@ importers:
       '@tanstack/react-query': 5.48.0_react@18.3.1
       class-variance-authority: 0.7.0
       clsx: 2.1.1
-      keen-slider: 6.8.6
+      embla-carousel: 8.1.5
+      embla-carousel-react: 8.1.5_react@18.3.1
       next: 14.2.3_nnrd3gsncyragczmpvfhocinkq
       pino-pretty: 11.2.1
       react: 18.3.1
@@ -3781,6 +3783,28 @@ packages:
       minimalistic-assert: 1.0.1
       minimalistic-crypto-utils: 1.0.1
 
+  /embla-carousel-react/8.1.5_react@18.3.1:
+    resolution: {integrity: sha512-xFmfxgJd7mpWDHQ4iyK1Qs+5BTTwu4bkn+mSROKiUH9nKpPHTeilQ+rpeQDCHRrAPeshD67aBk0/p6FxWxXsng==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.1 || ^18.0.0
+    dependencies:
+      embla-carousel: 8.1.5
+      embla-carousel-reactive-utils: 8.1.5_embla-carousel@8.1.5
+      react: 18.3.1
+    dev: false
+
+  /embla-carousel-reactive-utils/8.1.5_embla-carousel@8.1.5:
+    resolution: {integrity: sha512-76uZTrSaEGGta+qpiGkMFlLK0I7N04TdjZ2obrBhyggYIFDWlxk1CriIEmt2lisLNsa1IYXM85kr863JoCMSyg==}
+    peerDependencies:
+      embla-carousel: 8.1.5
+    dependencies:
+      embla-carousel: 8.1.5
+    dev: false
+
+  /embla-carousel/8.1.5:
+    resolution: {integrity: sha512-R6xTf7cNdR2UTNM6/yUPZlJFRmZSogMiRjJ5vXHO65II5MoUlrVYUAP0fHQei/py82Vf15lj+WI+QdhnzBxA2g==}
+    dev: false
+
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
@@ -5016,10 +5040,6 @@ packages:
       node-addon-api: 2.0.2
       node-gyp-build: 4.8.1
       readable-stream: 3.6.2
-
-  /keen-slider/6.8.6:
-    resolution: {integrity: sha512-dcEQ7GDBpCjUQA8XZeWh3oBBLLmyn8aoeIQFGL/NTVkoEOsmlnXqA4QykUm/SncolAZYGsEk/PfUhLZ7mwMM2w==}
-    dev: false
 
   /keyvaluestorage-interface/1.0.0:
     resolution: {integrity: sha512-8t6Q3TclQ4uZynJY9IGr2+SsIGwK9JHcO6ootkHCGA0CrQCRy+VkouYNO2xicET6b9al7QKzpebNow+gkpCL8g==}

@@ -66,11 +66,9 @@ export default function RootLayout({
         kelsi.variable,
       ])}
     >
-      <ClientProviders>
-        <body className="bg-brand-background text-brand-primary">
-          {children}
-        </body>
-      </ClientProviders>
+      <body className="bg-brand-background text-brand-primary">
+        <ClientProviders>{children}</ClientProviders>
+      </body>
     </html>
   )
 }

@@ -1,18 +1,59 @@
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 import { expect } from 'chai'
 import hre from 'hardhat'
+import { Address, encodeAbiParameters, toHex } from 'viem'
 
 const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // contract owner
 const customer = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // bakery customer
 
 const deploy = async () => {
   const breadContract = await hre.viem.deployContract('Bread', [
-    account, // _owner,
-    '0x0000000000000000000000000000000000000000', // _proofOfBread,
+    account, // _owner
+    account, // _signer
+    '0x0000000000000000000000000000000000000000', // _proofOfBread
     'https://website.com/api/{id}', // _uri
   ])
 
   return { breadContract }
+}
+
+const signOrder = async ({
+  relativeTimestamp = 0,
+  customer,
+  claimId,
+}: {
+  relativeTimestamp: number
+  customer?: Address
+  claimId?: string
+}) => {
+  const messageToSign = encodeAbiParameters(
+    [
+      { name: 'buyer', type: 'address' },
+      { name: 'claimId', type: 'bytes32' },
+      { name: 'expiration', type: 'uint256' },
+    ],
+    [
+      customer || account,
+      toHex(claimId || 'hi', { size: 32 }),
+      BigInt(Math.floor(Date.now() / 1000) + relativeTimestamp),
+    ]
+  )
+
+  const viemClient = await hre.viem.getWalletClient(account)
+
+  const signedMessage = await viemClient.signMessage({
+    message: { raw: messageToSign },
+  })
+
+  const encodedMessageAndData = encodeAbiParameters(
+    [
+      { name: 'message', type: 'bytes' },
+      { name: 'signature', type: 'bytes' },
+    ],
+    [messageToSign, signedMessage]
+  )
+
+  return { messageToSign, signedMessage, encodedMessageAndData }
 }
 
 describe('Bread.sol tests', function () {
@@ -41,9 +82,14 @@ describe('Bread.sol tests', function () {
       account,
     })
 
-    const buyBreadCall = breadContract.write.buyBread([account, 1n, 1n, []], {
-      value: 1000n,
-    })
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+
+    const buyBreadCall = breadContract.write.buyBread(
+      [account, 1n, 1n, encodedMessageAndData],
+      {
+        value: 1000n,
+      }
+    )
 
     await expect(buyBreadCall).to.be.fulfilled
 
@@ -57,42 +103,42 @@ describe('Bread.sol tests', function () {
       account,
     })
 
-    const buyBreadCall = breadContract.write.buyBread([account, 1n, 1n, []], {
-      value: 999n,
-    })
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+
+    const buyBreadCall = breadContract.write.buyBread(
+      [account, 1n, 1n, encodedMessageAndData],
+      {
+        value: 999n,
+      }
+    )
 
     await expect(buyBreadCall).to.rejectedWith('InsufficientValue()')
   })
 
-  it('should not be able to mint when allowlist is enabled', async function () {
+  it('should return true for canOrder() when signature is valid', async function () {
     const { breadContract } = await loadFixture(deploy)
-    const canOrderBefore = await breadContract.read.canOrder([account, []])
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
-    await breadContract.write.setAllowlist(
-      ['0xb24fd730ae60843faadf8ba26bc794e2928ce3fe4612c940d9fb9e1e7cc072c1'],
-      { account }
-    )
-
-    const canOrderAfter = await breadContract.read.canOrder([account, []])
-
-    expect(canOrderBefore).to.be.true
-    expect(canOrderAfter).to.be.false
-  })
-
-  it('should be able to mint from allowlist', async function () {
-    const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.setAllowlist(
-      ['0xb24fd730ae60843faadf8ba26bc794e2928ce3fe4612c940d9fb9e1e7cc072c1'],
-      { account }
-    )
-
-    // Proof from https://lanyard.org/api/v1/proof?root=0xb24fd730ae60843faadf8ba26bc794e2928ce3fe4612c940d9fb9e1e7cc072c1&unhashedLeaf=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
     const canOrder = await breadContract.read.canOrder([
       account,
-      ['0x06e120c2c3547c60ee47f712d32e5acf38b35d1cc62e23b055a69bb88284c281'],
+      encodedMessageAndData,
     ])
 
     expect(canOrder).to.be.true
+  })
+
+  it('should return false for canOrder() when signature is invalid', async function () {
+    const { breadContract } = await loadFixture(deploy)
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: -10,
+    })
+
+    const canOrder = await breadContract.read.canOrder([
+      account,
+      encodedMessageAndData,
+    ])
+
+    expect(canOrder).to.be.false
   })
 
   it('should get discount from credit', async function () {
@@ -113,8 +159,19 @@ describe('Bread.sol tests', function () {
   it('should revoke a token', async function () {
     const { breadContract } = await loadFixture(deploy)
 
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: 10,
+      customer,
+    })
+
     await breadContract.write.updateInventory([[1n], [1n], [0n]], { account })
-    await breadContract.write.buyBread([customer, 1n, 1n, []])
+
+    await breadContract.write.buyBread([
+      customer,
+      1n,
+      1n,
+      encodedMessageAndData,
+    ])
 
     const balanceOfBefore = await breadContract.read.balanceOf([customer, 1n])
     expect(balanceOfBefore).to.equal(1n)
@@ -132,11 +189,16 @@ describe('Bread.sol tests', function () {
       account,
     })
 
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+
     // customer orders a bread
-    await breadContract.write.buyBread([account, 1n, 1n, []], {
-      value: price,
-      account: customer,
-    })
+    await breadContract.write.buyBread(
+      [account, 1n, 1n, encodedMessageAndData],
+      {
+        value: price,
+        account: customer,
+      }
+    )
 
     // Check the balance of the owner
     const beforeBalance = await (
@@ -201,6 +263,7 @@ describe('Bread.sol tests', function () {
 
   it('should mint multiple NFTs', async function () {
     const { breadContract } = await loadFixture(deploy)
+
     await breadContract.write.updateInventory(
       [
         [1n, 2n],
@@ -212,8 +275,20 @@ describe('Bread.sol tests', function () {
       }
     )
 
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+
+    const { encodedMessageAndData: encodedMessageAndData2 } = await signOrder({
+      relativeTimestamp: 11,
+      claimId: 'heyy',
+    })
+
     const buyBreadsCall = breadContract.write.buyBreads(
-      [account, [1n, 2n], []],
+      [
+        account,
+        [1n, 2n],
+        [1n, 1n],
+        [encodedMessageAndData, encodedMessageAndData2],
+      ],
       {
         value: 2000n,
       }
@@ -227,5 +302,33 @@ describe('Bread.sol tests', function () {
     ])
 
     expect(balanceOf).to.be.deep.equal([1n, 1n])
+  })
+
+  it('should revert when trying to use the same claimId twice', async function () {
+    const { breadContract } = await loadFixture(deploy)
+    await breadContract.write.updateInventory([[1n], [2n], [1000n]], {
+      account,
+    })
+
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+
+    await breadContract.write.buyBread(
+      [account, 1n, 1n, encodedMessageAndData],
+      {
+        value: 1000n,
+      }
+    )
+
+    const buyBreadCall2 = breadContract.write.buyBread(
+      [account, 1n, 1n, encodedMessageAndData],
+      {
+        value: 1000n,
+      }
+    )
+
+    await expect(buyBreadCall2).to.be.rejectedWith('Unauthorized()')
+
+    const balanceOf = await breadContract.read.balanceOf([account, 1n])
+    expect(balanceOf).to.be.equal(1n)
   })
 })

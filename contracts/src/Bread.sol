@@ -7,7 +7,8 @@ import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
-import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 ///////////////////////////////////////////////////////////
 //                                                       //
@@ -60,8 +61,8 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                                PARAMETERS
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice A Merkle root that controls which accounts can place orders. If set to 0x00, anyone can order.
-    bytes32 public allowlist;
+    /// @notice The account that can approve orders.
+    address public signer;
 
     /// @notice The ProofOfBread NFT contract.
     address public proofOfBread;
@@ -72,15 +73,20 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     /// @notice A mapping of token IDs to their inventory.
     mapping(uint256 id => Inventory) public inventory;
 
+    /// @notice A mapping of claim IDs that have been used to place an order.
+    mapping(bytes32 => bool) public usedClaims;
+
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
     constructor(
         address _owner,
+        address _signer,
         address _proofOfBread,
         string memory _uri
     ) ERC1155(_uri) Ownable(_owner) {
+        signer = _signer;
         proofOfBread = _proofOfBread;
     }
 
@@ -94,13 +100,13 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      * @param account The address of the account to mint the NFT to.
      * @param id The token ID to mint.
      * @param quantity The amount of tokens to mint.
-     * @param proof A Merkle proof to verify the account is allowed to order.
+     * @param data ABI encoded message and signature to verify the order.
      */
     function buyBread(
         address account,
         uint256 id,
         uint256 quantity,
-        bytes32[] calldata proof
+        bytes calldata data
     ) public payable {
         uint256 _price = price(account, id) * quantity;
 
@@ -108,11 +114,12 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
             revert InsufficientValue();
         }
 
-        if (!canOrder(account, proof)) {
+        if ((!canOrder(account, data))) {
             revert Unauthorized();
         }
 
         _mintAndUpdateInventory(account, id, quantity, _price);
+        _useClaimId(data);
 
         // Store overflow value as credit for future purchases
         uint256 remainder = msg.value - _price;
@@ -126,15 +133,17 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      *
      * @param account The address of the account to mint the NFTs to.
      * @param ids The token IDs to mint.
-     * @param proof A Merkle proof to verify the account is allowed to order.
+     * @param quantities The amount of tokens to mint.
+     * @param data ABI encoded message and signature to verify the order.
      */
     function buyBreads(
         address account,
         uint256[] calldata ids,
-        bytes32[] calldata proof
+        uint256[] calldata quantities,
+        bytes[] calldata data
     ) public payable {
         for (uint256 i = 0; i < ids.length; i++) {
-            buyBread(account, ids[i], 1, proof);
+            buyBread(account, ids[i], quantities[i], data[i]);
         }
     }
 
@@ -151,27 +160,39 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     }
 
     /**
-     * @notice Check if an account is allowed to order.
+     * @notice Check if the signer approves of an order.
      *
-     * @param account The address of the account to check.
-     * @param proof A Merkle proof to check if the account is part of the allowlist.
+     * @param account The address of the account trying to place an order.
+     * @param data ABI encoded message and signature to verify the order.
      */
     function canOrder(
         address account,
-        bytes32[] calldata proof
+        bytes calldata data
     ) public view returns (bool) {
-        // If the allowlist is disabled, anyone can order
-        if (allowlist == bytes32(0)) {
-            return true;
+        (bytes memory message, bytes memory signature) = abi.decode(
+            data,
+            (bytes, bytes)
+        );
+
+        (address buyer, bytes32 claimId, uint256 expiration) = abi.decode(
+            message,
+            (address, bytes32, uint256)
+        );
+
+        bool isExpired = block.timestamp > expiration;
+        bool isBuyerMatched = account == buyer;
+        bool isClaimUsed = usedClaims[claimId];
+
+        if (isExpired || isBuyerMatched || isClaimUsed) {
+            return false;
         }
 
-        // Otherwise, verify that the account is part of the Merkle tree
-        return
-            MerkleProof.verify(
-                proof,
-                allowlist,
-                keccak256(abi.encodePacked(account))
-            );
+        address _signer = ECDSA.recover(
+            MessageHashUtils.toEthSignedMessageHash(message),
+            signature
+        );
+
+        return _signer == signer;
     }
 
     /**
@@ -262,8 +283,8 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         proofOfBread = _proofOfBread;
     }
 
-    function setAllowlist(bytes32 _allowlist) public onlyOwner {
-        allowlist = _allowlist;
+    function setSigner(address _signer) public onlyOwner {
+        signer = _signer;
     }
 
     function setURI(string memory _uri) public onlyOwner {
@@ -329,6 +350,17 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     function _addCredit(address account, uint256 amount) internal {
         credit[account] += amount;
         emit CreditAdded(account, amount);
+    }
+
+    function _useClaimId(bytes calldata data) internal {
+        // Extract the message from the encoded data
+        bytes memory message = abi.decode(data, (bytes));
+
+        // Extract the claim ID from the message
+        (, bytes32 claimId) = abi.decode(message, (address, bytes32));
+
+        // Mark the claim as used
+        usedClaims[claimId] = true;
     }
 
     /*//////////////////////////////////////////////////////////////

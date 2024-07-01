@@ -180,10 +180,10 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         );
 
         bool isExpired = block.timestamp > expiration;
-        bool isBuyerMatched = account == buyer;
+        bool isBuyerUnmatched = account != buyer;
         bool isClaimUsed = usedClaims[claimId];
 
-        if (isExpired || isBuyerMatched || isClaimUsed) {
+        if (isExpired || isBuyerUnmatched || isClaimUsed) {
             return false;
         }
 

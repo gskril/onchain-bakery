@@ -57,14 +57,29 @@ const signOrder = async ({
 }
 
 describe('Bread.sol tests', function () {
-  it('should increase inventory', async function () {
+  it('should let owner increase inventory, and disallow non-owners', async function () {
     const { breadContract } = await loadFixture(deploy)
     const [quantityBefore] = await breadContract.read.inventory([1n])
     expect(quantityBefore).to.equal(0n)
 
+    // Owner increases inventory
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
       account,
     })
+
+    // Non-owner tries to increase inventory
+    const strangerUpdateInventoryCall = breadContract.write.updateInventory(
+      [[1n], [1n], [1000n]],
+      {
+        account: customer,
+      }
+    )
+
+    // Non-owner should not be able to increase inventory
+    await expect(strangerUpdateInventoryCall).to.be.rejectedWith(
+      `OwnableUnauthorizedAccount("${customer}")`
+    )
+
     const [quantityAfter] = await breadContract.read.inventory([1n])
     expect(quantityAfter).to.equal(1n)
   })
@@ -72,8 +87,8 @@ describe('Bread.sol tests', function () {
   it('should revert when minting with no inventory', async function () {
     const { breadContract } = await loadFixture(deploy)
 
-    await expect(breadContract.write.adminOrder([account, 1n, 1n], { account }))
-      .to.be.rejected
+    await expect(breadContract.write.adminOrder([account, 1n, 1n])).to.be
+      .rejected
   })
 
   it('should mint with sufficient funds', async function () {
@@ -150,7 +165,7 @@ describe('Bread.sol tests', function () {
     const beforePrice = await breadContract.read.price([account, 1n])
     expect(beforePrice).to.equal(1000n)
 
-    await breadContract.write.addCredit([account, 10000000n], { account })
+    await breadContract.write.addCredit([account, 10000000n])
 
     const afterPrice = await breadContract.read.price([account, 1n])
     expect(afterPrice).to.equal(0n)
@@ -164,7 +179,7 @@ describe('Bread.sol tests', function () {
       customer,
     })
 
-    await breadContract.write.updateInventory([[1n], [1n], [0n]], { account })
+    await breadContract.write.updateInventory([[1n], [1n], [0n]])
 
     await breadContract.write.buyBread([
       customer,
@@ -176,13 +191,13 @@ describe('Bread.sol tests', function () {
     const balanceOfBefore = await breadContract.read.balanceOf([customer, 1n])
     expect(balanceOfBefore).to.equal(1n)
 
-    await breadContract.write.revokeOrder([customer, 1n, 1n], { account })
+    await breadContract.write.revokeOrder([customer, 1n, 1n])
 
     const balanceOfAfter = await breadContract.read.balanceOf([account, 1n])
     expect(balanceOfAfter).to.equal(0n)
   })
 
-  it('should withdraw ETH', async function () {
+  it('should let owner withdraw ETH and block non-owners', async function () {
     const { breadContract } = await loadFixture(deploy)
     const price = 100000000000000n
     await breadContract.write.updateInventory([[1n], [1n], [price]], {
@@ -213,8 +228,18 @@ describe('Bread.sol tests', function () {
     // The contract should have collected the price of the bread
     expect(contractBalance).to.equal(price)
 
+    // Have the customer attempt to withdraw the funds
+    const withdrawCall = breadContract.write.withdraw([customer, price], {
+      account: customer,
+    })
+
+    // The customer should not be able to withdraw the funds
+    await expect(withdrawCall).to.be.rejectedWith(
+      `OwnableUnauthorizedAccount("${customer}")`
+    )
+
     // Withdraw the funds to the owner
-    await breadContract.write.withdraw([account, price], { account })
+    await breadContract.write.withdraw([account, price])
 
     // Check the balance of the owner after the withdrawal
     const afterBalance = await (
@@ -228,14 +253,11 @@ describe('Bread.sol tests', function () {
 
   it('should return the inventory in a batch', async function () {
     const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.updateInventory(
-      [
-        [1n, 2n, 3n],
-        [1n, 1n, 1n],
-        [1000n, 1000n, 1000n],
-      ],
-      { account }
-    )
+    await breadContract.write.updateInventory([
+      [1n, 2n, 3n],
+      [1n, 1n, 1n],
+      [1000n, 1000n, 1000n],
+    ])
 
     const batchInventory = await breadContract.read.inventoryBatch([
       [1n, 2n, 3n],
@@ -306,9 +328,7 @@ describe('Bread.sol tests', function () {
 
   it('should revert when trying to use the same claimId twice', async function () {
     const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.updateInventory([[1n], [2n], [1000n]], {
-      account,
-    })
+    await breadContract.write.updateInventory([[1n], [2n], [1000n]])
 
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 

@@ -120,12 +120,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
         _mintAndUpdateInventory(account, id, quantity, _price);
         _useClaimId(data);
-
-        // Store overflow value as credit for future purchases
-        uint256 remainder = msg.value - _price;
-        if (remainder > 0) {
-            _addCredit(account, remainder);
-        }
+        _creditOverflow(account, msg.value, _price);
     }
 
     /**
@@ -142,13 +137,15 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256[] calldata quantities,
         bytes calldata data
     ) public payable {
-        uint256 _price;
+        uint256 totalPrice;
+        uint256[] memory pricePerItem = new uint256[](ids.length);
 
         for (uint256 i = 0; i < ids.length; i++) {
-            _price += price(account, ids[i]) * quantities[i];
+            pricePerItem[i] = price(account, ids[i]) * quantities[i];
+            totalPrice += pricePerItem[i];
         }
 
-        if (msg.value < _price) {
+        if (msg.value < totalPrice) {
             revert InsufficientValue();
         }
 
@@ -157,22 +154,16 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         }
 
         for (uint256 i = 0; i < ids.length; i++) {
-            uint256 productPrice = price(account, ids[i]) * quantities[i];
-
             _mintAndUpdateInventory(
                 account,
                 ids[i],
                 quantities[i],
-                productPrice
+                pricePerItem[i]
             );
-            _useClaimId(data);
         }
 
-        // Store overflow value as credit for future purchases
-        uint256 remainder = msg.value - _price;
-        if (remainder > 0) {
-            _addCredit(account, remainder);
-        }
+        _useClaimId(data);
+        _creditOverflow(account, msg.value, totalPrice);
     }
 
     /**
@@ -378,6 +369,17 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     function _addCredit(address account, uint256 amount) internal {
         credit[account] += amount;
         emit CreditAdded(account, amount);
+    }
+
+    function _creditOverflow(
+        address account,
+        uint256 amountPaid,
+        uint256 totalPrice
+    ) internal {
+        uint256 remainder = amountPaid - totalPrice;
+        if (remainder > 0) {
+            _addCredit(account, remainder);
+        }
     }
 
     function _useClaimId(bytes calldata data) internal {

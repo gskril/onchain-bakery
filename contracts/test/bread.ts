@@ -171,6 +171,25 @@ describe('Bread.sol tests', function () {
     expect(afterPrice).to.equal(0n)
   })
 
+  it('should get credit from overpaying', async function () {
+    const { breadContract } = await loadFixture(deploy)
+    await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
+      account,
+    })
+
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+
+    await breadContract.write.buyBread(
+      [account, 1n, 1n, encodedMessageAndData],
+      {
+        value: 2000n,
+      }
+    )
+
+    const credit = await breadContract.read.credit([account])
+    expect(credit).to.equal(1000n)
+  })
+
   it('should revoke a token', async function () {
     const { breadContract } = await loadFixture(deploy)
 

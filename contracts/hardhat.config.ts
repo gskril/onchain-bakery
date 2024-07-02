@@ -3,17 +3,19 @@ import '@nomicfoundation/hardhat-verify'
 import 'dotenv/config'
 import { HardhatUserConfig } from 'hardhat/config'
 
-// prettier-ignore
-const HARDHAT_PKEY = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
-const DEPLOYER_KEY = process.env.DEPLOYER_KEY || HARDHAT_PKEY
+const DEPLOYER_KEY = process.env.DEPLOYER_KEY
 const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY
 
+if (!DEPLOYER_KEY) throw new Error('DEPLOYER_KEY must be set')
 if (!BASESCAN_API_KEY) throw new Error('BASESCAN_API_KEY must be set')
 
 const config: HardhatUserConfig = {
   networks: {
     base: {
       url: 'https://rpc.ankr.com/base',
+      accounts: [DEPLOYER_KEY],
+    },
+    localhost: {
       accounts: [DEPLOYER_KEY],
     },
   },

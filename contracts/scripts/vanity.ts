@@ -1,60 +1,82 @@
-import hre from 'hardhat'
-import { parseEther } from 'viem'
-import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import { Hex, getContractAddress } from 'viem'
+import { generatePrivateKey } from 'viem/accounts'
+import { privateKeyToAccount } from 'viem/accounts'
 
-const args = [
-  '0x179A862703a4adfb29896552DF9e307980D19285', // _owner,
-  '0x0000000000000000000000000000000000000000', // _signer,
-  '0x0000000000000000000000000000000000000000', // _proofOfBread,
-  'https://website.com/api/{id}', // _uri
-] as const
+const baseNonce = 69n
+// generateDeployerPrivateKey('0x0000', baseNonce)
+// generateNonce('0x0000', baseNonce)
 
-// This only works when the DEPLOYER_KEY is empty, meaning it is the default Hardhat account
-async function main() {
-  let tries = 1
-  const _walletClient = await hre.viem.getWalletClients()
-  const walletClient = _walletClient[0]
+/**
+ * Generate a private key that will deploy a smart contract with a vanity address at a given nonce.
+ *
+ * @param vanity The first few characters of the address you want to generate, case insensitive.
+ * @param nonce Generally good to set this higher than 0 to prevent accidentally using the nonce on a different transaction.
+ */
+function generateDeployerPrivateKey(vanity: Hex, nonce: bigint) {
+  let tries = 0
 
-  const initialDeployment = await hre.viem.deployContract('Bread', [...args])
-  console.log(`Initial deployment to ${initialDeployment.address}`)
-
-  // Loop through new private keys until one is found that deploys the contract with the desired vanity address
   while (true) {
-    // Log every 100 tries
-    if (tries % 100 === 0) console.log(`Tries: ${tries}`)
+    const deployerPrivateKey = generatePrivateKey()
+    const deployerPublicAddress =
+      privateKeyToAccount(deployerPrivateKey).address
 
-    const privateKey = generatePrivateKey()
-    const vanityDeployer = privateKeyToAccount(privateKey)
-
-    // Send enough ETH to the new deployer to cover the gas cost of deploying the contract
-    await walletClient.sendTransaction({
-      to: vanityDeployer.address,
-      value: parseEther('0.0075'),
+    const deployedContractAddress = getContractAddress({
+      from: deployerPublicAddress,
+      nonce,
     })
 
-    // @ts-ignore
-    const vanityDeployment = await hre.viem.deployContract('Bread', [...args], {
-      walletClient: hre.viem.getWalletClient(vanityDeployer.address, {
-        account: vanityDeployer,
-      }),
-      nonce: 0,
-    })
-
-    if (vanityDeployment.address.toLowerCase().startsWith('0xb5ead')) {
-      console.log(
-        `Deployed to ${vanityDeployment.address} from private key ${privateKey} which has the public address ${vanityDeployer.address}`
-      )
+    if (deployedContractAddress.toLowerCase().startsWith(vanity)) {
+      console.log({
+        deployerPrivateKey,
+        deployerPublicAddress,
+        deployedContractAddress,
+        nonce,
+      })
 
       break
     }
 
-    tries += 1
+    if (tries % 1000 === 0) {
+      console.log(`Tries: ${tries}`)
+    }
+
+    tries++
   }
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error)
-  process.exitCode = 1
-})
+/**
+ * Generate a nonce that will deploy a smart contract with a vanity address from the `process.env.DEPLOYER_KEY`.
+ *
+ * @param vanity The first few characters of the address you want to generate, case insensitive.
+ * @param baseNonce The nonce to start from.
+ */
+function generateNonce(vanity: Hex, baseNonce: bigint) {
+  let tries = 0
+  let nonce = baseNonce + 1n
+
+  const deployerPrivateKey = process.env.DEPLOYER_KEY as Hex
+  const deployerPublicAddress = privateKeyToAccount(deployerPrivateKey).address
+
+  while (true) {
+    const deployedContractAddress = getContractAddress({
+      from: deployerPublicAddress,
+      nonce,
+    })
+
+    if (deployedContractAddress.toLowerCase().startsWith(vanity)) {
+      console.log({
+        deployedContractAddress,
+        nonce,
+      })
+
+      break
+    }
+
+    if (tries % 1000 === 0) {
+      console.log(`Tries: ${tries}`)
+    }
+
+    tries++
+    nonce++
+  }
+}

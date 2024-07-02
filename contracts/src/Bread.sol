@@ -140,10 +140,38 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         address account,
         uint256[] calldata ids,
         uint256[] calldata quantities,
-        bytes[] calldata data
+        bytes calldata data
     ) public payable {
+        uint256 _price;
+
         for (uint256 i = 0; i < ids.length; i++) {
-            buyBread(account, ids[i], quantities[i], data[i]);
+            _price += price(account, ids[i]) * quantities[i];
+        }
+
+        if (msg.value < _price) {
+            revert InsufficientValue();
+        }
+
+        if ((!canOrder(account, data))) {
+            revert Unauthorized();
+        }
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            uint256 productPrice = price(account, ids[i]) * quantities[i];
+
+            _mintAndUpdateInventory(
+                account,
+                ids[i],
+                quantities[i],
+                productPrice
+            );
+            _useClaimId(data);
+        }
+
+        // Store overflow value as credit for future purchases
+        uint256 remainder = msg.value - _price;
+        if (remainder > 0) {
+            _addCredit(account, remainder);
         }
     }
 

@@ -299,18 +299,8 @@ describe('Bread.sol tests', function () {
 
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
-    const { encodedMessageAndData: encodedMessageAndData2 } = await signOrder({
-      relativeTimestamp: 11,
-      claimId: 'heyy',
-    })
-
     const buyBreadsCall = breadContract.write.buyBreads(
-      [
-        account,
-        [1n, 2n],
-        [1n, 1n],
-        [encodedMessageAndData, encodedMessageAndData2],
-      ],
+      [account, [1n, 2n], [1n, 1n], encodedMessageAndData],
       {
         value: 2000n,
       }

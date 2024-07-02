@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "hardhat node",
     "compile": "hardhat compile",
-    "test": "hardhat test"
+    "test": "hardhat test",
+    "deploy:bread": "hardhat run scripts/deploy-bread.ts --network localhost",
+    "mine:bread": "hardhat run scripts/vanity.ts --network localhost"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-network-helpers": "^1.0.10",

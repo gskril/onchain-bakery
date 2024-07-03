@@ -48,12 +48,16 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
     event OrderPlaced(
         address account,
-        uint256 id,
-        uint256 quantity,
+        uint256[] ids,
+        uint256[] quantities,
         uint256 price
     );
 
+    event OrderRevoked(address account, uint256 id, uint256 quantity);
+
     event CreditAdded(address account, uint256 quantity);
+
+    event CreditRemoved(address account, uint256 quantity);
 
     event InventoryUpdated(uint256 id, uint256 quantity, uint256 price);
 
@@ -97,18 +101,18 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     /**
      * @notice Place an order.
      *
-     * @param account The address of the account to mint the NFT to.
-     * @param id The token ID to mint.
-     * @param quantity The amount of tokens to mint.
+     * @param account The address of the account to mint the NFTs to.
+     * @param ids The token IDs to mint.
+     * @param quantities The amount of tokens to mint.
      * @param data ABI encoded message and signature to verify the order.
      */
     function buyBread(
         address account,
-        uint256 id,
-        uint256 quantity,
+        uint256[] calldata ids,
+        uint256[] calldata quantities,
         bytes calldata data
     ) public payable {
-        uint256 _price = price(account, id) * quantity;
+        (uint256 _price, uint256 creditUsed) = price(account, ids, quantities);
 
         if (msg.value < _price) {
             revert InsufficientValue();
@@ -118,45 +122,49 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
             revert Unauthorized();
         }
 
-        _mintAndUpdateInventory(account, id, quantity, _price);
+        _mintAndUpdateInventory(account, ids, quantities, _price, creditUsed);
         _useClaimId(data);
 
-        // Store overflow value as credit for future purchases
         uint256 remainder = msg.value - _price;
+
         if (remainder > 0) {
             _addCredit(account, remainder);
         }
     }
 
     /**
-     * @notice Place an order with multiple items.
+     * @notice Get the price of an order, considering an account's credit.
      *
-     * @param account The address of the account to mint the NFTs to.
-     * @param ids The token IDs to mint.
-     * @param quantities The amount of tokens to mint.
-     * @param data ABI encoded message and signature to verify the order.
+     * @param account The address of the account who's requesting the price.
+     * @param ids The token IDs the account is trying to buy.
+     * @param quantities The amount of each token the account is trying to buy.
+     * @return The price of the order.
+     * @return The amout of credit that was applied for the order.
      */
-    function buyBreads(
+    function price(
         address account,
         uint256[] calldata ids,
-        uint256[] calldata quantities,
-        bytes[] calldata data
-    ) public payable {
-        for (uint256 i = 0; i < ids.length; i++) {
-            buyBread(account, ids[i], quantities[i], data[i]);
+        uint256[] calldata quantities
+    ) public view returns (uint256, uint256) {
+        if (ids.length != quantities.length) {
+            revert InvalidInput();
         }
-    }
 
-    /**
-     * @notice Get the price of a token for a given account, taking into account any credit they have.
-     *
-     * @param account The address of the account to check the price for.
-     * @param id The token ID to check the price for.
-     */
-    function price(address account, uint256 id) public view returns (uint256) {
-        uint256 fullPrice = inventory[id].price;
-        uint256 discount = Math.min(credit[account], fullPrice);
-        return fullPrice - discount;
+        uint256 totalPrice;
+        uint256 totalCreditUsed;
+        uint256 availableCredit = credit[account];
+
+        for (uint256 i = 0; i < ids.length; i++) {
+            uint256 itemPrice = inventory[ids[i]].price * quantities[i];
+            uint256 discount = Math.min(availableCredit, itemPrice);
+            uint256 discountedPrice = itemPrice - discount;
+
+            totalPrice += discountedPrice;
+            totalCreditUsed += discount;
+            availableCredit -= discount;
+        }
+
+        return (totalPrice, totalCreditUsed);
     }
 
     /**
@@ -239,18 +247,22 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     }
 
     /**
-     * @notice Mint a token to an account for free.
+     * @notice Mint token to an account for free.
      *
-     * @param account The address of the account to mint the token to.
-     * @param id The token ID to mint.
-     * @param quantity The amount of tokens to mint.
+     * @param account The address of the account to mint the tokens to.
+     * @param ids The token IDs to mint.
+     * @param quantities The amount of tokens to mint.
      */
     function adminOrder(
         address account,
-        uint256 id,
-        uint256 quantity
+        uint256[] calldata ids,
+        uint256[] calldata quantities
     ) public onlyOwner {
-        _mintAndUpdateInventory(account, id, quantity, 0);
+        if (ids.length != quantities.length) {
+            revert InvalidInput();
+        }
+
+        _mintAndUpdateInventory(account, ids, quantities, 0, 0);
     }
 
     /**
@@ -261,6 +273,16 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      */
     function addCredit(address account, uint256 amount) public onlyOwner {
         _addCredit(account, amount);
+    }
+
+    /**
+     * @notice Remove credit from an account.
+     *
+     * @param account The address of the account to remove credit from.
+     * @param amount The amount of credit to remove.
+     */
+    function removeCredit(address account, uint256 amount) public onlyOwner {
+        _removeCredit(account, amount);
     }
 
     /**
@@ -277,6 +299,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     ) public onlyOwner {
         _burn(account, id, quantity);
         inventory[id].quantity += quantity;
+        emit OrderRevoked(account, id, quantity);
     }
 
     function setProofOfBread(address _proofOfBread) public onlyOwner {
@@ -334,22 +357,43 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
     function _mintAndUpdateInventory(
         address account,
-        uint256 id,
-        uint256 quantity,
-        uint256 _price
+        uint256[] calldata ids,
+        uint256[] calldata quantities,
+        uint256 _price,
+        uint256 creditUsed
     ) internal {
-        if ((inventory[id].quantity - quantity) < 0) {
-            revert SoldOut(id);
+        for (uint256 i = 0; i < ids.length; i++) {
+            if ((inventory[ids[i]].quantity - quantities[i]) < 0) {
+                revert SoldOut(ids[i]);
+            }
         }
 
-        _mint(account, id, quantity, "");
-        inventory[id].quantity -= quantity;
-        emit OrderPlaced(account, id, quantity, _price);
+        _mintBatch(account, ids, quantities, "");
+        _lowerInventoryQuantities(ids, quantities);
+        emit OrderPlaced(account, ids, quantities, _price);
+
+        if (creditUsed > 0) {
+            _removeCredit(account, creditUsed);
+        }
+    }
+
+    function _lowerInventoryQuantities(
+        uint256[] calldata ids,
+        uint256[] calldata quantities
+    ) internal {
+        for (uint256 i = 0; i < ids.length; i++) {
+            inventory[ids[i]].quantity -= quantities[i];
+        }
     }
 
     function _addCredit(address account, uint256 amount) internal {
         credit[account] += amount;
         emit CreditAdded(account, amount);
+    }
+
+    function _removeCredit(address account, uint256 amount) internal {
+        credit[account] -= amount;
+        emit CreditRemoved(account, amount);
     }
 
     function _useClaimId(bytes calldata data) internal {

@@ -3,16 +3,18 @@ import { expect } from 'chai'
 import hre from 'hardhat'
 import { Address, encodeAbiParameters, keccak256, toHex } from 'viem'
 
-const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // contract owner
+const manager = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // account with manager role
+const signer = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' // account with signer role
 const customer = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // bakery customer
 
-const ADMIN_ROLE = keccak256(toHex('ADMIN_ROLE'))
+const MANAGER_ROLE = keccak256(toHex('MANAGER_ROLE'))
 const SIGNER_ROLE = keccak256(toHex('SIGNER_ROLE'))
 
 const deploy = async () => {
   const breadContract = await hre.viem.deployContract('Bread', [
-    account, // _owner
-    account, // _signer
+    '0x0000000000000000000000000000000000000000', // _owner
+    manager, // _manager
+    signer, // _signer
     '0x0000000000000000000000000000000000000000', // _proofOfBread
     'https://website.com/api/{id}', // _uri
   ])
@@ -36,13 +38,13 @@ const signOrder = async ({
       { name: 'expiration', type: 'uint256' },
     ],
     [
-      customer || account,
+      customer || signer,
       toHex(claimId || 'hi', { size: 32 }),
       BigInt(Math.floor(Date.now() / 1000) + relativeTimestamp),
     ]
   )
 
-  const viemClient = await hre.viem.getWalletClient(account)
+  const viemClient = await hre.viem.getWalletClient(signer)
 
   const signedMessage = await viemClient.signMessage({
     message: { raw: messageToSign },
@@ -67,7 +69,7 @@ describe('Bread.sol tests', function () {
 
     // Owner increases inventory
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
-      account,
+      account: signer,
     })
 
     // Non-owner tries to increase inventory
@@ -90,42 +92,54 @@ describe('Bread.sol tests', function () {
   it('should revert when minting with no inventory', async function () {
     const { breadContract } = await loadFixture(deploy)
 
-    await expect(breadContract.write.adminOrder([account, [1n], [1n]])).to.be
-      .rejected
+    const adminOrderCall = breadContract.write.adminOrder(
+      [signer, [1n], [1n]],
+      { account: signer }
+    )
+
+    await expect(adminOrderCall).to.be.rejected
   })
 
   it('should mint with sufficient funds', async function () {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
-      account,
+      account: signer,
     })
 
-    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: 10,
+      customer,
+    })
 
     const buyBreadCall = breadContract.write.buyBread(
-      [account, [1n], [1n], encodedMessageAndData],
+      [customer, [1n], [1n], encodedMessageAndData],
       {
+        account: customer,
         value: 1000n,
       }
     )
 
     await expect(buyBreadCall).to.be.fulfilled
 
-    const balanceOf = await breadContract.read.balanceOf([account, 1n])
+    const balanceOf = await breadContract.read.balanceOf([customer, 1n])
     expect(balanceOf).to.be.equal(1n)
   })
 
   it('should revert when mint with insufficient funds', async function () {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
-      account,
+      account: signer,
     })
 
-    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: 10,
+      customer,
+    })
 
     const buyBreadCall = breadContract.write.buyBread(
-      [account, [1n], [1n], encodedMessageAndData],
+      [customer, [1n], [1n], encodedMessageAndData],
       {
+        account: customer,
         value: 999n,
       }
     )
@@ -135,24 +149,28 @@ describe('Bread.sol tests', function () {
 
   it('should return true for canOrder() when signature is valid', async function () {
     const { breadContract } = await loadFixture(deploy)
-    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: 10,
+      customer,
+    })
 
     const canOrder = await breadContract.read.canOrder([
-      account,
+      customer,
       encodedMessageAndData,
     ])
 
     expect(canOrder).to.be.true
   })
 
-  it('should return false for canOrder() when signature is invalid', async function () {
+  it('should return false for canOrder() when signature is invalid/expired', async function () {
     const { breadContract } = await loadFixture(deploy)
     const { encodedMessageAndData } = await signOrder({
       relativeTimestamp: -10,
+      customer,
     })
 
     const canOrder = await breadContract.read.canOrder([
-      account,
+      customer,
       encodedMessageAndData,
     ])
 
@@ -162,34 +180,36 @@ describe('Bread.sol tests', function () {
   it('should get discount from credit', async function () {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
-      account,
+      account: signer,
     })
 
-    const [beforePrice] = await breadContract.read.price([account, [1n], [1n]])
+    const [beforePrice] = await breadContract.read.price([customer, [1n], [1n]])
     expect(beforePrice).to.equal(1000n)
 
-    await breadContract.write.addCredit([account, 10000000n])
+    await breadContract.write.addCredit([customer, 10000000n], {
+      account: signer,
+    })
 
-    const [afterPrice] = await breadContract.read.price([account, [1n], [1n]])
+    const [afterPrice] = await breadContract.read.price([customer, [1n], [1n]])
     expect(afterPrice).to.equal(0n)
   })
 
   it('should get credit from overpaying', async function () {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
-      account,
+      account: signer,
     })
 
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
     await breadContract.write.buyBread(
-      [account, [1n], [1n], encodedMessageAndData],
+      [signer, [1n], [1n], encodedMessageAndData],
       {
         value: 2000n,
       }
     )
 
-    const credit = await breadContract.read.credit([account])
+    const credit = await breadContract.read.credit([signer])
     expect(credit).to.equal(1000n)
   })
 
@@ -201,14 +221,14 @@ describe('Bread.sol tests', function () {
     await breadContract.write.updateInventory([[1n], [5n], [1000n]])
 
     // Add 2000 wei credit
-    await breadContract.write.addCredit([account, 2000n])
+    await breadContract.write.addCredit([signer, 2000n])
 
-    const creditBefore = await breadContract.read.credit([account])
+    const creditBefore = await breadContract.read.credit([signer])
     expect(creditBefore).to.equal(2000n)
 
     // Get the price of an order to buy all 5 breads
     const [price, discount] = await breadContract.read.price([
-      account,
+      signer,
       [1n],
       [5n],
     ])
@@ -219,12 +239,12 @@ describe('Bread.sol tests', function () {
 
     // Place an order for the quoted price after discount
     await breadContract.write.buyBread(
-      [account, [1n], [5n], encodedMessageAndData],
-      { value: price }
+      [signer, [1n], [5n], encodedMessageAndData],
+      { account: signer, value: price }
     )
 
     // Credit should be reduced to 0 since it was all used
-    const creditAfter = await breadContract.read.credit([account])
+    const creditAfter = await breadContract.read.credit([signer])
     expect(creditAfter).to.equal(0n)
   })
 
@@ -238,19 +258,19 @@ describe('Bread.sol tests', function () {
 
     await breadContract.write.updateInventory([[1n], [1n], [0n]])
 
-    await breadContract.write.buyBread([
-      customer,
-      [1n],
-      [1n],
-      encodedMessageAndData,
-    ])
+    await breadContract.write.buyBread(
+      [customer, [1n], [1n], encodedMessageAndData],
+      { account: customer }
+    )
 
     const balanceOfBefore = await breadContract.read.balanceOf([customer, 1n])
     expect(balanceOfBefore).to.equal(1n)
 
-    await breadContract.write.revokeOrder([customer, 1n, 1n])
+    await breadContract.write.revokeOrder([customer, 1n, 1n], {
+      account: signer,
+    })
 
-    const balanceOfAfter = await breadContract.read.balanceOf([account, 1n])
+    const balanceOfAfter = await breadContract.read.balanceOf([customer, 1n])
     expect(balanceOfAfter).to.equal(0n)
   })
 
@@ -258,14 +278,17 @@ describe('Bread.sol tests', function () {
     const { breadContract } = await loadFixture(deploy)
     const price = 100000000000000n
     await breadContract.write.updateInventory([[1n], [1n], [price]], {
-      account,
+      account: signer,
     })
 
-    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: 10,
+      customer,
+    })
 
     // customer orders a bread
     await breadContract.write.buyBread(
-      [account, [1n], [1n], encodedMessageAndData],
+      [customer, [1n], [1n], encodedMessageAndData],
       {
         value: price,
         account: customer,
@@ -275,7 +298,7 @@ describe('Bread.sol tests', function () {
     // Check the balance of the owner
     const beforeBalance = await (
       await hre.viem.getPublicClient()
-    ).getBalance({ address: account })
+    ).getBalance({ address: manager })
 
     // Check the balance of the contract
     const contractBalance = await (
@@ -292,16 +315,16 @@ describe('Bread.sol tests', function () {
 
     // The customer should not be able to withdraw the funds
     await expect(withdrawCall).to.be.rejectedWith(
-      `AccessControlUnauthorizedAccount("${customer}", "${ADMIN_ROLE}")`
+      `AccessControlUnauthorizedAccount("${customer}", "${MANAGER_ROLE}")`
     )
 
     // Withdraw the funds to the owner
-    await breadContract.write.withdraw([account, price])
+    await breadContract.write.withdraw([manager, price], { account: manager })
 
     // Check the balance of the owner after the withdrawal
     const afterBalance = await (
       await hre.viem.getPublicClient()
-    ).getBalance({ address: account })
+    ).getBalance({ address: manager })
 
     // The owner should have more funds after the withdrawal
     // It's not exactly the price of the bread because of gas fees
@@ -333,7 +356,7 @@ describe('Bread.sol tests', function () {
     const updateInventoryCall = breadContract.write.updateInventory(
       [[1n], [1n, 2n], [1000n]],
       {
-        account,
+        account: signer,
       }
     )
 
@@ -350,23 +373,27 @@ describe('Bread.sol tests', function () {
         [1000n, 1000n],
       ],
       {
-        account,
+        account: signer,
       }
     )
 
-    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: 10,
+      customer,
+    })
 
     const buyBreadsCall = breadContract.write.buyBread(
-      [account, [1n, 2n], [1n, 1n], encodedMessageAndData],
+      [customer, [1n, 2n], [1n, 1n], encodedMessageAndData],
       {
         value: 2000n,
+        account: customer,
       }
     )
 
     await expect(buyBreadsCall).to.be.fulfilled
 
     const balanceOf = await breadContract.read.balanceOfBatch([
-      [account, account],
+      [customer, customer],
       [1n, 2n],
     ])
 
@@ -380,22 +407,24 @@ describe('Bread.sol tests', function () {
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
     await breadContract.write.buyBread(
-      [account, [1n], [1n], encodedMessageAndData],
+      [signer, [1n], [1n], encodedMessageAndData],
       {
         value: 1000n,
+        account: signer,
       }
     )
 
     const buyBreadCall2 = breadContract.write.buyBread(
-      [account, [1n], [1n], encodedMessageAndData],
+      [signer, [1n], [1n], encodedMessageAndData],
       {
         value: 1000n,
+        account: signer,
       }
     )
 
     await expect(buyBreadCall2).to.be.rejectedWith('Unauthorized()')
 
-    const balanceOf = await breadContract.read.balanceOf([account, 1n])
+    const balanceOf = await breadContract.read.balanceOf([signer, 1n])
     expect(balanceOf).to.be.equal(1n)
   })
 })

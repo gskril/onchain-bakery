@@ -87,7 +87,7 @@ describe('Bread.sol tests', function () {
   it('should revert when minting with no inventory', async function () {
     const { breadContract } = await loadFixture(deploy)
 
-    await expect(breadContract.write.adminOrder([account, 1n, 1n])).to.be
+    await expect(breadContract.write.adminOrder([account, [1n], [1n]])).to.be
       .rejected
   })
 
@@ -100,7 +100,7 @@ describe('Bread.sol tests', function () {
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
     const buyBreadCall = breadContract.write.buyBread(
-      [account, 1n, 1n, encodedMessageAndData],
+      [account, [1n], [1n], encodedMessageAndData],
       {
         value: 1000n,
       }
@@ -121,7 +121,7 @@ describe('Bread.sol tests', function () {
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
     const buyBreadCall = breadContract.write.buyBread(
-      [account, 1n, 1n, encodedMessageAndData],
+      [account, [1n], [1n], encodedMessageAndData],
       {
         value: 999n,
       }
@@ -162,12 +162,12 @@ describe('Bread.sol tests', function () {
       account,
     })
 
-    const [beforePrice] = await breadContract.read.price([account, 1n, 1n])
+    const [beforePrice] = await breadContract.read.price([account, [1n], [1n]])
     expect(beforePrice).to.equal(1000n)
 
     await breadContract.write.addCredit([account, 10000000n])
 
-    const [afterPrice] = await breadContract.read.price([account, 1n, 1n])
+    const [afterPrice] = await breadContract.read.price([account, [1n], [1n]])
     expect(afterPrice).to.equal(0n)
   })
 
@@ -180,7 +180,7 @@ describe('Bread.sol tests', function () {
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
     await breadContract.write.buyBread(
-      [account, 1n, 1n, encodedMessageAndData],
+      [account, [1n], [1n], encodedMessageAndData],
       {
         value: 2000n,
       }
@@ -206,7 +206,7 @@ describe('Bread.sol tests', function () {
 
     // Place an order for 0 wei becuase we already have credit
     await breadContract.write.buyBread(
-      [account, 1n, 1n, encodedMessageAndData],
+      [account, [1n], [1n], encodedMessageAndData],
       {
         value: 0n,
       }
@@ -228,8 +228,8 @@ describe('Bread.sol tests', function () {
 
     await breadContract.write.buyBread([
       customer,
-      1n,
-      1n,
+      [1n],
+      [1n],
       encodedMessageAndData,
     ])
 
@@ -253,7 +253,7 @@ describe('Bread.sol tests', function () {
 
     // customer orders a bread
     await breadContract.write.buyBread(
-      [account, 1n, 1n, encodedMessageAndData],
+      [account, [1n], [1n], encodedMessageAndData],
       {
         value: price,
         account: customer,
@@ -344,7 +344,7 @@ describe('Bread.sol tests', function () {
 
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
-    const buyBreadsCall = breadContract.write.buyBreads(
+    const buyBreadsCall = breadContract.write.buyBread(
       [account, [1n, 2n], [1n, 1n], encodedMessageAndData],
       {
         value: 2000n,
@@ -368,14 +368,14 @@ describe('Bread.sol tests', function () {
     const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
     await breadContract.write.buyBread(
-      [account, 1n, 1n, encodedMessageAndData],
+      [account, [1n], [1n], encodedMessageAndData],
       {
         value: 1000n,
       }
     )
 
     const buyBreadCall2 = breadContract.write.buyBread(
-      [account, 1n, 1n, encodedMessageAndData],
+      [account, [1n], [1n], encodedMessageAndData],
       {
         value: 1000n,
       }

@@ -1,10 +1,13 @@
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 import { expect } from 'chai'
 import hre from 'hardhat'
-import { Address, encodeAbiParameters, toHex } from 'viem'
+import { Address, encodeAbiParameters, keccak256, toHex } from 'viem'
 
 const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // contract owner
 const customer = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // bakery customer
+
+const ADMIN_ROLE = keccak256(toHex('ADMIN_ROLE'))
+const SIGNER_ROLE = keccak256(toHex('SIGNER_ROLE'))
 
 const deploy = async () => {
   const breadContract = await hre.viem.deployContract('Bread', [
@@ -77,7 +80,7 @@ describe('Bread.sol tests', function () {
 
     // Non-owner should not be able to increase inventory
     await expect(strangerUpdateInventoryCall).to.be.rejectedWith(
-      `OwnableUnauthorizedAccount("${customer}")`
+      `AccessControlUnauthorizedAccount("${customer}", "${SIGNER_ROLE}")`
     )
 
     const [quantityAfter] = await breadContract.read.inventory([1n])
@@ -289,7 +292,7 @@ describe('Bread.sol tests', function () {
 
     // The customer should not be able to withdraw the funds
     await expect(withdrawCall).to.be.rejectedWith(
-      `OwnableUnauthorizedAccount("${customer}")`
+      `AccessControlUnauthorizedAccount("${customer}", "${ADMIN_ROLE}")`
     )
 
     // Withdraw the funds to the owner

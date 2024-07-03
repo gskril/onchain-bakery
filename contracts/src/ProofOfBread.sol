@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {MessageHashUtils} from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
-import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 ///////////////////////////////////////////////////////////
 //                                                       //
@@ -75,10 +75,9 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     function adminMint(
         address account,
         uint256 id,
-        uint256 amount,
-        bytes memory data
+        uint256 amount
     ) public onlyOwner {
-        _mint(account, id, amount, data);
+        _mint(account, id, amount, "");
     }
 
     function revokeBread(
@@ -142,8 +141,12 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         bytes memory message,
         bytes memory signature
     ) public view returns (bool) {
-        bytes32 digest = MessageHashUtils.toEthSignedMessageHash(message);
-        return SignatureChecker.isValidSignatureNow(signer, digest, signature);
+        address _signer = ECDSA.recover(
+            MessageHashUtils.toEthSignedMessageHash(message),
+            signature
+        );
+
+        return _signer == signer;
     }
 
     /*//////////////////////////////////////////////////////////////

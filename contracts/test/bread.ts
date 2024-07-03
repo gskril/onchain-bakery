@@ -190,30 +190,39 @@ describe('Bread.sol tests', function () {
     expect(credit).to.equal(1000n)
   })
 
-  it('should reduce credit after using it', async function () {
+  it('should reduce credit after using it, and avoid an infinite bread glitch', async function () {
     const { breadContract } = await loadFixture(deploy)
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
 
-    // Set price to 1000 wei
-    await breadContract.write.updateInventory([[1n], [1n], [1000n]])
+    // List token ID 1 with a quantity of 5 and a price of 1000 wei
+    await breadContract.write.updateInventory([[1n], [5n], [1000n]])
 
     // Add 2000 wei credit
     await breadContract.write.addCredit([account, 2000n])
 
-    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
-
     const creditBefore = await breadContract.read.credit([account])
     expect(creditBefore).to.equal(2000n)
 
-    // Place an order for 0 wei becuase we already have credit
+    // Get the price of an order to buy all 5 breads
+    const [price, discount] = await breadContract.read.price([
+      account,
+      [1n],
+      [5n],
+    ])
+
+    // Expect the price to be 3000 wei and the discount to be 2000 wei
+    expect(price).to.equal(3000n)
+    expect(discount).to.equal(2000n)
+
+    // Place an order for the quoted price after discount
     await breadContract.write.buyBread(
-      [account, [1n], [1n], encodedMessageAndData],
-      {
-        value: 0n,
-      }
+      [account, [1n], [5n], encodedMessageAndData],
+      { value: price }
     )
 
+    // Credit should be reduced to 0 since it was all used
     const creditAfter = await breadContract.read.credit([account])
-    expect(creditAfter).to.equal(1000n)
+    expect(creditAfter).to.equal(0n)
   })
 
   it('should revoke a token', async function () {

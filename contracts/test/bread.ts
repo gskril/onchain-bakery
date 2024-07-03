@@ -162,12 +162,12 @@ describe('Bread.sol tests', function () {
       account,
     })
 
-    const beforePrice = await breadContract.read.price([account, 1n])
+    const [beforePrice] = await breadContract.read.price([account, 1n, 1n])
     expect(beforePrice).to.equal(1000n)
 
     await breadContract.write.addCredit([account, 10000000n])
 
-    const afterPrice = await breadContract.read.price([account, 1n])
+    const [afterPrice] = await breadContract.read.price([account, 1n, 1n])
     expect(afterPrice).to.equal(0n)
   })
 
@@ -188,6 +188,32 @@ describe('Bread.sol tests', function () {
 
     const credit = await breadContract.read.credit([account])
     expect(credit).to.equal(1000n)
+  })
+
+  it('should reduce credit after using it', async function () {
+    const { breadContract } = await loadFixture(deploy)
+
+    // Set price to 1000 wei
+    await breadContract.write.updateInventory([[1n], [1n], [1000n]])
+
+    // Add 2000 wei credit
+    await breadContract.write.addCredit([account, 2000n])
+
+    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+
+    const creditBefore = await breadContract.read.credit([account])
+    expect(creditBefore).to.equal(2000n)
+
+    // Place an order for 0 wei becuase we already have credit
+    await breadContract.write.buyBread(
+      [account, 1n, 1n, encodedMessageAndData],
+      {
+        value: 0n,
+      }
+    )
+
+    const creditAfter = await breadContract.read.credit([account])
+    expect(creditAfter).to.equal(1000n)
   })
 
   it('should revoke a token', async function () {

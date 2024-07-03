@@ -69,7 +69,7 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
     bytes32 public constant SIGNER_ROLE = keccak256("SIGNER_ROLE");
 
     /// @notice A role that can manually call the remaining admin functions.
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
 
     /// @notice The ProofOfBread NFT contract.
     address public proofOfBread;
@@ -89,14 +89,15 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
 
     constructor(
         address _owner,
+        address _manager,
         address _signer,
         address _proofOfBread,
         string memory _uri
     ) ERC1155(_uri) {
-        _grantRole(DEFAULT_ADMIN_ROLE, _owner); // Grants permission to update the following roles
-        _grantRole(ADMIN_ROLE, _owner); // Grants permission to do manual admin functions
-        _grantRole(SIGNER_ROLE, _owner); // Grants permission to sign orders and call most admin functions
-        _grantRole(SIGNER_ROLE, _signer); // Grants permission to sign orders and call most admin functions
+        _grantRole(DEFAULT_ADMIN_ROLE, _owner);
+        _grantRole(MANAGER_ROLE, _manager);
+        _grantRole(SIGNER_ROLE, _manager);
+        _grantRole(SIGNER_ROLE, _signer);
         proofOfBread = _proofOfBread;
     }
 
@@ -316,11 +317,11 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
 
     function setProofOfBread(
         address _proofOfBread
-    ) public onlyRole(ADMIN_ROLE) {
+    ) public onlyRole(MANAGER_ROLE) {
         proofOfBread = _proofOfBread;
     }
 
-    function setURI(string memory _uri) public onlyRole(ADMIN_ROLE) {
+    function setURI(string memory _uri) public onlyRole(MANAGER_ROLE) {
         _setURI(_uri);
     }
 
@@ -333,7 +334,7 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
     function withdraw(
         address account,
         uint256 amount
-    ) public onlyRole(ADMIN_ROLE) {
+    ) public onlyRole(MANAGER_ROLE) {
         (bool success, ) = account.call{value: amount}("");
 
         if (!success) {
@@ -352,15 +353,15 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
         address account,
         address token,
         uint256 amount
-    ) public onlyRole(ADMIN_ROLE) {
+    ) public onlyRole(MANAGER_ROLE) {
         IERC20(token).transfer(account, amount);
     }
 
-    function pause() public onlyRole(ADMIN_ROLE) {
+    function pause() public onlyRole(MANAGER_ROLE) {
         _pause();
     }
 
-    function unpause() public onlyRole(ADMIN_ROLE) {
+    function unpause() public onlyRole(MANAGER_ROLE) {
         _unpause();
     }
 

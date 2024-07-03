@@ -11,9 +11,9 @@ How it's expected to work:
 
 - There are three roles with the following purposes:
   - `DEFAULT_ADMIN_ROLE` updates the accounts that have the following roles.
-  - `ADMIN_ROLE` is for high level admin tasks like withdrawing funds and upating metadata.
+  - `MANAGER_ROLE` is for high level admin tasks like withdrawing funds and upating metadata.
   - `SIGNER_ROLE` is for signing messages and lower level admin functions that can be called programmatically. One example of a future use case where this migth come in handy: allow an external contract add credit to a customer's account.
-- Owner controls the inventory, which is a mapping of `tokenId` to `quantity`.
+- Manager controls the inventory, which is a mapping of `tokenId` to `quantity`.
 - When `quantity` is positive, the respective ERC1155 token is available for purchase.
 - To place an order, the customer needs a signed message from our admin server. This allow us to arbitrarily allow or deny orders.
 - If the admin server approves an order, a `claimId` is issued which has the following traits:
@@ -21,7 +21,7 @@ How it's expected to work:
   - Must be used by the requesting account.
   - Must be used before the expiration time.
 - There is a credit system that allows an admin to give customers a discount. If a customer accidentally overpays for an order, a credit is issued to their account.
-- The owner is able to revoke tokens, esentially canceling an order.
+- Managers are able to revoke tokens, esentially canceling an order.
 
 See [Bread.test.ts](test/Bread.test.ts) for a set of tests that aim to verify the above description.
 

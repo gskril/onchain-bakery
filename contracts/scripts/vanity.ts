@@ -1,10 +1,10 @@
-import hre from 'hardhat'
 import { Hex, getContractAddress, toHex } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
 import { privateKeyToAccount } from 'viem/accounts'
 
+import { create2Factory } from './create2'
+
 // generateDeployerPrivateKey('0x000')
-// generateCreate2Salt('0x000')
 
 /**
  * Generate a private key that will deploy a smart contract with a vanity address.
@@ -46,31 +46,24 @@ function generateDeployerPrivateKey(vanity: Hex) {
  * Generate a salt that will deploy a smart contract with a vanity address using CREATE2.
  *
  * @param vanity The first few characters of the address you want to generate, case insensitive.
+ * @param initCode The bytecode of the smart contract you want to deploy, including the constructor arguments.
+ * @param initCodeHash The keccak256 hash of the initCode.
  */
-async function generateCreate2Salt(vanity: Hex) {
+export async function generateCreate2Salt(vanity: Hex, initCode: Hex) {
   let tries = 0
 
-  const deployerPrivateKey = process.env.DEPLOYER_KEY as Hex
-  const deployerPublicAddress = privateKeyToAccount(deployerPrivateKey).address
-  const artifacts = await hre.artifacts.readArtifact('Bread')
-
   while (true) {
-    const salt = toHex(tries)
+    const salt = toHex(tries, { size: 32 })
 
-    const deployedContractAddress = getContractAddress({
-      bytecode: artifacts.bytecode,
-      from: deployerPublicAddress,
+    const expectedAddress = getContractAddress({
+      bytecode: initCode,
+      from: create2Factory.address,
       opcode: 'CREATE2',
       salt,
     })
 
-    if (deployedContractAddress.toLowerCase().startsWith(vanity)) {
-      console.log({
-        deployedContractAddress,
-        salt,
-      })
-
-      break
+    if (expectedAddress.toLowerCase().startsWith(vanity)) {
+      return { salt, expectedAddress }
     }
 
     if (tries % 1000 === 0) {

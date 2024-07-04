@@ -15,7 +15,15 @@ const config: HardhatUserConfig = {
       url: 'https://rpc.ankr.com/base',
       accounts: [DEPLOYER_KEY],
     },
+    baseSepolia: {
+      url: 'https://sepolia.base.org',
+      accounts: [DEPLOYER_KEY],
+    },
     localhost: {
+      accounts: [DEPLOYER_KEY],
+    },
+    tenderly: {
+      url: 'https://virtual.base.rpc.tenderly.co/6226ee33-4b44-4162-a0f8-9b01a7853db8',
       accounts: [DEPLOYER_KEY],
     },
   },
@@ -35,7 +43,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       base: BASESCAN_API_KEY,
-      baseGoerli: 'BASESCAN_API_KEY', // don't need a key for Base Goerli
+      baseSepolia: BASESCAN_API_KEY,
     },
   },
   paths: {

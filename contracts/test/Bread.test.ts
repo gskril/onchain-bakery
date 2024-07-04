@@ -3,20 +3,24 @@ import { expect } from 'chai'
 import hre from 'hardhat'
 import { Address, encodeAbiParameters, keccak256, toHex } from 'viem'
 
-const manager = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // account with manager role
+// These are not the real constructor arguments, just placeholders
+// Hardhat throws an `Unknown account` error if we use the real addresses
+// So these are all default addresses from `npx hardhat node`
+const owner = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // contract owner
+const manager = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // account with manager role
 const signer = '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC' // account with signer role
-const customer = '0x70997970C51812dc3A010C7d01b50e0d17dc79C8' // bakery customer
+const customer = '0x90F79bf6EB2c4f870365E785982E1f101E93b906' // bakery customer
 
 const MANAGER_ROLE = keccak256(toHex('MANAGER_ROLE'))
 const SIGNER_ROLE = keccak256(toHex('SIGNER_ROLE'))
 
 const deploy = async () => {
   const breadContract = await hre.viem.deployContract('Bread', [
-    '0x0000000000000000000000000000000000000000', // _owner
+    owner, // _owner
     manager, // _manager
     signer, // _signer
     '0x0000000000000000000000000000000000000000', // _proofOfBread
-    'https://website.com/api/{id}', // _uri
+    'https://goodbread.nyc/api/metadata/bread/{id}', // _uri
   ])
 
   return { breadContract }
@@ -215,20 +219,25 @@ describe('Bread.sol tests', function () {
 
   it('should reduce credit after using it, and avoid an infinite bread glitch', async function () {
     const { breadContract } = await loadFixture(deploy)
-    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: 10,
+      customer,
+    })
 
     // List token ID 1 with a quantity of 5 and a price of 1000 wei
-    await breadContract.write.updateInventory([[1n], [5n], [1000n]])
+    await breadContract.write.updateInventory([[1n], [5n], [1000n]], {
+      account: signer,
+    })
 
     // Add 2000 wei credit
-    await breadContract.write.addCredit([signer, 2000n])
+    await breadContract.write.addCredit([customer, 2000n], { account: signer })
 
-    const creditBefore = await breadContract.read.credit([signer])
+    const creditBefore = await breadContract.read.credit([customer])
     expect(creditBefore).to.equal(2000n)
 
     // Get the price of an order to buy all 5 breads
     const [price, discount] = await breadContract.read.price([
-      signer,
+      customer,
       [1n],
       [5n],
     ])
@@ -239,12 +248,12 @@ describe('Bread.sol tests', function () {
 
     // Place an order for the quoted price after discount
     await breadContract.write.buyBread(
-      [signer, [1n], [5n], encodedMessageAndData],
-      { account: signer, value: price }
+      [customer, [1n], [5n], encodedMessageAndData],
+      { account: customer, value: price }
     )
 
     // Credit should be reduced to 0 since it was all used
-    const creditAfter = await breadContract.read.credit([signer])
+    const creditAfter = await breadContract.read.credit([customer])
     expect(creditAfter).to.equal(0n)
   })
 
@@ -256,7 +265,9 @@ describe('Bread.sol tests', function () {
       customer,
     })
 
-    await breadContract.write.updateInventory([[1n], [1n], [0n]])
+    await breadContract.write.updateInventory([[1n], [1n], [0n]], {
+      account: signer,
+    })
 
     await breadContract.write.buyBread(
       [customer, [1n], [1n], encodedMessageAndData],
@@ -333,11 +344,14 @@ describe('Bread.sol tests', function () {
 
   it('should return the inventory in a batch', async function () {
     const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.updateInventory([
-      [1n, 2n, 3n],
-      [1n, 1n, 1n],
-      [1000n, 1000n, 1000n],
-    ])
+    await breadContract.write.updateInventory(
+      [
+        [1n, 2n, 3n],
+        [1n, 1n, 1n],
+        [1000n, 1000n, 1000n],
+      ],
+      { account: signer }
+    )
 
     const batchInventory = await breadContract.read.inventoryBatch([
       [1n, 2n, 3n],
@@ -402,29 +416,77 @@ describe('Bread.sol tests', function () {
 
   it('should revert when trying to use the same claimId twice', async function () {
     const { breadContract } = await loadFixture(deploy)
-    await breadContract.write.updateInventory([[1n], [2n], [1000n]])
+    await breadContract.write.updateInventory([[1n], [2n], [1000n]], {
+      account: signer,
+    })
 
-    const { encodedMessageAndData } = await signOrder({ relativeTimestamp: 10 })
+    const { encodedMessageAndData } = await signOrder({
+      relativeTimestamp: 10,
+      customer,
+    })
 
-    await breadContract.write.buyBread(
-      [signer, [1n], [1n], encodedMessageAndData],
+    const breadBuyCall = breadContract.write.buyBread(
+      [customer, [1n], [1n], encodedMessageAndData],
       {
         value: 1000n,
-        account: signer,
+        account: customer,
       }
     )
 
+    expect(breadBuyCall).to.be.fulfilled
+
     const buyBreadCall2 = breadContract.write.buyBread(
-      [signer, [1n], [1n], encodedMessageAndData],
+      [customer, [1n], [1n], encodedMessageAndData],
       {
         value: 1000n,
-        account: signer,
+        account: customer,
       }
     )
 
     await expect(buyBreadCall2).to.be.rejectedWith('Unauthorized()')
 
-    const balanceOf = await breadContract.read.balanceOf([signer, 1n])
+    const balanceOf = await breadContract.read.balanceOf([customer, 1n])
     expect(balanceOf).to.be.equal(1n)
+  })
+
+  it('should let the DEFAULT_ADMIN_ROLE update other roles', async function () {
+    const { breadContract } = await loadFixture(deploy)
+    const DEFAULT_ADMIN_ROLE = await breadContract.read.DEFAULT_ADMIN_ROLE()
+
+    const roleAdmin = await breadContract.read.getRoleAdmin([MANAGER_ROLE])
+    expect(roleAdmin).to.be.equal(DEFAULT_ADMIN_ROLE)
+
+    const isOwnerDefaultAdmin = await breadContract.read.hasRole([
+      DEFAULT_ADMIN_ROLE,
+      owner,
+    ])
+
+    expect(isOwnerDefaultAdmin).to.be.true
+
+    // Have a random customer try to update the manager role
+    const invalidUpdateRoleCall = breadContract.write.grantRole(
+      [MANAGER_ROLE, customer],
+      { account: customer }
+    )
+
+    await expect(invalidUpdateRoleCall).to.be.rejectedWith(
+      `AccessControlUnauthorizedAccount("${customer}", "${DEFAULT_ADMIN_ROLE}")`
+    )
+
+    // Have the owner update the manager role
+    const updateRoleCall = breadContract.write.grantRole(
+      [MANAGER_ROLE, customer],
+      {
+        account: owner,
+      }
+    )
+
+    await expect(updateRoleCall).to.be.fulfilled
+
+    const isNewAddressManager = await breadContract.read.hasRole([
+      MANAGER_ROLE,
+      customer,
+    ])
+    expect(isNewAddressManager).to.be.true
   })
 })

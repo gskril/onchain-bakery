@@ -3,7 +3,9 @@ name: Test Smart Contracts
 on:
   push:
     branches: [main]
+    paths: ['contracts/**']
   pull_request:
+    paths: ['contracts/**']
 
 jobs:
   test:

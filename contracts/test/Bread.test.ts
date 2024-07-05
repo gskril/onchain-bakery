@@ -433,7 +433,7 @@ describe('Bread.sol tests', function () {
       }
     )
 
-    expect(breadBuyCall).to.be.fulfilled
+    await expect(breadBuyCall).to.be.fulfilled
 
     const buyBreadCall2 = breadContract.write.buyBread(
       [customer, [1n], [1n], encodedMessageAndData],

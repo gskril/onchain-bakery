@@ -24,7 +24,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies in contracts package
-        run: cd contracts && pnpm install
+        run: pnpm install
 
       - name: Run tests
-        run: pnpm test
+        run: cd contracts && pnpm test

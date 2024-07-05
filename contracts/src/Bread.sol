@@ -382,13 +382,13 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
             }
         }
 
-        _lowerInventoryQuantities(ids, quantities);
-        _mintBatch(account, ids, quantities, "");
-        emit OrderPlaced(account, ids, quantities, _price);
-
         if (creditUsed > 0) {
             _removeCredit(account, creditUsed);
         }
+
+        emit OrderPlaced(account, ids, quantities, _price);
+        _lowerInventoryQuantities(ids, quantities);
+        _mintBatch(account, ids, quantities, "");
     }
 
     function _lowerInventoryQuantities(

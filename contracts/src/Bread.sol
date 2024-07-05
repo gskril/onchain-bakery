@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Pausable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -22,7 +22,7 @@ import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 //                                                       //
 ///////////////////////////////////////////////////////////
 
-contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
+contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
     /*//////////////////////////////////////////////////////////////
                                 STRUCTS
     //////////////////////////////////////////////////////////////*/
@@ -65,8 +65,11 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                                PARAMETERS
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice The account that can approve orders.
-    address public signer;
+    /// @notice A role that can sign messages and programatically call most admin functions.
+    bytes32 public constant SIGNER_ROLE = keccak256("SIGNER_ROLE");
+
+    /// @notice A role that can manually call the remaining admin functions.
+    bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
 
     /// @notice The ProofOfBread NFT contract.
     address public proofOfBread;
@@ -86,11 +89,15 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
 
     constructor(
         address _owner,
+        address _manager,
         address _signer,
         address _proofOfBread,
         string memory _uri
-    ) ERC1155(_uri) Ownable(_owner) {
-        signer = _signer;
+    ) ERC1155(_uri) {
+        _grantRole(DEFAULT_ADMIN_ROLE, _owner);
+        _grantRole(MANAGER_ROLE, _manager);
+        _grantRole(SIGNER_ROLE, _manager);
+        _grantRole(SIGNER_ROLE, _signer);
         proofOfBread = _proofOfBread;
     }
 
@@ -168,7 +175,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     }
 
     /**
-     * @notice Check if the signer approves of an order.
+     * @notice Check if a signer approves of an order.
      *
      * @param account The address of the account trying to place an order.
      * @param data ABI encoded message and signature to verify the order.
@@ -195,12 +202,12 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
             return false;
         }
 
-        address _signer = ECDSA.recover(
+        address signer = ECDSA.recover(
             MessageHashUtils.toEthSignedMessageHash(message),
             signature
         );
 
-        return _signer == signer;
+        return hasRole(SIGNER_ROLE, signer);
     }
 
     /**
@@ -235,7 +242,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256[] calldata ids,
         uint256[] calldata quantities,
         uint256[] calldata prices
-    ) public onlyOwner {
+    ) public onlyRole(SIGNER_ROLE) {
         if (ids.length != quantities.length || ids.length != prices.length) {
             revert InvalidInput();
         }
@@ -257,7 +264,7 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         address account,
         uint256[] calldata ids,
         uint256[] calldata quantities
-    ) public onlyOwner {
+    ) public onlyRole(SIGNER_ROLE) {
         if (ids.length != quantities.length) {
             revert InvalidInput();
         }
@@ -271,7 +278,10 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      * @param account The address of the account to add credit to.
      * @param amount The amount of credit to add.
      */
-    function addCredit(address account, uint256 amount) public onlyOwner {
+    function addCredit(
+        address account,
+        uint256 amount
+    ) public onlyRole(SIGNER_ROLE) {
         _addCredit(account, amount);
     }
 
@@ -281,7 +291,10 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      * @param account The address of the account to remove credit from.
      * @param amount The amount of credit to remove.
      */
-    function removeCredit(address account, uint256 amount) public onlyOwner {
+    function removeCredit(
+        address account,
+        uint256 amount
+    ) public onlyRole(SIGNER_ROLE) {
         _removeCredit(account, amount);
     }
 
@@ -296,21 +309,19 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         address account,
         uint256 id,
         uint256 quantity
-    ) public onlyOwner {
+    ) public onlyRole(SIGNER_ROLE) {
         _burn(account, id, quantity);
         inventory[id].quantity += quantity;
         emit OrderRevoked(account, id, quantity);
     }
 
-    function setProofOfBread(address _proofOfBread) public onlyOwner {
+    function setProofOfBread(
+        address _proofOfBread
+    ) public onlyRole(MANAGER_ROLE) {
         proofOfBread = _proofOfBread;
     }
 
-    function setSigner(address _signer) public onlyOwner {
-        signer = _signer;
-    }
-
-    function setURI(string memory _uri) public onlyOwner {
+    function setURI(string memory _uri) public onlyRole(MANAGER_ROLE) {
         _setURI(_uri);
     }
 
@@ -320,7 +331,10 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
      * @param account The address to withdraw the ETH to.
      * @param amount The amount of ETH to transfer.
      */
-    function withdraw(address account, uint256 amount) public onlyOwner {
+    function withdraw(
+        address account,
+        uint256 amount
+    ) public onlyRole(MANAGER_ROLE) {
         (bool success, ) = account.call{value: amount}("");
 
         if (!success) {
@@ -339,15 +353,15 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         address account,
         address token,
         uint256 amount
-    ) public onlyOwner {
+    ) public onlyRole(MANAGER_ROLE) {
         IERC20(token).transfer(account, amount);
     }
 
-    function pause() public onlyOwner {
+    function pause() public onlyRole(MANAGER_ROLE) {
         _pause();
     }
 
-    function unpause() public onlyOwner {
+    function unpause() public onlyRole(MANAGER_ROLE) {
         _unpause();
     }
 
@@ -418,5 +432,11 @@ contract Bread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         uint256[] memory values
     ) internal override(ERC1155, ERC1155Pausable, ERC1155Supply) {
         super._update(from, to, ids, values);
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override(ERC1155, AccessControl) returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 }

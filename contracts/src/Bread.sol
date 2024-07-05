@@ -129,8 +129,8 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
             revert Unauthorized();
         }
 
-        _mintAndUpdateInventory(account, ids, quantities, _price, creditUsed);
         _useClaimId(data);
+        _mintAndUpdateInventory(account, ids, quantities, _price, creditUsed);
 
         uint256 remainder = msg.value - _price;
 
@@ -382,8 +382,8 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
             }
         }
 
-        _mintBatch(account, ids, quantities, "");
         _lowerInventoryQuantities(ids, quantities);
+        _mintBatch(account, ids, quantities, "");
         emit OrderPlaced(account, ids, quantities, _price);
 
         if (creditUsed > 0) {

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { usePublicClient, useReadContract } from 'wagmi'
+import { formatEther } from 'viem'
+import { usePublicClient } from 'wagmi'
 
 import { breadContract } from '@/lib/contracts'
 import { products } from '@/lib/products'
@@ -19,12 +20,18 @@ export function useInventory() {
 
       const productsWithInventory = products.map((product, index) => ({
         ...product,
-        quantity: inventory[index].quantity,
-        price: inventory[index].price,
+        quantity: {
+          raw: inventory[index].quantity,
+          formatted: Number(inventory[index].quantity),
+        },
+        price: {
+          raw: inventory[index].price,
+          formatted: formatEther(inventory[index].price),
+        },
       }))
 
       const availableProductsWithInventory = productsWithInventory.filter(
-        (product) => product.quantity > BigInt(0)
+        (product) => product.quantity.formatted > 0
       )
 
       return availableProductsWithInventory

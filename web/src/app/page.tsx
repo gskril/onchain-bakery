@@ -34,7 +34,7 @@ export default function Home() {
         </div>
       )}
 
-      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[4fr,7fr] lg:gap-12">
+      <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[4fr,7fr] lg:gap-10">
         <div className="flex w-full flex-col justify-between">
           <div />
 
@@ -51,12 +51,12 @@ export default function Home() {
         </div>
 
         <div className="flex max-h-[89svh] justify-center lg:overflow-hidden">
-          <div className="aspect-[3/4] rotate-2 scale-95 lg:rotate-3 lg:scale-[83%] xl:rotate-6 xl:scale-[92%]">
+          <div className="aspect-[3/4] rotate-2 scale-95 lg:rotate-3 lg:scale-[80%] xl:rotate-6 xl:scale-[92%]">
             <BabkaSticker
               className={cn([
                 'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',
                 'lg:-bottom-16 lg:-left-[1.125rem] lg:w-44',
-                'xl:-left-16 xl:w-48 xl:rotate-0',
+                'xl:-left-8 xl:w-44 xl:-rotate-12',
               ])}
             />
 
@@ -94,7 +94,7 @@ export default function Home() {
               {inventory.data.map((product) => (
                 <div
                   key={product.name}
-                  className="flex flex-col gap-4"
+                  className="grid gap-4"
                   onClick={() => addToCart(product.name)}
                 >
                   <h3 className="font-kelsi text-3xl">{product.name}</h3>
@@ -105,8 +105,11 @@ export default function Home() {
                     className="border-brand-primary w-full rounded-lg border sm:max-w-72"
                   />
 
-                  {/* <Button disabled={cart.includes(product.name)}> */}
-                  <Button disabled={true}>ADD TO CART</Button>
+                  <div className="flex items-center gap-2">
+                    {/* <Button disabled={cart.includes(product.name)}> */}
+                    <Button disabled={true}>ADD TO CART</Button>
+                    <span>{product.price.formatted} ETH</span>
+                  </div>
                 </div>
               ))}
             </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { isAddress, keccak256, parseEther, toHex } from 'viem'
+import { formatEther, isAddress, keccak256, parseEther, toHex } from 'viem'
 import { usePublicClient, useReadContract, useWriteContract } from 'wagmi'
 
 import { Form } from '@/components/Form'
@@ -40,7 +40,7 @@ export default function AdminPage() {
                   args: [account],
                 })
 
-                alert(data.toLocaleString())
+                alert(formatEther(data))
               }}
             >
               <Form.Input placeholder="Account" type="string" id="account" />

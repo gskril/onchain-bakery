@@ -19,7 +19,9 @@ export const wagmiConfig = createConfig({
   chains,
   connectors,
   transports: {
-    [base.id]: http(),
+    [base.id]: http(
+      'https://virtual.base.rpc.tenderly.co/6226ee33-4b44-4162-a0f8-9b01a7853db8'
+    ),
     [mainnet.id]: http(),
   },
 })

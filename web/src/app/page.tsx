@@ -7,16 +7,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
 import { Tagline } from '@/components/Tagline'
 import { useCart } from '@/hooks/useCart'
+import { useInventory } from '@/hooks/useInventory'
 import { cn } from '@/lib/utils'
-
-const products = [
-  { name: 'chocolate sourdough', image: '/loaf.png', price: '15' },
-  { name: 'chocolate babka', image: '/pan.png', price: '10' },
-  { name: 'snack pass', image: '/pass.png', price: '5' },
-]
 
 export default function Home() {
   const { cart, addToCart, removeFromCart } = useCart()
+  const inventory = useInventory()
 
   return (
     <>
@@ -44,7 +40,7 @@ export default function Home() {
 
           <Logo className="max-w-44 sm:max-w-60 lg:mx-auto lg:max-w-96" />
 
-          <div className="sm:p0 py-8">
+          <div className="py-8 sm:py-0">
             <h2 className="font-pangram mb-1 text-xl font-extrabold">
               Made with love, built on Ethereum
             </h2>
@@ -79,30 +75,44 @@ export default function Home() {
         </div>
       </header>
 
-      {/* <main className="mx-auto max-w-5xl px-6 py-12">
-        <div className="grid gap-6 md:grid-cols-3">
-          {products.map((product) => (
-            <div
-              key={product.name}
-              className="flex flex-col gap-4"
-              onClick={() => addToCart(product.name)}
-            >
-              <h3 className="font-kelsi text-3xl">{product.name}</h3>
-              <img
-                src={product.image}
-                alt={product.name}
-                className="h-24 w-24"
-              />
+      <main className="mx-auto max-w-5xl px-6 py-12">
+        {(() => {
+          if (!inventory.data) {
+            return <p className="text-center">Loading...</p>
+          }
 
-              <Button disabled={cart.includes(product.name)}>
-                ADD TO CART
-              </Button>
+          if (inventory.data.length === 0) {
+            return (
+              <p className="text-center">
+                No bread available right now &#9785;
+              </p>
+            )
+          }
+
+          return (
+            <div className="grid gap-6 md:grid-cols-3">
+              {inventory.data.map((product) => (
+                <div
+                  key={product.name}
+                  className="flex flex-col gap-4"
+                  onClick={() => addToCart(product.name)}
+                >
+                  <h3 className="font-kelsi text-3xl">{product.name}</h3>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="h-24 w-24"
+                  />
+
+                  <Button disabled={cart.includes(product.name)}>
+                    ADD TO CART
+                  </Button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </main> */}
-
-      <div className="py-4" />
+          )
+        })()}
+      </main>
 
       <Tagline className="mx-auto max-w-96 px-6 pb-12 pt-4" />
 

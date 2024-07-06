@@ -79,7 +79,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-12">
+      {/* <main className="mx-auto max-w-5xl px-6 py-12">
         <div className="grid gap-6 md:grid-cols-3">
           {products.map((product) => (
             <div
@@ -100,14 +100,16 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </main>
+      </main> */}
+
+      <div className="py-4" />
 
       <Tagline className="mx-auto max-w-96 px-6 pb-12 pt-4" />
 
       <footer className="bg-brand-primary text-brand-background flex justify-between gap-4 px-6 py-2 text-sm">
         <span>&copy; 2024 Good Bread by Greg</span>
         <a href="https://warpcast.com/greg" target="_blank">
-          Follow Greg on Farcaster &#8599;
+          Farcaster &#8599;
         </a>
       </footer>
     </>

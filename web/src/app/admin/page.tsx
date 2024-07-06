@@ -2,15 +2,17 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { formatEther, isAddress, keccak256, parseEther, toHex } from 'viem'
-import { usePublicClient, useReadContract, useWriteContract } from 'wagmi'
+import { usePublicClient, useWriteContract } from 'wagmi'
 
 import { Form } from '@/components/Form'
+import { useEvents } from '@/hooks/useEvents'
 import { breadContract } from '@/lib/contracts'
 import { wagmiConfig } from '@/lib/web3'
 
 export default function AdminPage() {
-  const { writeContract } = useWriteContract()
+  const { data: hash, writeContract } = useWriteContract()
   const viemClient = usePublicClient({ config: wagmiConfig })
+  const { data: events } = useEvents(hash)
 
   return (
     <>
@@ -300,6 +302,24 @@ export default function AdminPage() {
                 })
               }}
             />
+          </div>
+
+          <div className="relative grid gap-12 overflow-scroll md:col-span-2">
+            {events?.map(({ eventName, args }) => (
+              <div
+                key={`${eventName}-${JSON.stringify(args)}`}
+                className="relative max-w-full"
+              >
+                <p>{eventName}</p>
+                <pre className="max-w-full">
+                  {Object.entries(args).map(([key, value]) => (
+                    <p key={key}>
+                      {key}: {value}
+                    </p>
+                  ))}
+                </pre>
+              </div>
+            ))}
           </div>
         </div>
       </main>

@@ -45,11 +45,20 @@ function generateDeployerPrivateKey(vanity: Hex) {
 /**
  * Generate a salt that will deploy a smart contract with a vanity address using CREATE2.
  *
- * @param vanity The first few characters of the address you want to generate, case insensitive.
+ * @param vanity The first few characters of the address you want to generate.
  * @param initCode The bytecode of the smart contract you want to deploy, including the constructor arguments.
  * @param initCodeHash The keccak256 hash of the initCode.
+ * @param caseSensitive Whether the vanity part of the address is case sensitive.
  */
-export async function generateCreate2Salt(vanity: Hex, initCode: Hex) {
+export async function generateCreate2Salt({
+  vanity,
+  initCode,
+  caseSensitive = false,
+}: {
+  vanity: Hex
+  initCode: Hex
+  caseSensitive?: boolean
+}) {
   let tries = 0
 
   while (true) {
@@ -62,8 +71,14 @@ export async function generateCreate2Salt(vanity: Hex, initCode: Hex) {
       salt,
     })
 
-    if (expectedAddress.toLowerCase().startsWith(vanity)) {
-      return { salt, expectedAddress }
+    if (caseSensitive) {
+      if (expectedAddress.startsWith(vanity)) {
+        return { salt, expectedAddress }
+      }
+    } else {
+      if (expectedAddress.toLowerCase().startsWith(vanity)) {
+        return { salt, expectedAddress }
+      }
     }
 
     if (tries % 1000 === 0) {

@@ -7,11 +7,13 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
 import { Tagline } from '@/components/Tagline'
 import { useCart } from '@/hooks/useCart'
+import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
 import { cn } from '@/lib/utils'
 
 export default function Home() {
   const { cart, addToCart, removeFromCart } = useCart()
+  const { data: ethPrice } = useEthPrice()
   const inventory = useInventory()
 
   return (
@@ -33,6 +35,10 @@ export default function Home() {
           </Popover>
         </div>
       )}
+
+      <div className="font-pangram mx-auto my-6 w-[calc(100%-6rem)] rounded-full bg-[#F86232] p-2 text-center text-white">
+        NOTE: DO NOT SHARE THIS PUBLICLY.
+      </div>
 
       <header className="border-brand-primary grid border-b-2 p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[4fr,7fr] lg:gap-10">
         <div className="flex w-full flex-col justify-between">
@@ -75,7 +81,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-6 py-12">
+      <main className="mx-auto max-w-5xl px-6 py-12">
         {(() => {
           if (!inventory.data) {
             return <p className="text-center">Loading...</p>
@@ -108,7 +114,11 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     {/* <Button disabled={cart.includes(product.name)}> */}
                     <Button disabled={true}>ADD TO CART</Button>
-                    <span>{product.price.formatted} ETH</span>
+                    <span>
+                      {product.price.formatted} ETH{' '}
+                      {ethPrice &&
+                        `($${(product.price.formatted * ethPrice).toFixed(0)})`}
+                    </span>
                   </div>
                 </div>
               ))}

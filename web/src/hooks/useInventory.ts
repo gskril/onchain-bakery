@@ -26,7 +26,7 @@ export function useInventory() {
         },
         price: {
           raw: inventory[index].price,
-          formatted: formatEther(inventory[index].price),
+          formatted: Number(formatEther(inventory[index].price)),
         },
       }))
 

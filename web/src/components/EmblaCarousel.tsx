@@ -7,10 +7,10 @@ import '@/assets/embla.css'
 import { DotButton, useDotButton } from './EmblaCarouselDotButton'
 
 const carouselImages = [
-  { src: '/gallery/babka.jpg', alt: '' },
   { src: '/gallery/banana-bread-and-chocolate-loaf.jpg', alt: '' },
-  { src: '/gallery/banana-bread.jpg', alt: '' },
-  { src: '/gallery/chocolate-loaf.jpg', alt: '' },
+  { src: '/gallery/babka-inside.jpg', alt: '' },
+  { src: '/gallery/plain-loaf.jpg', alt: '' },
+  { src: '/gallery/pita.jpg', alt: '' },
 ]
 
 export const EmblaCarousel: React.FC = () => {

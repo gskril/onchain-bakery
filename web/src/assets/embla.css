@@ -78,11 +78,13 @@
   background: url('/carousel/dot1-filled.svg');
 }
 
-.embla__dot:nth-child(2) {
+.embla__dot:nth-child(2),
+.embla__dot:nth-child(5) {
   background: url('/carousel/dot2.svg');
 }
 
-.embla__dot--selected:nth-child(2) {
+.embla__dot--selected:nth-child(2),
+.embla__dot--selected:nth-child(5) {
   background: url('/carousel/dot2-filled.svg');
 }
 

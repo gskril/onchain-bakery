@@ -10,7 +10,10 @@ async function main() {
   const walletClient = walletClients[0]
 
   const { args, initCode } = await getBreadDeploymentInfo()
-  const { salt, expectedAddress } = await generateCreate2Salt('0x000', initCode)
+  const { salt, expectedAddress } = await generateCreate2Salt(
+    '0xb2ead',
+    initCode
+  )
 
   const deployTx = await walletClient.writeContract({
     ...create2Factory,

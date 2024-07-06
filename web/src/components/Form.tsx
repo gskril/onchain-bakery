@@ -4,9 +4,11 @@ function Root({
   title,
   children,
   handler,
+  button,
   ...props
 }: {
   title: string
+  button?: string
   handler: (targets: Record<string, string>) => void
 } & React.HTMLProps<HTMLFormElement>) {
   return (
@@ -32,7 +34,7 @@ function Root({
       {children}
 
       <Button className="w-full" type="submit">
-        Send
+        {button || 'Send'}
       </Button>
     </form>
   )
@@ -41,6 +43,7 @@ function Root({
 function Input(props: React.HTMLProps<HTMLInputElement>) {
   return (
     <input
+      autoComplete="off"
       className="border-brand-primary rounded-full border px-3 py-1"
       {...props}
     />

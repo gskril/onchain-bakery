@@ -9,16 +9,16 @@ export const products: Product[] = [
   {
     id: BigInt(1),
     name: 'chocolate sourdough',
-    image: '/loaf.png',
+    image: '/product/chocolate-loaf.jpg',
   },
   {
     id: BigInt(2),
     name: 'chocolate babka',
-    image: '/pan.png',
+    image: '/product/babka.jpg',
   },
   {
     id: BigInt(3),
-    name: 'snack pass',
-    image: '/pass.png',
+    name: 'banana bread',
+    image: '/product/banana-bread.jpg',
   },
 ]

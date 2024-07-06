@@ -75,7 +75,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-12">
+      <main className="mx-auto max-w-4xl px-6 py-12">
         {(() => {
           if (!inventory.data) {
             return <p className="text-center">Loading...</p>
@@ -90,7 +90,7 @@ export default function Home() {
           }
 
           return (
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid items-end gap-12 md:grid-cols-3">
               {inventory.data.map((product) => (
                 <div
                   key={product.name}
@@ -98,15 +98,15 @@ export default function Home() {
                   onClick={() => addToCart(product.name)}
                 >
                   <h3 className="font-kelsi text-3xl">{product.name}</h3>
+
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="h-24 w-24"
+                    className="border-brand-primary w-full rounded-lg border sm:max-w-72"
                   />
 
-                  <Button disabled={cart.includes(product.name)}>
-                    ADD TO CART
-                  </Button>
+                  {/* <Button disabled={cart.includes(product.name)}> */}
+                  <Button disabled={true}>ADD TO CART</Button>
                 </div>
               ))}
             </div>

@@ -14,18 +14,16 @@ pragma solidity ^0.8.20;
 ///////////////////////////////////////////////////////////
 
 interface IBread {
-    function buyBreads(
+    function buyBread(
         address account,
         uint256[] calldata ids,
-        bytes32[] calldata proof
+        uint256[] calldata quantities,
+        bytes calldata data
     ) external payable;
 }
 
 interface IWETH {
-    /// @notice Deposit ether to get wrapped ether
     function deposit() external payable;
-
-    /// @notice Withdraw wrapped ether to get ether
     function withdraw(uint256) external;
 }
 
@@ -54,9 +52,13 @@ contract CrossChainBread {
 
         weth.withdraw(amount);
 
-        (address account, uint256[] memory ids, bytes32[] memory proof) = abi
-            .decode(message, (address, uint256[], bytes32[]));
+        (
+            address account,
+            uint256[] memory ids,
+            uint256[] memory quantities,
+            bytes memory data
+        ) = abi.decode(message, (address, uint256[], uint256[], bytes));
 
-        bread.buyBreads{value: amount}(account, ids, proof);
+        bread.buyBread{value: amount}(account, ids, quantities, data);
     }
 }

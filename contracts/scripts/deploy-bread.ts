@@ -4,6 +4,19 @@ import { getBreadDeploymentInfo } from './bread'
 import { create2Factory } from './create2'
 import { generateCreate2Salt } from './vanity'
 
+/* 
+  Tries: 62590000
+
+  Promise {
+    {
+      salt: '0x0000000000000000000000000000000000000000000000000000000003bb0e3a',
+      expectedAddress: '0xB2EAD59f83CEA21630b35E2B6f6E6495F89478Fc'
+    }
+  }
+
+  Done in 124209.05s.
+*/
+
 async function main() {
   const publicClient = await hre.viem.getPublicClient()
   const walletClients = await hre.viem.getWalletClients()

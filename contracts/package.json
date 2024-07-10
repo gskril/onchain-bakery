@@ -7,7 +7,10 @@
     "test": "hardhat test",
     "deploy:bread-tenderly": "hardhat run scripts/deploy-bread.ts --network tenderly",
     "deploy:bread-localhost": "hardhat run scripts/deploy-bread.ts --network localhost",
-    "deploy:bread-baseSepolia": "hardhat run scripts/deploy-bread.ts --network baseSepolia"
+    "deploy:bread-baseSepolia": "hardhat run scripts/deploy-bread.ts --network baseSepolia",
+    "deploy:crosschainbread-tenderly": "hardhat run scripts/deploy-crosschainbread.ts --network tenderly",
+    "deploy:crosschainbread-localhost": "hardhat run scripts/deploy-crosschainbread.ts --network localhost",
+    "deploy:crosschainbread-baseSepolia": "hardhat run scripts/deploy-crosschainbread.ts --network baseSepolia"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-network-helpers": "^1.0.10",

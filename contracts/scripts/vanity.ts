@@ -49,17 +49,20 @@ function generateDeployerPrivateKey(vanity: Hex) {
  * @param initCode The bytecode of the smart contract you want to deploy, including the constructor arguments.
  * @param initCodeHash The keccak256 hash of the initCode.
  * @param caseSensitive Whether the vanity part of the address is case sensitive.
+ * @param startingIteration The starting iteration to generate the salt from. Useful for resuming a previous search.
  */
 export async function generateCreate2Salt({
   vanity,
   initCode,
   caseSensitive = false,
+  startingIteration = 0,
 }: {
   vanity: Hex
   initCode: Hex
   caseSensitive?: boolean
+  startingIteration?: number
 }) {
-  let tries = 0
+  let tries = startingIteration
 
   while (true) {
     const salt = toHex(tries, { size: 32 })

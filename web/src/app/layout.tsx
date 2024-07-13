@@ -71,9 +71,10 @@ export default function RootLayout({
         pangramSans.variable,
         pangramSansCompact.variable,
         kelsi.variable,
+        'scroll-smooth',
       ])}
     >
-      <body className="bg-brand-background text-brand-primary">
+      <body className="bg-brand-background-primary text-brand-primary">
         <ClientProviders>{children}</ClientProviders>
       </body>
     </html>

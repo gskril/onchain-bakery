@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { formatEther } from 'viem'
+import { base } from 'viem/chains'
 import { usePublicClient } from 'wagmi'
 
 import { breadContract } from '@/lib/contracts'
@@ -7,7 +8,10 @@ import { products } from '@/lib/products'
 import { wagmiConfig } from '@/lib/web3'
 
 export function useInventory() {
-  const viemClient = usePublicClient({ config: wagmiConfig })
+  const viemClient = usePublicClient({
+    config: wagmiConfig,
+    chainId: base.id,
+  })
 
   return useQuery({
     queryKey: ['inventory'],

@@ -15,7 +15,10 @@ const config: Config = {
       colors: {
         brand: {
           primary: '#0033E6',
-          background: '#FFEED8',
+          background: {
+            primary: '#FFF6EA',
+            secondary: '#FFEED8',
+          },
         },
       },
     },

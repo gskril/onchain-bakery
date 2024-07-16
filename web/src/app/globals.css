@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .section-title {
+    @apply font-pangram text-2xl font-extrabold sm:text-4xl;
+  }
+}

@@ -7,6 +7,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: '360px',
+      },
       fontFamily: {
         sans: ['var(--font-pangram-sans-compact)'], // overrides the default
         pangram: ['var(--font-pangram-sans)'],

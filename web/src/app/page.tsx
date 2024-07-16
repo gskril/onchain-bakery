@@ -1,12 +1,12 @@
 'use client'
 
 import { Button, buttonStyles } from '@/components/Button'
-import { DividerOne } from '@/components/Dividers'
+import { DividerOne, DividerTwo } from '@/components/Dividers'
 import { EmblaCarousel } from '@/components/EmblaCarousel'
 import { Logo } from '@/components/Logo'
 import { NumberOne, NumberThree, NumberTwo } from '@/components/Numbers'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
-import { UnderlineScribble } from '@/components/Scribbles'
+import { CircleScribble, UnderlineScribble } from '@/components/Scribbles'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
 import { Tagline } from '@/components/Tagline'
 import { useCart } from '@/hooks/useCart'
@@ -92,52 +92,58 @@ export default function Home() {
         </div>
       </header>
 
-      <DividerOne className="max-w-full" />
-
       <main>
+        <DividerOne className="max-w-full" />
+
         <div className="bg-brand-background-secondary">
-          <div className="mx-auto flex max-w-5xl flex-col items-center px-6 py-12">
-            <h2 className="font-pangram text-4xl font-extrabold">
-              how it works
-            </h2>
+          <div className="mx-auto flex max-w-7xl flex-col items-center px-6 py-12">
+            <h2 className="section-title">how it works</h2>
 
             <UnderlineScribble className="-mt-3 mb-10 pl-2" />
 
-            <div className="grid max-w-80 gap-12 md:max-w-full md:grid-cols-3">
-              <div className="grid grid-cols-[1fr,4fr]">
-                <NumberOne />
-                <div className="flex flex-col items-center gap-3">
-                  <img src="/process/1.svg" alt="" />
-                  <span className="font-pangram text-center text-lg font-extrabold leading-5">
-                    order bread
-                  </span>
-                </div>
-              </div>
+            {(() => {
+              const steps = [
+                'order bread',
+                'pay on ethereum',
+                'pick up bread on the weekend in manhattan',
+              ]
 
-              <div className="grid grid-cols-[1fr,4fr]">
-                <NumberTwo />
-                <div className="flex flex-col items-center gap-3">
-                  <img src="/process/2.svg" alt="" />
-                  <span className="font-pangram text-center text-lg font-extrabold leading-5">
-                    pay on ethereum
-                  </span>
-                </div>
-              </div>
+              return (
+                <div className="grid max-w-80 gap-12 md:max-w-full md:grid-cols-3">
+                  {steps.map((step, index) => (
+                    <div className="grid grid-cols-[1fr,4fr]" key={step}>
+                      {index === 0 ? (
+                        <NumberOne />
+                      ) : index === 1 ? (
+                        <NumberTwo />
+                      ) : (
+                        <NumberThree />
+                      )}
 
-              <div className="grid grid-cols-[1fr,4fr]">
-                <NumberThree />
-                <div className="flex flex-col items-center gap-3">
-                  <img src="/process/3.svg" alt="" />
-                  <span className="font-pangram text-center text-lg font-extrabold leading-5">
-                    pick up bread on the weekend in manhattan
-                  </span>
+                      <div className="flex flex-col items-center gap-3">
+                        <img src={`/process/${index + 1}.svg`} alt="" />
+                        <span className="font-pangram text-center text-lg font-extrabold leading-5">
+                          {step}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </div>
+              )
+            })()}
           </div>
         </div>
 
-        <div className="mx-auto max-w-5xl px-6 py-12" id="shop">
+        <DividerTwo className="max-w-full" />
+
+        <div
+          className="mx-auto flex max-w-7xl flex-col items-center px-6 pb-12 pt-0 text-center"
+          id="shop"
+        >
+          <h2 className="section-title xs:mb-0 mb-10">these are the breads</h2>
+
+          <CircleScribble className="xs:block pointer-events-none -mt-[6.25rem] mb-10 hidden w-[21rem] pl-2 sm:-mt-[6.75rem] sm:w-[34rem]" />
+
           {(() => {
             if (!inventory.data) {
               return <p className="text-center">Loading...</p>
@@ -152,14 +158,16 @@ export default function Home() {
             }
 
             return (
-              <div className="grid items-end gap-12 md:grid-cols-3">
+              <div className="grid items-end gap-10 md:grid-cols-3">
                 {inventory.data.map((product) => (
                   <div
                     key={product.name}
-                    className="grid gap-4"
+                    className="flex flex-col items-center"
                     onClick={() => addToCart(product.name)}
                   >
-                    <h3 className="font-kelsi text-3xl">{product.name}</h3>
+                    <h3 className="font-pangram mb-2 text-3xl">
+                      {product.name}
+                    </h3>
 
                     <img
                       src={product.image}
@@ -167,15 +175,41 @@ export default function Home() {
                       className="border-brand-primary w-full rounded-lg border sm:max-w-72"
                     />
 
-                    <div className="flex items-center gap-2">
-                      {/* <Button disabled={cart.includes(product.name)}> */}
-                      <Button disabled={true}>ADD TO CART</Button>
-                      <span>
-                        {product.price.formatted} ETH{' '}
-                        {ethPrice &&
-                          `($${(product.price.formatted * ethPrice).toFixed(0)})`}
+                    <div className="bg-brand-background-secondary relative mb-4 mt-8 flex w-full flex-col items-start gap-4 rounded-lg p-8 text-left">
+                      <div className="text-brand-background-secondary bg-brand-primary absolute -top-6 right-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold italic">
+                        {product.quantity.formatted} left
+                      </div>
+
+                      <hr className="border-brand-primary w-full" />
+
+                      <p className="leading-5">{product.description}</p>
+
+                      <hr className="border-brand-primary w-[20%]" />
+
+                      <span className="font-pangram font-extrabold">
+                        ingredients
                       </span>
+
+                      <p className="leading-5">{product.ingredients}</p>
+
+                      <hr className="border-brand-primary w-full" />
+
+                      <div className="flex w-full justify-between gap-4">
+                        <span className="font-pangram text-lg font-extrabold">
+                          {product.price.formatted} ETH{' '}
+                        </span>
+                        {ethPrice && (
+                          <span>
+                            ${(product.price.formatted * ethPrice).toFixed(0)}{' '}
+                            USD
+                          </span>
+                        )}
+                      </div>
                     </div>
+
+                    <Button disabled={true} className="self-start">
+                      Buy Now
+                    </Button>
                   </div>
                 ))}
               </div>

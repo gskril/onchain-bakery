@@ -1,21 +1,22 @@
 const content = [
   {
     question: 'Does Greg actually bake the bread?',
-    answer: 'Yes',
+    answer: "Yes! That's why quantities are limited.",
   },
   {
-    question: 'Where can I place an order?',
+    question: 'When can I place an order?',
     answer:
-      'New breads will become available on Wednesday mornings at 11am ET on this website.',
+      'New breads will be listed on Wednesday mornings at 1pm ET on this website.',
   },
   {
     question: 'How do I pay for my order?',
-    answer: 'Currently we only accept ETH on Base.',
+    answer:
+      'You can pay with ETH on Base, OP Mainnet, Arbitrum, or Ethereum Mainnet. Orders settle on Base.',
   },
   {
     question: 'How do I get my bread?',
     answer:
-      'You will recieve a message on Warpcast by Friday evening with pickup instructions for Saturday afternoon.',
+      'You will recieve a direct message from @greg on Warpcast by Friday evening with detailed pickup instructions for Saturday afternoon. Pickup will be in a group setting in Manhattan.',
   },
   {
     question: 'Why do I need a farcaster account to buy bread?',

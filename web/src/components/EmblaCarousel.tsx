@@ -10,7 +10,7 @@ const carouselImages = [
   { src: '/gallery/banana-bread-and-chocolate-loaf.jpg', alt: '' },
   { src: '/gallery/babka-inside.jpg', alt: '' },
   { src: '/gallery/plain-loaf.jpg', alt: '' },
-  { src: '/gallery/pita.jpg', alt: '' },
+  { src: '/gallery/babka.jpg', alt: '' },
 ]
 
 export const EmblaCarousel: React.FC = () => {

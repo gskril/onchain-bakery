@@ -1,12 +1,13 @@
 'use client'
 
-import { Button, buttonStyles } from '@/components/Button'
+import { buttonStyles } from '@/components/Button'
+import { Cart } from '@/components/Cart'
 import { DividerOne, DividerTwo } from '@/components/Dividers'
 import { EmblaCarousel } from '@/components/EmblaCarousel'
 import { Faqs } from '@/components/Faqs'
 import { Logo } from '@/components/Logo'
 import { NumberOne, NumberThree, NumberTwo } from '@/components/Numbers'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
+import { Products } from '@/components/Products'
 import {
   CircleScribble,
   UnderlineScribble,
@@ -14,35 +15,12 @@ import {
 } from '@/components/Scribbles'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
 import { Tagline } from '@/components/Tagline'
-import { useCart } from '@/hooks/useCart'
-import { useEthPrice } from '@/hooks/useEthPrice'
-import { useInventory } from '@/hooks/useInventory'
 import { cn } from '@/lib/utils'
 
 export default function Home() {
-  const { cart, addToCart, removeFromCart } = useCart()
-  const { data: ethPrice } = useEthPrice()
-  const inventory = useInventory()
-
   return (
     <>
-      {cart?.length > 0 && (
-        <div className="fixed right-4 top-4">
-          <Popover>
-            <PopoverTrigger className="h-10 w-10 rounded-full bg-white">
-              C
-            </PopoverTrigger>
-            <PopoverContent className="flex flex-col gap-4 bg-white">
-              {cart.map((item) => (
-                <div key={item} className="flex flex-col">
-                  <span>{item}</span>
-                  <Button onClick={() => removeFromCart(item)}>Remove</Button>
-                </div>
-              ))}
-            </PopoverContent>
-          </Popover>
-        </div>
-      )}
+      <Cart />
 
       <header className="grid p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[7fr,4fr] lg:gap-10">
         <div className="flex w-full flex-col justify-between lg:order-2">
@@ -69,12 +47,12 @@ export default function Home() {
         </div>
 
         <div className="flex max-h-[89svh] justify-center lg:order-1 lg:overflow-hidden">
-          <div className="aspect-[3/4] rotate-2 scale-95 lg:rotate-3 lg:scale-[80%] xl:rotate-6 xl:scale-[92%]">
+          <div className="aspect-[3/4] rotate-2 scale-95 lg:-rotate-3 lg:scale-[80%] xl:-rotate-6 xl:scale-[92%]">
             <BabkaSticker
               className={cn([
                 'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',
-                'lg:-bottom-16 lg:-left-[1.125rem] lg:w-44',
-                'xl:-left-8 xl:w-44 xl:-rotate-12',
+                'lg:-bottom-16 lg:-right-8 lg:left-[unset] lg:w-44',
+                'xl:-bottom-12 xl:-right-14 xl:left-[unset] xl:w-44 xl:-rotate-[65deg]',
                 'short:scale-90 extra-short:hidden',
               ])}
             />
@@ -82,8 +60,8 @@ export default function Home() {
             <BaguetteSticker
               className={cn([
                 'absolute -right-6 -top-10 z-10 w-28',
-                'lg:-right-6 lg:-top-16 lg:w-44',
-                'xl:-right-12 xl:w-56',
+                'lg:-right-[unset] lg:-left-8 lg:-top-20 lg:w-44 lg:rotate-[80deg]',
+                'xl:-right-[unset] xl:-left-14 xl:-top-28 xl:w-56 xl:rotate-[80deg]',
                 'short:scale-90 extra-short:hidden',
               ])}
             />
@@ -147,77 +125,7 @@ export default function Home() {
 
           <CircleScribble className="xs:block pointer-events-none -mt-[6.25rem] mb-10 hidden w-[21rem] pl-2 sm:-mt-[6.75rem] sm:w-[34rem]" />
 
-          {(() => {
-            if (!inventory.data) {
-              return <p className="text-center">Loading...</p>
-            }
-
-            if (inventory.data.length === 0) {
-              return (
-                <p className="text-center">
-                  No bread available right now &#9785;
-                </p>
-              )
-            }
-
-            return (
-              <div className="grid items-end gap-10 md:grid-cols-3">
-                {inventory.data.map((product) => (
-                  <div
-                    key={product.name}
-                    className="flex flex-col items-center"
-                    onClick={() => addToCart(product.name)}
-                  >
-                    <h3 className="font-pangram mb-2 text-3xl">
-                      {product.name}
-                    </h3>
-
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="border-brand-primary w-full rounded-lg border sm:max-w-72"
-                    />
-
-                    <div className="bg-brand-background-secondary relative mb-4 mt-8 flex w-full flex-col items-start gap-4 rounded-lg p-8 text-left">
-                      <div className="text-brand-background-secondary bg-brand-primary absolute -top-6 right-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold italic">
-                        {product.quantity.formatted} left
-                      </div>
-
-                      <hr className="border-brand-primary w-full" />
-
-                      <p className="leading-5">{product.description}</p>
-
-                      <hr className="border-brand-primary w-[20%]" />
-
-                      <span className="font-pangram font-extrabold">
-                        ingredients
-                      </span>
-
-                      <p className="leading-5">{product.ingredients}</p>
-
-                      <hr className="border-brand-primary w-full" />
-
-                      <div className="flex w-full justify-between gap-4">
-                        <span className="font-pangram text-lg font-extrabold">
-                          {product.price.formatted} ETH{' '}
-                        </span>
-                        {ethPrice && (
-                          <span>
-                            ${(product.price.formatted * ethPrice).toFixed(0)}{' '}
-                            USD
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <Button disabled={true} className="self-start">
-                      Buy Now
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )
-          })()}
+          <Products />
         </div>
 
         <div className="mx-auto mt-6 flex flex-col items-center">

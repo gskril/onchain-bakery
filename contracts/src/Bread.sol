@@ -125,7 +125,7 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
             revert InsufficientValue();
         }
 
-        if ((!canOrder(account, data))) {
+        if (!canOrder(account, data)) {
             revert Unauthorized();
         }
 
@@ -264,12 +264,12 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
         address account,
         uint256[] calldata ids,
         uint256[] calldata quantities
-    ) public onlyRole(SIGNER_ROLE) {
+    ) public payable onlyRole(SIGNER_ROLE) {
         if (ids.length != quantities.length) {
             revert InvalidInput();
         }
 
-        _mintAndUpdateInventory(account, ids, quantities, 0, 0);
+        _mintAndUpdateInventory(account, ids, quantities, msg.value, 0);
     }
 
     /**

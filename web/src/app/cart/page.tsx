@@ -35,7 +35,7 @@ export default function Cart() {
           return <p>Loading...</p>
         }
 
-        if (!inventory.data || inventory.data.length) return <p>No inventory</p>
+        if (!inventory.data) return <p>No inventory</p>
 
         return (
           <>

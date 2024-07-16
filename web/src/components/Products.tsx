@@ -6,7 +6,7 @@ import { useInventory } from '@/hooks/useInventory'
 export function Products() {
   const { cart, addToCart } = useCart()
   const { data: ethPrice } = useEthPrice()
-  const inventory = useInventory()
+  const inventory = useInventory({ filter: true })
 
   if (!inventory.data) {
     return <p className="text-center">Loading...</p>
@@ -59,8 +59,8 @@ export function Products() {
 
           <Button
             className="self-start"
-            disabled={cart.includes(product.name)}
-            onClick={() => addToCart(product.name)}
+            disabled={cart.includes(product.id)}
+            onClick={() => addToCart(product.id)}
           >
             Add to cart
           </Button>

@@ -7,7 +7,12 @@ import { breadContract } from '@/lib/contracts'
 import { products } from '@/lib/products'
 import { wagmiConfig } from '@/lib/web3'
 
-export function useInventory() {
+type Props = {
+  tokenIds?: bigint[]
+  filter: boolean
+}
+
+export function useInventory({ tokenIds, filter }: Props) {
   const viemClient = usePublicClient({
     config: wagmiConfig,
     chainId: base.id,
@@ -16,29 +21,43 @@ export function useInventory() {
   return useQuery({
     queryKey: ['inventory'],
     queryFn: async () => {
+      const productIds = tokenIds || products.map((product) => product.id)
+
       const inventory = await viemClient.readContract({
         ...breadContract,
         functionName: 'inventoryBatch',
-        args: [products.map((product) => product.id)],
+        args: [productIds],
       })
 
-      const productsWithInventory = products.map((product, index) => ({
-        ...product,
-        quantity: {
-          raw: inventory[index].quantity,
-          formatted: Number(inventory[index].quantity),
-        },
-        price: {
-          raw: inventory[index].price,
-          formatted: Number(formatEther(inventory[index].price)),
-        },
-      }))
+      const productsWithInventory = productIds.map((id, index) => {
+        const product = products.find((p) => p.id === id)!
 
-      const availableProductsWithInventory = productsWithInventory.filter(
-        (product) => product.quantity.formatted > 0
-      )
+        return {
+          ...product,
+          quantity: {
+            raw: inventory[index].quantity,
+            formatted: Number(inventory[index].quantity),
+          },
+          price: {
+            raw: inventory[index].price,
+            formatted: Number(formatEther(inventory[index].price)),
+          },
+        }
+      })
 
-      return availableProductsWithInventory
+      let finalData
+
+      // If the filter is enabled, return only the products with inventory
+      // Otherwise, return all products
+      if (filter) {
+        finalData = productsWithInventory.filter(
+          (product) => product.quantity.formatted > 0
+        )
+      } else {
+        finalData = productsWithInventory
+      }
+
+      return finalData
     },
   })
 }

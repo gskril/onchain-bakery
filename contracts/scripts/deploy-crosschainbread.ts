@@ -11,12 +11,11 @@ async function main() {
 
   const { args, initCode } = await getCrossChainBreadDeploymentInfo()
 
-  console.log(initCode)
-
   const { salt, expectedAddress } = await generateCreate2Salt({
     vanity: '0xB2EAD',
     initCode,
     caseSensitive: true,
+    startingIteration: 16594000,
   })
 
   console.log({ salt, expectedAddress })

@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import plugin from 'tailwindcss/plugin'
 
 const config: Config = {
   content: [
@@ -26,7 +27,12 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant('short', '@media(max-height:810px)')
+      addVariant('extra-short', '@media(max-height:700px)')
+    }),
+  ],
 }
 
 export default config

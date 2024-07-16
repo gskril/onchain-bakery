@@ -79,6 +79,17 @@ export default function RootLayout({
         'scroll-smooth',
       ])}
     >
+      <head>
+        {/* Preload carousel buttons */}
+        <link rel="preload" href="/carousel/dot1.svg" as="image" />
+
+        <link rel="preload" href="/carousel/dot2-filled.svg" as="image" />
+
+        <link rel="preload" href="/carousel/dot3-filled.svg" as="image" />
+
+        <link rel="preload" href="/carousel/dot4-filled.svg" as="image" />
+      </head>
+
       <body className="bg-brand-background-primary text-brand-primary">
         <ClientProviders>{children}</ClientProviders>
       </body>

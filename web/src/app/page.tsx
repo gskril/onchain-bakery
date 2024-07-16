@@ -44,17 +44,13 @@ export default function Home() {
         </div>
       )}
 
-      <div className="font-pangram mx-auto my-6 w-[calc(100%-6rem)] rounded-full bg-[#F86232] p-2 text-center text-white">
-        NOTE: DO NOT SHARE THIS PUBLICLY.
-      </div>
-
       <header className="grid p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[7fr,4fr] lg:gap-10">
         <div className="flex w-full flex-col justify-between lg:order-2">
           <div />
 
           <Logo className="max-w-44 sm:max-w-60 lg:max-w-96" />
 
-          <div className="py-8 lg:py-0">
+          <div className="py-8 lg:py-0 lg:pt-8">
             <span className="font-pangram mb-1 text-xl font-extrabold">
               Made with love, built on Ethereum
             </span>
@@ -79,6 +75,7 @@ export default function Home() {
                 'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',
                 'lg:-bottom-16 lg:-left-[1.125rem] lg:w-44',
                 'xl:-left-8 xl:w-44 xl:-rotate-12',
+                'short:scale-90 extra-short:hidden',
               ])}
             />
 
@@ -87,6 +84,7 @@ export default function Home() {
                 'absolute -right-6 -top-10 z-10 w-28',
                 'lg:-right-6 lg:-top-16 lg:w-44',
                 'xl:-right-12 xl:w-56',
+                'short:scale-90 extra-short:hidden',
               ])}
             />
 

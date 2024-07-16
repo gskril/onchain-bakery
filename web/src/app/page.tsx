@@ -3,10 +3,15 @@
 import { Button, buttonStyles } from '@/components/Button'
 import { DividerOne, DividerTwo } from '@/components/Dividers'
 import { EmblaCarousel } from '@/components/EmblaCarousel'
+import { Faqs } from '@/components/Faqs'
 import { Logo } from '@/components/Logo'
 import { NumberOne, NumberThree, NumberTwo } from '@/components/Numbers'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/Popover'
-import { CircleScribble, UnderlineScribble } from '@/components/Scribbles'
+import {
+  CircleScribble,
+  UnderlineScribble,
+  UnderlineScribble2,
+} from '@/components/Scribbles'
 import { BabkaSticker, BaguetteSticker } from '@/components/Stickers'
 import { Tagline } from '@/components/Tagline'
 import { useCart } from '@/hooks/useCart'
@@ -215,6 +220,18 @@ export default function Home() {
               </div>
             )
           })()}
+        </div>
+
+        <div className="mx-auto mt-6 flex flex-col items-center">
+          <h2 className="section-title mb-2 max-w-lg px-6 text-center sm:mb-4">
+            Questions that we thought you might ask
+          </h2>
+
+          <UnderlineScribble2 className="w-full max-w-xl px-6" />
+
+          <div className="bg-brand-background-secondary my-8 w-full">
+            <Faqs className="mx-auto max-w-7xl px-6 py-6" />
+          </div>
         </div>
       </main>
 

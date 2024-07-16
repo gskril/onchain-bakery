@@ -22,6 +22,11 @@ const pangramSans = localFont({
       style: 'normal',
     },
     {
+      path: '../assets/fonts/pangram-sans-rounded/semibold.otf',
+      weight: '600',
+      style: 'normal',
+    },
+    {
       path: '../assets/fonts/pangram-sans-rounded/extrabold.otf',
       weight: '800',
       style: 'normal',

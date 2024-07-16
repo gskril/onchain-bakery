@@ -13,10 +13,7 @@ type Props = {
 }
 
 export function useInventory({ tokenIds, filter }: Props) {
-  const viemClient = usePublicClient({
-    config: wagmiConfig,
-    chainId: base.id,
-  })
+  const viemClient = usePublicClient({ config: wagmiConfig })
 
   return useQuery({
     queryKey: ['inventory'],

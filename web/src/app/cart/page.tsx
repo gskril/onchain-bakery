@@ -29,11 +29,13 @@ export default function Cart() {
     <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
       <h1 className="section-title mb-12">Checkout</h1>
       {(() => {
+        if (!cart.length) return <p>Your cart is empty</p>
+
         if (inventory.isLoading) {
           return <p>Loading...</p>
         }
 
-        if (!inventory.data) return <p>No items in cart</p>
+        if (!inventory.data || inventory.data.length) return <p>No inventory</p>
 
         return (
           <>

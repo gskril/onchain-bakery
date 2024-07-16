@@ -1,5 +1,5 @@
 export const breadContract = {
-  address: '0xb2eadbb164cb1593ce10617c61abd8d50e3be3d1',
+  address: '0xB2EAD6Bd8129752715C3F94A6f90f9745540515e',
   abi: [
     {
       inputs: [
@@ -638,7 +638,7 @@ export const breadContract = {
       ],
       name: 'adminOrder',
       outputs: [],
-      stateMutability: 'nonpayable',
+      stateMutability: 'payable',
       type: 'function',
     },
     {

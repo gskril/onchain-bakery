@@ -8,11 +8,11 @@ export function Products() {
   const { data: ethPrice } = useEthPrice()
   const inventory = useInventory({ filter: true })
 
-  if (!inventory.data) {
+  if (inventory.isLoading) {
     return <p className="text-center">Loading...</p>
   }
 
-  if (inventory.data.length === 0) {
+  if (!inventory.data || inventory.data.length === 0) {
     return <p className="text-center">No bread available right now &#9785;</p>
   }
 

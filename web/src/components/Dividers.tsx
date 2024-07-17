@@ -1,41 +1,20 @@
-type Props = {
-  className?: string
-}
+const lgClasses = 'pointer-events-none hidden w-full md:block'
+const smClasses = 'pointer-events-none block w-full md:hidden'
 
-export function DividerOne({ className }: Props) {
+export function DividerOne() {
   return (
-    <svg
-      width="1512"
-      height="26"
-      viewBox="0 0 1512 26"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      <path
-        d="M1515 6.20363C1364.32 -3.79778 1213.08 2.82376 1062.37 7.78785C948.082 11.5522 833.631 11.3896 719.296 12.6914C672.333 13.2261 625.441 14.0509 578.534 16.6896C534.479 19.1679 490.473 23.822 446.349 24.837C416.852 25.5155 387.282 23.8563 357.77 23.8563C264.614 23.8563 171.052 24.2007 77.9757 20.0844C51.8352 18.9283 25.4786 14.6061 1 4.84574"
-        stroke="#0033E6"
-        strokeLinecap="round"
-      />
-    </svg>
+    <>
+      <img src="/misc/divider-1.svg" className={lgClasses} />
+      <img src="/misc/divider-1-small.svg" className={smClasses} />
+    </>
   )
 }
 
-export function DividerTwo({ className }: Props) {
+export function DividerTwo() {
   return (
-    <svg
-      width="1512"
-      height="70"
-      viewBox="0 0 1512 70"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      <path
-        d="M-31.293 69.5025C36.2283 40.8327 107.394 23.278 180.351 15.2424C249.362 7.6414 318.24 7.97653 386.82 19.53C435.755 27.7737 483.346 48.0646 533.559 48.0646C577.33 48.0646 619.755 32.956 661.669 22.4869C697.927 13.4306 733.407 6.49136 770.707 3.71025C801.47 1.41655 832.652 0.596174 863.481 2.08392C892.729 3.49533 921.652 8.30625 950.785 10.9548C1041.85 19.2335 1133.75 22.8169 1225.12 26.3309C1302.87 29.3213 1379.27 25.1005 1456.06 12.729C1472.83 10.026 1489.26 7.47135 1506.18 6.07581C1517.38 5.15095 1528.63 4.34429 1539.81 3.11886C1543.18 2.74941 1542.25 2.92107 1544.17 1.64038"
-        stroke="#0033E6"
-        strokeLinecap="round"
-      />
-    </svg>
+    <>
+      <img src="/misc/divider-2.svg" className={lgClasses} />
+      <img src="/misc/divider-2-small.svg" className={smClasses} />
+    </>
   )
 }

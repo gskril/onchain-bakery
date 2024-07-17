@@ -22,23 +22,29 @@ export default function Home() {
     <>
       <Cart />
 
-      <header className="grid p-6 sm:p-12 lg:min-h-svh lg:grid-cols-[7fr,4fr] lg:gap-10">
+      <header className="mx-auto grid max-w-[100rem] p-6 sm:p-12 lg:grid-cols-[7fr,4fr] lg:gap-10">
+        <img
+          src="/hero-line.svg"
+          alt=""
+          className="absolute left-0 top-[70%] z-0 hidden w-full translate-y-[-70%] xl:block"
+        />
+
         <div className="flex w-full flex-col justify-between lg:order-2">
           <div />
 
-          <Logo className="max-w-44 sm:max-w-60 lg:max-w-96" />
-
-          <div className="py-8 lg:py-0 lg:pt-8">
-            <span className="font-pangram mb-1 text-xl font-extrabold">
+          <Logo className="max-w-44 pb-8 sm:max-w-60 lg:max-w-80" />
+          <div className="py-8 pr-0 lg:py-0 lg:pb-1 lg:pr-6 lg:pt-8">
+            <span className="font-pangram mb-1 block text-2xl font-extrabold">
               Made with love, built on Ethereum
             </span>
 
-            <p className="max-w-80">
+            <p className="max-w-96 text-lg">
               This is greg. He loves bread and he wants you to love bread too.
+              He has baked stuff for you to eat.
             </p>
 
             <a
-              className={buttonStyles({ className: 'mt-2 block' })}
+              className={buttonStyles({ className: 'mt-4 block px-8 py-2' })}
               href="#shop"
             >
               Buy Greg's Bread
@@ -52,7 +58,7 @@ export default function Home() {
               className={cn([
                 'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',
                 'lg:-bottom-16 lg:-right-8 lg:left-[unset] lg:w-44',
-                'xl:-bottom-12 xl:-right-14 xl:left-[unset] xl:w-44 xl:-rotate-[65deg]',
+                'xl:-bottom-12 xl:-right-[2.25rem] xl:left-[unset] xl:w-44 xl:-rotate-[50deg]',
                 'short:scale-90 extra-short:hidden',
               ])}
             />
@@ -61,7 +67,7 @@ export default function Home() {
               className={cn([
                 'absolute -right-6 -top-10 z-10 w-28',
                 'lg:-right-[unset] lg:-left-8 lg:-top-20 lg:w-44 lg:rotate-[80deg]',
-                'xl:-right-[unset] xl:-left-14 xl:-top-28 xl:w-56 xl:rotate-[80deg]',
+                'xl:-right-[unset] xl:-left-10 xl:-top-28 xl:w-56 xl:rotate-[80deg]',
                 'short:scale-90 extra-short:hidden',
               ])}
             />
@@ -74,7 +80,7 @@ export default function Home() {
       </header>
 
       <main>
-        <DividerOne className="max-w-full" />
+        <DividerOne />
 
         <div className="bg-brand-background-secondary">
           <div className="mx-auto flex max-w-7xl flex-col items-center px-6 py-12">
@@ -115,12 +121,11 @@ export default function Home() {
           </div>
         </div>
 
-        <DividerTwo className="max-w-full" />
+        <div id="shop" />
 
-        <div
-          className="mx-auto flex max-w-7xl flex-col items-center px-6 pb-12 pt-0 text-center"
-          id="shop"
-        >
+        <DividerTwo />
+
+        <div className="mx-auto flex max-w-7xl flex-col items-center px-6 pb-12 pt-0 text-center">
           <h2 className="section-title xs:mb-0 mb-10">these are the breads</h2>
 
           <CircleScribble className="xs:block pointer-events-none -mt-[6.25rem] mb-10 hidden w-[21rem] pl-2 sm:-mt-[6.75rem] sm:w-[34rem]" />

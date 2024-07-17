@@ -30,7 +30,7 @@ export function Faqs({ className }: { className?: string }) {
     <div className={className}>
       {content.map(({ question, answer }) => (
         <details
-          className="border-brand-primary group border-b py-3 first:border-t"
+          className="border-brand-primary group cursor-pointer border-b py-3 first:border-t"
           key={question}
         >
           <summary className="summary font-pangram flex items-center justify-between text-2xl group-open:font-semibold">

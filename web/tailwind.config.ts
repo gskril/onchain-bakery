@@ -23,6 +23,9 @@ const config: Config = {
             primary: '#FFF6EA',
             secondary: '#FFEED8',
           },
+          accent: {
+            purple: '#C8B5FF',
+          },
         },
       },
     },

@@ -25,6 +25,7 @@ const config: Config = {
           },
           accent: {
             purple: '#C8B5FF',
+            orange: '#F86232',
           },
         },
       },

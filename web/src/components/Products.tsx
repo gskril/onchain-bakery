@@ -6,7 +6,7 @@ import { useInventory } from '@/hooks/useInventory'
 export function Products() {
   const { cart, addToCart, removeFromCart } = useCart()
   const { data: ethPrice } = useEthPrice()
-  const inventory = useInventory({ filter: true })
+  const inventory = useInventory({})
 
   if (inventory.isLoading) {
     return <p className="text-center">Loading...</p>
@@ -59,6 +59,7 @@ export function Products() {
 
           <Button
             className="self-start"
+            disabled={product.quantity.formatted === 0}
             onClick={() => {
               if (cart.includes(product.id)) {
                 removeFromCart(product.id)
@@ -67,7 +68,11 @@ export function Products() {
               }
             }}
           >
-            {cart.includes(product.id) ? 'Remove from cart' : 'Add to cart'}
+            {product.quantity.formatted === 0
+              ? 'Sold out'
+              : cart.includes(product.id)
+                ? 'Remove from cart'
+                : 'Add to cart'}
           </Button>
         </div>
       ))}

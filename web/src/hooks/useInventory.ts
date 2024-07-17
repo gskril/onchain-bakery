@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { breadContract } from 'shared/contracts'
 import { formatEther } from 'viem'
-import { base } from 'viem/chains'
 import { usePublicClient } from 'wagmi'
 
 import { products } from '@/lib/products'
@@ -9,10 +8,9 @@ import { primaryChain, wagmiConfig } from '@/lib/web3'
 
 type Props = {
   tokenIds?: bigint[]
-  filter: boolean
 }
 
-export function useInventory({ tokenIds, filter }: Props) {
+export function useInventory({ tokenIds }: Props) {
   const viemClient = usePublicClient({
     config: wagmiConfig,
     chainId: primaryChain.id,
@@ -49,19 +47,7 @@ export function useInventory({ tokenIds, filter }: Props) {
         }
       })
 
-      let finalData
-
-      // If the filter is enabled, return only the products with inventory
-      // Otherwise, return all products
-      if (filter) {
-        finalData = productsWithInventory.filter(
-          (product) => product.quantity.formatted > 0
-        )
-      } else {
-        finalData = productsWithInventory
-      }
-
-      return finalData
+      return productsWithInventory
     },
   })
 }

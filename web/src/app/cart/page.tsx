@@ -22,6 +22,7 @@ import { useCart } from '@/hooks/useCart'
 import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
 import { useRequestOrder } from '@/hooks/useRequestOrder'
+import { cn } from '@/lib/utils'
 import { primaryChain } from '@/lib/web3'
 
 export default function Cart() {
@@ -30,22 +31,31 @@ export default function Cart() {
   const { cart, removeFromCart } = useCart()
   const { data: ethPrice } = useEthPrice()
   const { openConnectModal } = useConnectModal()
-  const { chains, switchChain } = useSwitchChain()
+  const { switchChain } = useSwitchChain()
   const contract = useWriteContract()
-  const inventory = useInventory({ tokenIds: cart, filter: false })
+  const inventory = useInventory({ tokenIds: cart })
+
+  const cartItemIdsInStock =
+    inventory.data
+      ?.filter((product) => product.quantity.formatted > 0)
+      .map((product) => product.id) || []
 
   const price = useReadContract({
     ...breadContract,
     chainId: primaryChain.id,
     functionName: 'price',
-    args: [address!, cart, cart.map(() => BigInt(1))],
+    args: [
+      address!,
+      cartItemIdsInStock,
+      cartItemIdsInStock.map(() => BigInt(1)),
+    ],
     query: { enabled: !!address },
   })
 
   const orderRequest = useRequestOrder({
     account: address,
-    ids: cart.map((id) => Number(id)),
-    quantities: cart.map(() => 1),
+    ids: cartItemIdsInStock.map((id) => Number(id)),
+    quantities: cartItemIdsInStock.map(() => 1),
   })
 
   const { data: canOrder } = useReadContract({
@@ -71,7 +81,12 @@ export default function Cart() {
     ...breadContract,
     chainId: primaryChain.id,
     functionName: 'buyBread',
-    args: [address!, cart, cart.map(() => BigInt(1)), orderRequest.data!],
+    args: [
+      address!,
+      cartItemIdsInStock,
+      cartItemIdsInStock.map(() => BigInt(1)),
+      orderRequest.data!,
+    ],
     value: totalPriceRaw,
     query: { enabled: !!canOrder },
   })
@@ -111,12 +126,20 @@ export default function Cart() {
                   key={item.id}
                   className="border-brand-primary grid w-full gap-4 border-b py-6 first:border-t md:grid-cols-[2fr,3fr,8fr]"
                 >
-                  <button
-                    className="m-0 h-fit w-fit"
-                    onClick={() => removeFromCart(item.id)}
-                  >
-                    ✖︎ remove
-                  </button>
+                  <div>
+                    <button
+                      className="m-0 h-fit w-fit"
+                      onClick={() => removeFromCart(item.id)}
+                    >
+                      ✖︎ remove
+                    </button>
+
+                    {item.quantity.formatted === 0 && (
+                      <p className="font-pangram text-brand-accent-orange font-semibold">
+                        SOLD OUT
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <p>{item.name}</p>
                     <p>{item.price.formatted} ETH</p>
@@ -124,7 +147,10 @@ export default function Cart() {
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="border-brand-primary h-32 w-32 rounded-lg border"
+                    className={cn(
+                      'border-brand-primary h-32 w-32 rounded-lg border',
+                      item.quantity.formatted === 0 && 'saturate-0'
+                    )}
                   />
                 </div>
               ))}

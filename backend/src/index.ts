@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { createPublicClient, webSocket } from 'viem'
+import { createPublicClient, http } from 'viem'
 
 import { breadContract } from './contracts.js'
 import { Neynar } from './neynar.js'
@@ -9,8 +9,10 @@ type Required<T> = {
   [P in keyof T]-?: T[P]
 }
 
+console.log('Starting notifier')
+
 const client = createPublicClient({
-  transport: webSocket(process.env.WEB_SOCKET_URL),
+  transport: http(process.env.RPC_URL),
 })
 
 const neynar = new Neynar(process.env.NEYNAR_API_KEY)
@@ -21,7 +23,7 @@ client.watchContractEvent({
   onLogs: async (logs) => {
     for (const log of logs) {
       type LogArgs = typeof log.args
-      const { account, ids, quantities, price } = log.args as Required<LogArgs>
+      const { account } = log.args as Required<LogArgs>
 
       const farcasterAccount =
         await neynar.getFarcasterAccountByAddress(account)

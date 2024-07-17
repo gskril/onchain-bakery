@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "web:build": "pnpm --filter=web build",
-    "web:dev": "pnpm --filter=web dev"
+    "web:dev": "pnpm --filter=web dev",
+    "backend:build": "pnpm --filter=backend build",
+    "backend:start": "pnpm --filter=backend dev"
   },
   "engines": {
     "node": ">=18"

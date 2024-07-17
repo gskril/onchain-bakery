@@ -18,15 +18,12 @@ export async function GET(
   }
 
   const { id } = safeParse.data
-
   const product = products.find((product) => product.id === id)
-
-  const VERCEL_URL = process.env.VERCEL_URL
-  const baseUrl = VERCEL_URL ? `https://${VERCEL_URL}` : 'http://localhost:3000'
+  const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000').origin
 
   const metadata = {
     name: product?.name,
-    image: `${baseUrl}/api/metadata/bread/${id}/image`,
+    image: `${DOMAIN}/api/metadata/bread/${id}/image`,
     description: product?.description,
   }
 

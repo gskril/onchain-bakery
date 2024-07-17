@@ -18,13 +18,11 @@ export async function GET(
     return NextResponse.json(safeParse.error, { status: 400 })
   }
 
-  const VERCEL_URL = process.env.VERCEL_URL
-  const baseUrl = VERCEL_URL ? `https://${VERCEL_URL}` : 'http://localhost:3000'
-
   const { id } = safeParse.data
+  const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000').origin
 
   if (id === BigInt(1)) {
-    return fetch(`${baseUrl}/nft/launch.png`)
+    return fetch(`${DOMAIN}/nft/launch.png`)
   }
 
   return new ImageResponse(

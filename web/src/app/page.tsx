@@ -24,9 +24,9 @@ export default function Home() {
 
       <header className="mx-auto grid max-w-[100rem] p-6 sm:p-12 lg:grid-cols-[7fr,4fr] lg:gap-10">
         <img
-          src="/hero-line.svg"
+          src="/misc/hero-line.svg"
           alt=""
-          className="absolute left-0 top-[70%] z-0 hidden w-full translate-y-[-70%] xl:block"
+          className="short:!hidden extra-tall:translate-y-[unset] extra-tall:top-[45rem] absolute left-0 top-[68%] z-0 hidden w-full translate-y-[-68%] xl:block"
         />
 
         <div className="flex w-full flex-col justify-between lg:order-2">
@@ -53,7 +53,7 @@ export default function Home() {
         </div>
 
         <div className="flex max-h-[89svh] justify-center lg:order-1 lg:overflow-hidden">
-          <div className="aspect-[3/4] rotate-2 scale-95 lg:-rotate-3 lg:scale-[80%] xl:-rotate-6 xl:scale-[92%]">
+          <div className="tall:!scale-[82%] aspect-[3/4] rotate-2 scale-95 lg:-rotate-3 lg:scale-[80%] xl:-rotate-6 xl:scale-[92%]">
             <BabkaSticker
               className={cn([
                 'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',

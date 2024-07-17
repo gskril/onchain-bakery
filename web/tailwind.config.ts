@@ -34,6 +34,8 @@ const config: Config = {
     plugin(({ addVariant }) => {
       addVariant('short', '@media(max-height:810px)')
       addVariant('extra-short', '@media(max-height:700px)')
+      addVariant('tall', '@media(min-height:970px)')
+      addVariant('extra-tall', '@media(min-height:1150px)')
     }),
   ],
 }

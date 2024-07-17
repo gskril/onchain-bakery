@@ -93,6 +93,28 @@ export default function AdminPage() {
               <Form.Input placeholder="Account" type="string" id="account" />
               <Form.Input placeholder="Data" type="string" id="data" />
             </Form>
+
+            <Form
+              title="URI"
+              button="Read"
+              handler={async (targets) => {
+                const { tokenId } = targets
+
+                if (!tokenId) {
+                  return alert('Fill out all fields')
+                }
+
+                const res = await viemClient.readContract({
+                  ...breadContract,
+                  functionName: 'uri',
+                  args: [BigInt(tokenId)],
+                })
+
+                alert(res)
+              }}
+            >
+              <Form.Input placeholder="Token ID" type="number" id="tokenId" />
+            </Form>
           </div>
 
           <div className="grid gap-12">

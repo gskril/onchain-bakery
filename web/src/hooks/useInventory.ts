@@ -21,7 +21,11 @@ export function useInventory({ tokenIds, filter }: Props) {
   return useQuery({
     queryKey: ['inventory'],
     queryFn: async () => {
-      const productIds = tokenIds || products.map((product) => product.id)
+      const productIds =
+        tokenIds ||
+        products
+          .filter((product) => product.active)
+          .map((product) => product.id)
 
       const inventory = await viemClient.readContract({
         ...breadContract,

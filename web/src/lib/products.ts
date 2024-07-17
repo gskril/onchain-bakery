@@ -1,15 +1,24 @@
 type Product = {
   id: bigint
+  active?: boolean
   name: string
   image: string
   description: string
-  ingredients: string
+  ingredients?: string
   illustration?: string
 }
 
 export const products: Product[] = [
   {
     id: BigInt(1),
+    name: 'Good Bread by Greg',
+    image: '/product/chocolate-loaf.jpg',
+    description:
+      'Celebratory NFT to commemorate the launch of Good Bread by Greg.',
+  },
+  {
+    id: BigInt(2),
+    active: true,
     name: 'chocolate sourdough',
     image: '/product/chocolate-loaf.jpg',
     description:
@@ -18,7 +27,8 @@ export const products: Product[] = [
       'flour, water, salt, brown sugar, cocoa powder, chocolate chips, vanilla.',
   },
   {
-    id: BigInt(2),
+    id: BigInt(3),
+    active: true,
     name: 'chocolate babka',
     image: '/product/babka.jpg',
     description:
@@ -27,7 +37,8 @@ export const products: Product[] = [
       'flour, water, salt, yeast, sugar, vanilla, whole milk, butter, eggs, chocolate chips, cocoa powder, cinnamon.',
   },
   {
-    id: BigInt(3),
+    id: BigInt(4),
+    active: true,
     name: 'snack pass',
     image: '/product/snack-pass.png',
     description:

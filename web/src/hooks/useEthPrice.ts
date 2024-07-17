@@ -1,5 +1,6 @@
 import { parseAbi } from 'viem'
 import { useReadContract } from 'wagmi'
+import { mainnet } from 'wagmi/chains'
 
 export function useEthPrice() {
   const sourceToken = {
@@ -11,7 +12,7 @@ export function useEthPrice() {
   const decimals = 18
 
   const res = useReadContract({
-    chainId: 1,
+    chainId: mainnet.id,
     address: '0x07D91f5fb9Bf7798734C3f606dB065549F6893bb', // 1inch Oracle
     abi: parseAbi([
       'function getRate(address srcsourceToken, address dstsourceToken, bool useWrappers) view returns (uint256 weightedRate)',

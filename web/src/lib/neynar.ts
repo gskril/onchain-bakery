@@ -1,27 +1,29 @@
 import { Address } from 'viem/accounts'
 
-import { NeynarVerificationData, NeynarVerificationError } from './neynar-types'
+import { NeynarError, NeynarVerificationData } from './neynar-types'
+
+const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY
+
+if (!NEYNAR_API_KEY) {
+  throw new Error('NEYNAR_API_KEY is not set')
+}
+
+const headers = {
+  accept: 'application/json',
+  api_key: NEYNAR_API_KEY,
+}
+
+const baseUrl = 'https://api.neynar.com/v2'
 
 export async function getFarcasterAccountByAddress(address: Address) {
-  const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY
-
-  if (!NEYNAR_API_KEY) {
-    throw new Error('NEYNAR_API_KEY is not set')
-  }
-
-  const baseUrl = 'https://api.neynar.com/v2/farcaster/user/bulk-by-address'
-
-  const res = await fetch(`${baseUrl}?addresses=${address}`, {
-    headers: {
-      accept: 'application/json',
-      api_key: NEYNAR_API_KEY,
-    },
+  const url = `${baseUrl}/farcaster/user/bulk-by-address`
+  const res = await fetch(`${url}?addresses=${address}&viewer_fid=347`, {
+    headers,
   })
-
   const data = await res.json()
 
   if (data.code) {
-    const error = data as NeynarVerificationError
+    const error = data as NeynarError
     return { error }
   }
 

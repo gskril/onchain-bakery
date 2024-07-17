@@ -62,7 +62,7 @@ export function Products() {
             disabled={cart.includes(product.id)}
             onClick={() => addToCart(product.id)}
           >
-            Add to cart
+            {cart.includes(product.id) ? 'In cart' : 'Add to cart'}
           </Button>
         </div>
       ))}

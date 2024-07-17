@@ -5,7 +5,7 @@ import { usePublicClient } from 'wagmi'
 
 import { breadContract } from '@/lib/contracts'
 import { products } from '@/lib/products'
-import { wagmiConfig } from '@/lib/web3'
+import { primaryChain, wagmiConfig } from '@/lib/web3'
 
 type Props = {
   tokenIds?: bigint[]
@@ -13,7 +13,10 @@ type Props = {
 }
 
 export function useInventory({ tokenIds, filter }: Props) {
-  const viemClient = usePublicClient({ config: wagmiConfig })
+  const viemClient = usePublicClient({
+    config: wagmiConfig,
+    chainId: primaryChain.id,
+  })
 
   return useQuery({
     queryKey: ['inventory'],

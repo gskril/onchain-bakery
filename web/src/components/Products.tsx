@@ -4,7 +4,7 @@ import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
 
 export function Products() {
-  const { cart, addToCart } = useCart()
+  const { cart, addToCart, removeFromCart } = useCart()
   const { data: ethPrice } = useEthPrice()
   const inventory = useInventory({ filter: true })
 
@@ -59,10 +59,15 @@ export function Products() {
 
           <Button
             className="self-start"
-            disabled={cart.includes(product.id)}
-            onClick={() => addToCart(product.id)}
+            onClick={() => {
+              if (cart.includes(product.id)) {
+                removeFromCart(product.id)
+              } else {
+                addToCart(product.id)
+              }
+            }}
           >
-            {cart.includes(product.id) ? 'In cart' : 'Add to cart'}
+            {cart.includes(product.id) ? 'Remove from cart' : 'Add to cart'}
           </Button>
         </div>
       ))}

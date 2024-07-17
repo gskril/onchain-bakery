@@ -84,11 +84,11 @@ export default function Cart() {
   return (
     <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
       <div className="mb-8 flex flex-col justify-between gap-2 sm:mb-14 sm:flex-row sm:items-center sm:gap-6">
-        <h1 className="section-title flex items-center gap-3">
-          <Link href="/">
+        <h1>
+          <Link href="/" className="section-title flex items-center gap-3">
             <img src="/misc/greg.svg" className="w-8" />
+            <span>Checkout</span>
           </Link>
-          <span>Checkout</span>
         </h1>
 
         <WalletProfile address={address} />

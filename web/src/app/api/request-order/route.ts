@@ -54,6 +54,9 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  // TODO: Improve this logic. Currently it will only allow for one order per drop
+  const claimId = keccak256(toHex(account + ':1'))
+
   const messageToSign = encodeAbiParameters(
     [
       { name: 'buyer', type: 'address' },
@@ -62,9 +65,8 @@ export async function POST(req: NextRequest) {
     ],
     [
       account,
-      // TODO: Improve this logic. Currently it will only allow for one order per drop
-      keccak256(toHex(account + ':1')),
-      BigInt(Math.floor(Date.now() / 1000) + 60), // 1 minute expiration
+      claimId,
+      BigInt(Math.floor(Date.now() / 1000) + 300), // 5 minute expiration
     ]
   )
 
@@ -81,5 +83,5 @@ export async function POST(req: NextRequest) {
     [messageToSign, signedMessage]
   )
 
-  return NextResponse.json({ data: encodedMessageAndData })
+  return NextResponse.json({ data: { encodedMessageAndData, claimId } })
 }

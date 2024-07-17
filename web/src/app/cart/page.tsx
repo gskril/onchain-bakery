@@ -10,6 +10,7 @@ import {
   useAccount,
   useChainId,
   useReadContract,
+  useReadContracts,
   useSimulateContract,
   useSwitchChain,
   useWaitForTransactionReceipt,
@@ -58,14 +59,28 @@ export default function Cart() {
     quantities: cartItemIdsInStock.map(() => 1),
   })
 
-  const { data: canOrder } = useReadContract({
-    ...breadContract,
-    chainId: primaryChain.id,
-    functionName: 'canOrder',
-    args: [address!, orderRequest.data!],
-    query: { enabled: !!address && !!orderRequest.data },
+  const { claimId, encodedMessageAndData } = orderRequest.data || {}
+
+  const { data: multicall } = useReadContracts({
+    query: { enabled: !!orderRequest.data },
+    contracts: [
+      {
+        ...breadContract,
+        chainId: primaryChain.id,
+        functionName: 'canOrder',
+        args: [address!, encodedMessageAndData!],
+      },
+      {
+        ...breadContract,
+        chainId: primaryChain.id,
+        functionName: 'usedClaims',
+        args: [claimId!],
+      },
+    ],
   })
 
+  const canOrder = multicall?.[0].result
+  const usedClaim = multicall?.[1].result
   const totalPriceRaw = price.data?.[0]
   const discountRaw = price.data?.[1]
   const totalPriceFormatted = formatEther(totalPriceRaw || BigInt(0))
@@ -85,7 +100,7 @@ export default function Cart() {
       address!,
       cartItemIdsInStock,
       cartItemIdsInStock.map(() => BigInt(1)),
-      orderRequest.data!,
+      encodedMessageAndData!,
     ],
     value: totalPriceRaw,
     query: { enabled: !!canOrder },
@@ -231,7 +246,9 @@ export default function Cart() {
                     <span className="text-right">
                       {orderRequest.error && orderRequest.error.message}
 
-                      {canOrder === false && 'You cannot place this order.'}
+                      {usedClaim
+                        ? 'Orders are limited to 1 per person per week.'
+                        : canOrder === false && 'You cannot place this order.'}
 
                       {simulation.error &&
                         ((simulation.error as BaseError).shortMessage ||

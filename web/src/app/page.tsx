@@ -134,7 +134,7 @@ export default function Home() {
         </div>
 
         <div className="mx-auto mt-6 flex flex-col items-center">
-          <h2 className="section-title mb-2 max-w-lg px-6 text-center sm:mb-4">
+          <h2 className="section-title mb-2 max-w-lg px-6 text-center sm:mb-3">
             Questions that we thought you might ask
           </h2>
 

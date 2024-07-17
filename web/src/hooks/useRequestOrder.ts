@@ -29,7 +29,7 @@ export function useRequestOrder({
         throw new Error(json.error)
       }
 
-      return json.data as Hex
+      return json.data as { claimId: Hex; encodedMessageAndData: Hex }
     },
   })
 }

@@ -6,17 +6,16 @@ const content = [
   {
     question: 'When can I place an order?',
     answer:
-      'New breads will be listed on Wednesday mornings at 1pm ET on this website.',
+      'New breads will be listed on Wednesdays afternoons on this website.',
   },
   {
     question: 'How do I pay for my order?',
-    answer:
-      'You can pay with ETH on Base, OP Mainnet, Arbitrum, or Ethereum Mainnet. Orders settle on Base.',
+    answer: 'To start, we are only accepting ETH on Base.',
   },
   {
     question: 'How do I get my bread?',
     answer:
-      'You will recieve a direct message from @greg on Warpcast by Friday evening with detailed pickup instructions for Saturday afternoon. Pickup will be in a group setting in Manhattan.',
+      'You will recieve a direct message from @greg on Warpcast by Friday evening with detailed pickup instructions. Pickup will be in a group setting in Manhattan over the weekend.',
   },
   {
     question: 'Why do I need a farcaster account to buy bread?',
@@ -30,10 +29,10 @@ export function Faqs({ className }: { className?: string }) {
     <div className={className}>
       {content.map(({ question, answer }) => (
         <details
-          className="border-brand-primary group cursor-pointer border-b py-3 first:border-t"
+          className="border-brand-primary group border-b py-3 first:border-t"
           key={question}
         >
-          <summary className="summary font-pangram flex items-center justify-between text-2xl group-open:font-semibold">
+          <summary className="summary font-pangram flex cursor-pointer items-center justify-between text-2xl group-open:font-semibold">
             <span>{question}</span>
             <Arrow className="group-open:rotate-180" />
           </summary>

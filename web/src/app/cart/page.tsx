@@ -4,7 +4,15 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { formatEther } from 'viem'
-import { useAccount, useReadContract } from 'wagmi'
+import { baseSepolia } from 'viem/chains'
+import {
+  BaseError,
+  useAccount,
+  useReadContract,
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi'
 
 import { Button } from '@/components/Button'
 import { WalletProfile } from '@/components/WalletProfile'
@@ -19,8 +27,8 @@ export default function Cart() {
   const { cart, removeFromCart } = useCart()
   const { data: ethPrice } = useEthPrice()
   const { openConnectModal } = useConnectModal()
+  const contract = useWriteContract()
   const inventory = useInventory({ tokenIds: cart, filter: false })
-  const quantities = cart.map(() => 1)
 
   const price = useReadContract({
     ...breadContract,
@@ -32,10 +40,8 @@ export default function Cart() {
   const orderRequest = useRequestOrder({
     account: address,
     ids: cart.map((id) => Number(id)),
-    quantities,
+    quantities: cart.map(() => 1),
   })
-
-  console.log(orderRequest)
 
   const totalPriceRaw = price.data?.[0]
   const discountRaw = price.data?.[1]
@@ -47,6 +53,17 @@ export default function Cart() {
     inventory.refetch()
     price.refetch()
   }, [cart])
+
+  const simulation = useSimulateContract({
+    ...breadContract,
+    chainId: baseSepolia.id,
+    functionName: 'buyBread',
+    args: [address!, cart, cart.map(() => BigInt(1)), orderRequest.data!],
+    value: totalPriceRaw,
+    query: { enabled: !!address && !!orderRequest.data },
+  })
+
+  const receipt = useWaitForTransactionReceipt({ hash: contract.data })
 
   return (
     <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
@@ -82,28 +99,26 @@ export default function Cart() {
                     className="m-0 h-fit w-fit"
                     onClick={() => removeFromCart(item.id)}
                   >
-                    ✖︎ Remove
+                    ✖︎ remove
                   </button>
                   <div>
                     <p>{item.name}</p>
                     <p>{item.price.formatted} ETH</p>
                   </div>
-                  <div className="">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="border-brand-primary h-32 w-32 rounded-lg border"
-                    />
-                  </div>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="border-brand-primary h-32 w-32 rounded-lg border"
+                  />
                 </div>
               ))}
             </div>
             <div className="mt-2 self-end text-right">
-              {discountFormatted && <p>discount: {discountFormatted} ETH</p>}
-              <p>
+              {discountRaw && <p>discount: {discountFormatted} ETH</p>}
+              <p className="font-semibold">
                 total: {totalPriceFormatted} ETH{' '}
                 {ethPrice &&
-                  `${(Number(totalPriceFormatted) * ethPrice).toFixed(0)} USD`}
+                  `($${(Number(totalPriceFormatted) * ethPrice).toFixed(0)} USD)`}
               </p>
               {ethPrice && <p></p>}
             </div>
@@ -116,14 +131,55 @@ export default function Cart() {
                   )
                 }
 
+                if (receipt.isSuccess) {
+                  return (
+                    <>
+                      <Button disabled>Order placed!</Button>
+                      <span className="text-right">
+                        You should get a message on Warpcast shortly.
+                      </span>
+                    </>
+                  )
+                }
+
+                if (receipt.isLoading) {
+                  return (
+                    <Button disabled loading>
+                      Processing transaction
+                    </Button>
+                  )
+                }
+
+                if (contract.isPending) {
+                  return (
+                    <Button disabled loading>
+                      Confirm in wallet
+                    </Button>
+                  )
+                }
+
                 return (
                   <>
-                    <Button disabled={!orderRequest.data}>Buy Bread</Button>
+                    <Button
+                      disabled={!simulation.data}
+                      loading={orderRequest.isLoading || simulation.isLoading}
+                      onClick={() => {
+                        if (!simulation.data) {
+                          return alert("Transaction hasn't been simulated yet.")
+                        }
+
+                        contract.writeContract(simulation.data.request)
+                      }}
+                    >
+                      Buy Bread
+                    </Button>
 
                     <span className="text-right">
-                      {orderRequest.error && (
-                        <p>{orderRequest.error.message}</p>
-                      )}
+                      {orderRequest.error && orderRequest.error.message}
+
+                      {simulation.error &&
+                        ((simulation.error as BaseError).shortMessage ||
+                          'Simulated transaction failed.')}
                     </span>
                   </>
                 )

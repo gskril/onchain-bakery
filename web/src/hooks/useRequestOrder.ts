@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { Hex } from 'viem'
 
 import { OrderRequest } from '@/app/api/request-order/route'
 
@@ -28,7 +29,7 @@ export function useRequestOrder({
         throw new Error(json.error)
       }
 
-      return json.data as string
+      return json.data as Hex
     },
   })
 }

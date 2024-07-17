@@ -21,7 +21,7 @@ export const wagmiConfig = createConfig({
   connectors,
   transports: {
     [base.id]: http(),
-    [baseSepolia.id]: http(),
+    [baseSepolia.id]: http(process.env.BASE_RPC),
     [mainnet.id]: http(),
   },
 })

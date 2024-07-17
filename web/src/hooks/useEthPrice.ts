@@ -26,5 +26,5 @@ export function useEthPrice() {
   const conversionFactor = numerator / (1e18 * denominator)
   const price = 1 / (Number(res.data) * conversionFactor)
 
-  return { ...res, data: price }
+  return { ...res, data: res.data ? price : undefined }
 }

@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import { breadContract } from 'shared/contracts'
 import { formatEther } from 'viem'
-import { baseSepolia } from 'viem/chains'
 import {
   BaseError,
   useAccount,
+  useChainId,
   useReadContract,
   useSimulateContract,
+  useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi'
@@ -21,17 +22,21 @@ import { useCart } from '@/hooks/useCart'
 import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
 import { useRequestOrder } from '@/hooks/useRequestOrder'
+import { primaryChain } from '@/lib/web3'
 
 export default function Cart() {
   const { address } = useAccount()
+  const chainId = useChainId()
   const { cart, removeFromCart } = useCart()
   const { data: ethPrice } = useEthPrice()
   const { openConnectModal } = useConnectModal()
+  const { chains, switchChain } = useSwitchChain()
   const contract = useWriteContract()
   const inventory = useInventory({ tokenIds: cart, filter: false })
 
   const price = useReadContract({
     ...breadContract,
+    chainId: primaryChain.id,
     functionName: 'price',
     args: [address!, cart, cart.map(() => BigInt(1))],
     query: { enabled: !!address },
@@ -41,6 +46,14 @@ export default function Cart() {
     account: address,
     ids: cart.map((id) => Number(id)),
     quantities: cart.map(() => 1),
+  })
+
+  const { data: canOrder } = useReadContract({
+    ...breadContract,
+    chainId: primaryChain.id,
+    functionName: 'canOrder',
+    args: [address!, orderRequest.data!],
+    query: { enabled: !!address && !!orderRequest.data },
   })
 
   const totalPriceRaw = price.data?.[0]
@@ -56,14 +69,17 @@ export default function Cart() {
 
   const simulation = useSimulateContract({
     ...breadContract,
-    chainId: baseSepolia.id,
+    chainId: primaryChain.id,
     functionName: 'buyBread',
     args: [address!, cart, cart.map(() => BigInt(1)), orderRequest.data!],
     value: totalPriceRaw,
-    query: { enabled: !!address && !!orderRequest.data },
+    query: { enabled: !!canOrder },
   })
 
-  const receipt = useWaitForTransactionReceipt({ hash: contract.data })
+  const receipt = useWaitForTransactionReceipt({
+    hash: contract.data,
+    chainId: primaryChain.id,
+  })
 
   return (
     <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
@@ -160,6 +176,16 @@ export default function Cart() {
                   )
                 }
 
+                if (chainId !== primaryChain.id) {
+                  return (
+                    <Button
+                      onClick={() => switchChain({ chainId: primaryChain.id })}
+                    >
+                      Switch network
+                    </Button>
+                  )
+                }
+
                 return (
                   <>
                     <Button
@@ -178,6 +204,8 @@ export default function Cart() {
 
                     <span className="text-right">
                       {orderRequest.error && orderRequest.error.message}
+
+                      {canOrder === false && 'You cannot place this order.'}
 
                       {simulation.error &&
                         ((simulation.error as BaseError).shortMessage ||

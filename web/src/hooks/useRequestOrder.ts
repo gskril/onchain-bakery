@@ -11,8 +11,8 @@ export function useRequestOrder({
   return useQuery({
     queryKey: ['order', account, ids, quantities],
     queryFn: async () => {
-      if (!account || !ids || !quantities) {
-        return undefined
+      if (!account || ids?.length === 0 || quantities?.length === 0) {
+        return null
       }
 
       const response = await fetch('/api/request-order', {

@@ -2,7 +2,7 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { breadContract } from 'shared/contracts'
-import { formatEther, isAddress, keccak256, parseEther, toHex } from 'viem'
+import { Hex, formatEther, isAddress, keccak256, parseEther, toHex } from 'viem'
 import { usePublicClient, useWriteContract } from 'wagmi'
 
 import { Form } from '@/components/Form'
@@ -69,6 +69,29 @@ export default function AdminPage() {
             >
               <Form.Input placeholder="Account" type="string" id="account" />
               <Form.Input placeholder="Role" type="string" id="role" />
+            </Form>
+
+            <Form
+              title="Can Order"
+              button="Read"
+              handler={async (targets) => {
+                const { account, data } = targets
+
+                if (!isAddress(account) || !data) {
+                  return alert('Fill out all fields')
+                }
+
+                const res = await viemClient.readContract({
+                  ...breadContract,
+                  functionName: 'canOrder',
+                  args: [account, data as Hex],
+                })
+
+                alert(res ? 'Yes' : 'No')
+              }}
+            >
+              <Form.Input placeholder="Account" type="string" id="account" />
+              <Form.Input placeholder="Data" type="string" id="data" />
             </Form>
           </div>
 

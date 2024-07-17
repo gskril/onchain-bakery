@@ -1,4 +1,5 @@
 packages:
   - 'contracts'
+  - 'backend'
   - 'shared'
   - 'web'

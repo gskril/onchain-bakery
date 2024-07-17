@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node ./dist/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "viem": "^2.17.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20"
+  }
+}

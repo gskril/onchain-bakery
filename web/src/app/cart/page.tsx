@@ -115,12 +115,14 @@ export default function Cart() {
             </div>
             <div className="mt-2 self-end text-right">
               {discountRaw && <p>discount: {discountFormatted} ETH</p>}
-              <p className="font-semibold">
-                total: {totalPriceFormatted} ETH{' '}
-                {ethPrice &&
-                  `($${(Number(totalPriceFormatted) * ethPrice).toFixed(0)} USD)`}
-              </p>
-              {ethPrice && <p></p>}
+
+              {!!totalPriceRaw && (
+                <p className="font-semibold">
+                  total: {totalPriceFormatted} ETH{' '}
+                  {ethPrice &&
+                    `($${(Number(totalPriceFormatted) * ethPrice).toFixed(0)} USD)`}
+                </p>
+              )}
             </div>
 
             <div className="mt-12 flex flex-col items-end gap-2">

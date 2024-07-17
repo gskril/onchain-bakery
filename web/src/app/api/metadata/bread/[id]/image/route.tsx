@@ -24,7 +24,7 @@ export async function GET(
   const { id } = safeParse.data
 
   if (id === BigInt(1)) {
-    return fetch(`${baseUrl}/nfts/launch.png`)
+    return fetch(`${baseUrl}/nft/launch.png`)
   }
 
   return new ImageResponse(

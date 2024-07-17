@@ -12,7 +12,7 @@ export const products: Product[] = [
   {
     id: BigInt(1),
     name: 'Good Bread by Greg',
-    image: '/product/chocolate-loaf.jpg',
+    image: '/nft/launch.png',
     description:
       'Celebratory NFT to commemorate the launch of Good Bread by Greg.',
   },

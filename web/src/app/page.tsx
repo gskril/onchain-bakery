@@ -53,7 +53,12 @@ export default function Home() {
         </div>
 
         <div className="flex max-h-[89svh] justify-center lg:order-1 lg:overflow-hidden">
-          <div className="tall:!scale-[82%] aspect-[3/4] rotate-2 scale-95 lg:-rotate-3 lg:scale-[80%] xl:-rotate-6 xl:scale-[92%]">
+          <div
+            className={cn([
+              'aspect-[3/4] h-full rotate-2 scale-95',
+              'tall:!scale-[82%] lg:-rotate-3 lg:scale-[80%] xl:-rotate-6 xl:scale-[92%]',
+            ])}
+          >
             <BabkaSticker
               className={cn([
                 'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',

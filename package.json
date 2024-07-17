@@ -1,6 +1,10 @@
 {
   "name": "onchain-bakery",
   "private": true,
+  "scripts": {
+    "web:build": "pnpm --filter=web build",
+    "web:dev": "pnpm --filter=web dev"
+  },
   "engines": {
     "node": ">=18"
   },

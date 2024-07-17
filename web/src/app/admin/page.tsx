@@ -1,12 +1,12 @@
 'use client'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { breadContract } from 'shared/contracts'
 import { formatEther, isAddress, keccak256, parseEther, toHex } from 'viem'
 import { usePublicClient, useWriteContract } from 'wagmi'
 
 import { Form } from '@/components/Form'
 import { useEvents } from '@/hooks/useEvents'
-import { breadContract } from '@/lib/contracts'
 import { wagmiConfig } from '@/lib/web3'
 
 export default function AdminPage() {

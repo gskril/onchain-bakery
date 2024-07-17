@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
+import { breadContract } from 'shared/contracts'
 import { formatEther } from 'viem'
 import { base } from 'viem/chains'
 import { usePublicClient } from 'wagmi'
 
-import { breadContract } from '@/lib/contracts'
 import { products } from '@/lib/products'
 import { primaryChain, wagmiConfig } from '@/lib/web3'
 

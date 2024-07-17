@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
+import { breadContract } from 'shared/contracts'
 import { decodeEventLog } from 'viem'
 import { usePublicClient } from 'wagmi'
 
-import { breadContract } from '@/lib/contracts'
 import { wagmiConfig } from '@/lib/web3'
 
 export function useEvents(hash?: string) {

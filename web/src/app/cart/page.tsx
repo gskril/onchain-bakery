@@ -3,6 +3,7 @@
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 import { useEffect } from 'react'
+import { breadContract } from 'shared/contracts'
 import { formatEther } from 'viem'
 import { baseSepolia } from 'viem/chains'
 import {
@@ -20,7 +21,6 @@ import { useCart } from '@/hooks/useCart'
 import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
 import { useRequestOrder } from '@/hooks/useRequestOrder'
-import { breadContract } from '@/lib/contracts'
 
 export default function Cart() {
   const { address } = useAccount()

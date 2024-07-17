@@ -1,4 +1,4 @@
-import { Address } from 'viem/accounts'
+export type Address = `0x${string}`
 
 type NeynarUser = {
   object: string

@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Neynar } from 'shared/neynar'
 import { Hex, encodeAbiParameters, keccak256, toHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { isAddress } from 'viem/utils'
 import { z } from 'zod'
-
-import { getFarcasterAccountByAddress } from '@/lib/neynar'
 
 const schema = z.object({
   account: z.string().refine(isAddress, { message: 'Invalid address' }),
@@ -31,7 +30,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Quantity must be 1' }, { status: 400 })
   }
 
-  const farcasterAccount = await getFarcasterAccountByAddress(account)
+  const neynar = new Neynar(process.env.NEYNAR_API_KEY)
+  const farcasterAccount = await neynar.getFarcasterAccountByAddress(account)
 
   if (farcasterAccount.error) {
     return NextResponse.json(farcasterAccount.error, { status: 400 })

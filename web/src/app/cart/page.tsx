@@ -2,6 +2,7 @@
 
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { useEffect } from 'react'
 import { breadContract } from 'shared/contracts'
 import { formatEther } from 'viem'
@@ -191,14 +192,7 @@ export default function Cart() {
                 }
 
                 if (receipt.isSuccess) {
-                  return (
-                    <>
-                      <Button disabled>Order placed!</Button>
-                      <span className="text-right">
-                        You should get a message on Warpcast shortly.
-                      </span>
-                    </>
-                  )
+                  redirect('/cart/success')
                 }
 
                 if (receipt.isLoading) {

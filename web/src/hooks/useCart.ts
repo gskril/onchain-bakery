@@ -2,9 +2,7 @@ import { useLocalStorage } from 'usehooks-ts'
 
 export function useCart() {
   // useLocalStorage() doesn't like bigints, so we store them as numbers internally but export them as bigint for better type safety in other files
-  const [_cart, setCart] = useLocalStorage<Array<number>>('cart', [], {
-    initializeWithValue: false,
-  })
+  const [_cart, setCart] = useLocalStorage<Array<number>>('cart', [])
 
   const cart = _cart.map((i) => BigInt(i))
 

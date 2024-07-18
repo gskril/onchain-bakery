@@ -3,26 +3,17 @@
 import JSConfetti from 'js-confetti'
 import { useEffect, useRef } from 'react'
 import React from 'react'
+import { useIsMounted } from 'usehooks-ts'
+import { useAccount } from 'wagmi'
 
+import { buttonStyles } from '@/components/Button'
 import { useCart } from '@/hooks/useCart'
 
-function generateRandomNumber(
-  min: number,
-  max: number,
-  fractionDigits = 0
-): number {
-  const randomNumber = Math.random() * (max - min) + min
-
-  return Math.floor(randomNumber * 10 ** fractionDigits) / 10 ** fractionDigits
-}
-
-function generateRandomArrayElement<T>(arr: T[]): T {
-  return arr[generateRandomNumber(0, arr.length)]
-}
-
 export default function Success() {
+  const { address } = useAccount()
   const { cart, removeFromCart } = useCart()
   const jsConfettiRef = useRef<JSConfetti>()
+  const isMounted = useIsMounted()
 
   useEffect(() => {
     // Empty the cart after a successful purchase
@@ -46,11 +37,11 @@ export default function Success() {
     <>
       <main className="flex min-h-svh flex-col justify-between gap-12">
         <div className="max-w-xl self-end px-6 py-12">
-          <h1 className="font-pangram mb-6 text-6xl font-semibold">
+          <h1 className="font-pangram text-6xl font-semibold">
             thanks for buying greg&apos;s bread!
           </h1>
 
-          <p className="text-lg">
+          <p className="mb-3 mt-6 text-lg">
             you should get a message from{' '}
             <a
               className="underline"
@@ -61,6 +52,15 @@ export default function Success() {
             </a>{' '}
             on warpcast shortly.
           </p>
+
+          {isMounted() && address && (
+            <a
+              className={buttonStyles()}
+              href={`https://rainbow.me/profile/${address}?family=base/0xB2EAD6Bd8129752715C3F94A6f90f9745540515e`}
+            >
+              View NFTs
+            </a>
+          )}
         </div>
 
         <img

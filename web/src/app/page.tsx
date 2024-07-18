@@ -32,7 +32,7 @@ export default function Home() {
         <div className="flex w-full flex-col justify-between lg:order-2">
           <div />
 
-          <Logo className="max-w-44 pb-8 sm:max-w-60 lg:max-w-80" />
+          <Logo className="max-w-52 pb-4 sm:max-w-60 sm:pb-8 lg:max-w-80" />
           <div className="py-8 pr-0 lg:py-0 lg:pb-1 lg:pr-6 lg:pt-8">
             <span className="font-pangram mb-1 block text-2xl font-extrabold">
               Made with love, built on Ethereum

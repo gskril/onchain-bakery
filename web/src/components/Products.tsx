@@ -9,11 +9,15 @@ export function Products() {
   const inventory = useInventory({})
 
   if (inventory.isLoading) {
-    return <p className="text-center">Loading...</p>
+    return <p className="text-center text-lg">Loading...</p>
   }
 
   if (!inventory.data || inventory.data.length === 0) {
-    return <p className="text-center">No bread available right now &#9785;</p>
+    return (
+      <p className="text-center text-lg">
+        No bread available right now &#9785;
+      </p>
+    )
   }
 
   return (

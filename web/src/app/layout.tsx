@@ -1,6 +1,7 @@
 import '@rainbow-me/rainbowkit/styles.css'
 import { getFrameMetadata } from 'frog/next'
 import type { Metadata } from 'next'
+import PlausibleProvider from 'next-plausible'
 import localFont from 'next/font/local'
 
 import { ClientProviders } from '@/components/ClientProviders'
@@ -94,6 +95,8 @@ export default function RootLayout({
         <link rel="preload" href="/carousel/dot2-filled.svg" as="image" />
         <link rel="preload" href="/carousel/dot3-filled.svg" as="image" />
         <link rel="preload" href="/carousel/dot4-filled.svg" as="image" />
+
+        <PlausibleProvider domain="goodbread.nyc" trackOutboundLinks />
       </head>
 
       <body className="bg-brand-background-primary text-brand-primary">

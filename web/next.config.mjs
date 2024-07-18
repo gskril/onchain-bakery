@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+import { withPlausibleProxy } from 'next-plausible'
+
 const nextConfig = {
   reactStrictMode: true,
   webpack: (config) => {
@@ -8,4 +10,4 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+export default withPlausibleProxy()(nextConfig)

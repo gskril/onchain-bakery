@@ -77,6 +77,7 @@ importers:
       hono: ^4.5.0
       js-confetti: ^0.12.0
       next: 14.2.3
+      next-plausible: ^3.12.0
       pino-pretty: ^11.1.0
       postcss: ^8
       prettier: ^3.3.1
@@ -102,6 +103,7 @@ importers:
       hono: 4.5.0
       js-confetti: 0.12.0
       next: 14.2.3_nnrd3gsncyragczmpvfhocinkq
+      next-plausible: 3.12.0_ltovtef2igdo24amj746kuxosm
       pino-pretty: 11.2.1
       react: 18.3.1
       react-dom: 18.3.1_react@18.3.1
@@ -6018,6 +6020,18 @@ packages:
   /neo-async/2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
+
+  /next-plausible/3.12.0_ltovtef2igdo24amj746kuxosm:
+    resolution: {integrity: sha512-SSkEqKQ6PgR8fx3sYfIAT69k2xuCUXO5ngkSS19CjxY97lAoZxsfZpYednxB4zo0mHYv87JzhPynrdBPlCBVHg==}
+    peerDependencies:
+      next: ^11.1.0 || ^12.0.0 || ^13.0.0 || ^14.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      next: 14.2.3_nnrd3gsncyragczmpvfhocinkq
+      react: 18.3.1
+      react-dom: 18.3.1_react@18.3.1
+    dev: false
 
   /next/14.2.3_nnrd3gsncyragczmpvfhocinkq:
     resolution: {integrity: sha512-dowFkFTR8v79NPJO4QsBUtxv0g9BrS/phluVpMAt2ku7H+cbcBJlopXjkWlwxrk/xGqMemr7JkGPGemPrLLX7A==}

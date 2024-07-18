@@ -33,7 +33,7 @@ export default function Home() {
           <div />
 
           <Logo className="max-w-44 pb-8 sm:max-w-60 lg:max-w-80" />
-          <div className="py-8 pr-0 lg:py-0 lg:pb-1 lg:pr-6 lg:pt-8">
+          <div className="py-8 pr-0 lowercase lg:py-0 lg:pb-1 lg:pr-6 lg:pt-8">
             <span className="font-pangram mb-1 block text-2xl font-extrabold">
               Made with love, built on Ethereum
             </span>
@@ -138,7 +138,7 @@ export default function Home() {
           <Products />
         </div>
 
-        <div className="mx-auto mt-6 flex flex-col items-center">
+        <div className="mx-auto mt-6 flex flex-col items-center lowercase">
           <h2 className="section-title mb-2 max-w-lg px-6 text-center sm:mb-3">
             Questions that we thought you might ask
           </h2>

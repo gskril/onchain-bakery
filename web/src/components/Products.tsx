@@ -35,7 +35,7 @@ export function Products() {
 
             <hr className="border-brand-primary w-full" />
 
-            <p className="leading-5">{product.description}</p>
+            <p className="lowercase leading-5">{product.description}</p>
 
             <hr className="border-brand-primary w-[20%]" />
 

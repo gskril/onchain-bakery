@@ -10,7 +10,7 @@ import './globals.css'
 
 export async function generateMetadata(): Promise<Metadata> {
   const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000')
-  const frameMetadata = await getFrameMetadata(`${DOMAIN}/api/frame`)
+  const frameMetadata = await getFrameMetadata(`${DOMAIN.origin}/api/frame`)
 
   return {
     title: 'Good Bread by Greg',

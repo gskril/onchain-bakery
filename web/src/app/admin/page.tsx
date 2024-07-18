@@ -139,7 +139,7 @@ export default function AdminPage() {
               <Form.Input
                 placeholder="Price (ETH)"
                 type="number"
-                step="0.001"
+                step="0.000001"
                 id="price"
               />
             </Form>
@@ -326,6 +326,46 @@ export default function AdminPage() {
                 step="0.001"
                 id="amount"
               />
+            </Form>
+
+            <Form
+              title="Grant Role"
+              handler={(targets) => {
+                const { account, role } = targets
+
+                if (!isAddress(account) || !role) {
+                  return alert('Fill out all fields')
+                }
+
+                writeContract({
+                  ...breadContract,
+                  functionName: 'grantRole',
+                  args: [account, keccak256(toHex(role))],
+                })
+              }}
+            >
+              <Form.Input placeholder="Account" type="string" id="account" />
+              <Form.Input placeholder="Role" type="string" id="role" />
+            </Form>
+
+            <Form
+              title="Revoke Role"
+              handler={(targets) => {
+                const { account, role } = targets
+
+                if (!isAddress(account) || !role) {
+                  return alert('Fill out all fields')
+                }
+
+                writeContract({
+                  ...breadContract,
+                  functionName: 'revokeRole',
+                  args: [account, keccak256(toHex(role))],
+                })
+              }}
+            >
+              <Form.Input placeholder="Account" type="string" id="account" />
+              <Form.Input placeholder="Role" type="string" id="role" />
             </Form>
 
             <Form

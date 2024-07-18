@@ -3,10 +3,13 @@ import { breadContract } from 'shared/contracts'
 import { decodeEventLog } from 'viem'
 import { usePublicClient } from 'wagmi'
 
-import { wagmiConfig } from '@/lib/web3'
+import { primaryChain, wagmiConfig } from '@/lib/web3'
 
 export function useEvents(hash?: string) {
-  const viemClient = usePublicClient({ config: wagmiConfig })
+  const viemClient = usePublicClient({
+    config: wagmiConfig,
+    chainId: primaryChain.id,
+  })
 
   return useQuery({
     queryKey: ['events', hash],

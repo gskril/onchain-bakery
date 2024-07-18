@@ -5,11 +5,11 @@
     "dev": "hardhat node",
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy:bread-tenderly": "hardhat run scripts/deploy-bread.ts --network tenderly",
-    "deploy:bread-localhost": "hardhat run scripts/deploy-bread.ts --network localhost",
+    "deploy:bread-base": "hardhat run scripts/deploy-bread.ts --network base",
     "deploy:bread-baseSepolia": "hardhat run scripts/deploy-bread.ts --network baseSepolia",
-    "deploy:crosschainbread-tenderly": "hardhat run scripts/deploy-crosschainbread.ts --network tenderly",
-    "deploy:crosschainbread-localhost": "hardhat run scripts/deploy-crosschainbread.ts --network localhost",
+    "deploy:openminter-base": "hardhat run scripts/deploy-openminter.ts --network base",
+    "deploy:openminter-baseSepolia": "hardhat run scripts/deploy-openminter.ts --network baseSepolia",
+    "deploy:crosschainbread-base": "hardhat run scripts/deploy-crosschainbread.ts --network base",
     "deploy:crosschainbread-baseSepolia": "hardhat run scripts/deploy-crosschainbread.ts --network baseSepolia"
   },
   "devDependencies": {

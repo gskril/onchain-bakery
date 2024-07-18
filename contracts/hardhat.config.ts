@@ -22,10 +22,6 @@ const config: HardhatUserConfig = {
     localhost: {
       accounts: [DEPLOYER_KEY],
     },
-    tenderly: {
-      url: 'https://virtual.base.rpc.tenderly.co/6226ee33-4b44-4162-a0f8-9b01a7853db8',
-      accounts: [DEPLOYER_KEY],
-    },
   },
   solidity: {
     compilers: [

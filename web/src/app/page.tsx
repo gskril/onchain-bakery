@@ -64,7 +64,7 @@ export default function Home() {
                 'absolute -bottom-10 -left-4 z-10 w-28 -rotate-[60deg]',
                 'lg:-bottom-16 lg:-right-8 lg:left-[unset] lg:w-44',
                 'xl:-bottom-12 xl:-right-[2.25rem] xl:left-[unset] xl:w-44 xl:-rotate-[50deg]',
-                'short:scale-90 extra-short:hidden',
+                'short:scale-90',
               ])}
             />
 
@@ -73,7 +73,7 @@ export default function Home() {
                 'absolute -right-6 -top-10 z-10 w-28',
                 'lg:-right-[unset] lg:-left-8 lg:-top-20 lg:w-44 lg:rotate-[80deg]',
                 'xl:-right-[unset] xl:-left-10 xl:-top-28 xl:w-56 xl:rotate-[80deg]',
-                'short:scale-90 extra-short:hidden',
+                'short:scale-90',
               ])}
             />
 

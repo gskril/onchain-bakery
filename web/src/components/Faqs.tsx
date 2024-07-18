@@ -5,8 +5,7 @@ const content = [
   },
   {
     question: 'When can I place an order?',
-    answer:
-      'New breads will be listed on Wednesdays afternoons on this website.',
+    answer: 'New breads will be listed on Thursday afternoons on this website.',
   },
   {
     question: 'How do I pay for my order?',

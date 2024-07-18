@@ -20,7 +20,9 @@ export function Products() {
     <div className="grid items-stretch gap-10 md:grid-cols-3">
       {inventory.data.map((product) => (
         <div key={product.name} className="flex flex-col items-center">
-          <h3 className="font-pangram mb-2 text-3xl">{product.name}</h3>
+          <h3 className="font-pangram mb-2 text-3xl lowercase">
+            {product.name}
+          </h3>
 
           <img
             src={product.image}
@@ -41,7 +43,7 @@ export function Products() {
 
             <span className="font-pangram font-extrabold">ingredients</span>
 
-            <p className="leading-5">{product.ingredients}</p>
+            <p className="lowercase leading-5">{product.ingredients}</p>
 
             <hr className="border-brand-primary w-full" />
 

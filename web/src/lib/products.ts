@@ -19,12 +19,12 @@ export const products: Product[] = [
   {
     id: BigInt(2),
     active: true,
-    name: 'chocolate sourdough',
+    name: 'Chocolate Sourdough',
     image: '/product/chocolate-loaf.jpg',
     description:
-      'Chocolate sourdough is so yummy. It’s sourdough but it’s chocolate. Have it as a little toast or use it in a sandwich for a chocolatey twist.',
+      'Double chocolate sourdough loaf because more chocolate is always a good thing.',
     ingredients:
-      'flour, water, salt, brown sugar, cocoa powder, chocolate chips, vanilla.',
+      'Flour, water, salt, brown sugar, cocoa powder, chocolate chips, pure vanilla extract.',
   },
   {
     id: BigInt(3),
@@ -32,9 +32,9 @@ export const products: Product[] = [
     name: 'chocolate babka',
     image: '/product/babka.jpg',
     description:
-      'Chocolate babka is cool. you should eat it. here are some other facts about it. it’s a sweet little treat, you should def eat it.',
+      "Most normal people eat babka for dessert but there's nothing better than a warm slice for breakfast.",
     ingredients:
-      'flour, water, salt, yeast, sugar, vanilla, whole milk, butter, eggs, chocolate chips, cocoa powder, cinnamon.',
+      'Flour, water, salt, yeast, sugar, pure vanilla extract, whole milk, butter, eggs, chocolate chips, cocoa powder, cinnamon.',
   },
   {
     id: BigInt(4),
@@ -42,7 +42,8 @@ export const products: Product[] = [
     name: 'snack pass',
     image: '/product/snack-pass.png',
     description:
-      'don’t want to commit to a whole bread? get little breads. they’re snack sized and tiny and you get a small treat to have while you hang out at the events.',
-    ingredients: 'see the others.',
+      "Don't want to commit to a whole loaf? Come hang out and taste a few things instead.",
+    ingredients:
+      'See the other items for an idea. May include additional surprises that will be listed on the day of.',
   },
 ]

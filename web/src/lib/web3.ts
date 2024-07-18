@@ -14,7 +14,6 @@ const { connectors } = getDefaultWallets({
 })
 
 const chains = [base, baseSepolia, mainnet] as const
-export const primaryChain = baseSepolia
 
 export const wagmiConfig = createConfig({
   chains,

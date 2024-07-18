@@ -3,8 +3,9 @@ import { breadContract } from 'shared/contracts'
 import { formatEther } from 'viem'
 import { usePublicClient } from 'wagmi'
 
+import { primaryChain } from '@/lib/constants'
 import { products } from '@/lib/products'
-import { primaryChain, wagmiConfig } from '@/lib/web3'
+import { wagmiConfig } from '@/lib/web3'
 
 type Props = {
   tokenIds?: bigint[]

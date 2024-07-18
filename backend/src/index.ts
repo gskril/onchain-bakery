@@ -23,7 +23,14 @@ client.watchContractEvent({
   onLogs: async (logs) => {
     for (const log of logs) {
       type LogArgs = typeof log.args
-      const { account } = log.args as Required<LogArgs>
+      const { account, ids } = log.args as Required<LogArgs>
+
+      // Ignore open mints
+      const openMints = [1n]
+      if (ids.length === 1 && openMints.includes(ids[0])) {
+        console.log(`Ignoring open mint from ${account}`)
+        continue
+      }
 
       const farcasterAccount =
         await neynar.getFarcasterAccountByAddress(account)

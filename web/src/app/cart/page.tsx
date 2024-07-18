@@ -24,8 +24,8 @@ import { useCart } from '@/hooks/useCart'
 import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
 import { useRequestOrder } from '@/hooks/useRequestOrder'
+import { primaryChain } from '@/lib/constants'
 import { cn } from '@/lib/utils'
-import { primaryChain } from '@/lib/web3'
 
 export default function Cart() {
   const { address } = useAccount()

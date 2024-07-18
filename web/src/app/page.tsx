@@ -95,9 +95,9 @@ export default function Home() {
 
             {(() => {
               const steps = [
-                'order bread',
-                'pay on ethereum',
-                'pick up bread on the weekend in manhattan',
+                'Order bread',
+                'Pay on Ethereum',
+                'Pick up bread on the weekend in Manhattan',
               ]
 
               return (

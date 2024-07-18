@@ -1,7 +1,6 @@
 type Product = {
   id: bigint
   active?: boolean
-  fullLoaf?: boolean
   name: string
   image: string
   description: string
@@ -20,7 +19,6 @@ export const products: Product[] = [
   {
     id: BigInt(2),
     active: true,
-    fullLoaf: true,
     name: 'Chocolate sourdough',
     image: '/product/chocolate-loaf.jpg',
     description:
@@ -31,7 +29,6 @@ export const products: Product[] = [
   {
     id: BigInt(3),
     active: true,
-    fullLoaf: true,
     name: 'Chocolate babka',
     image: '/product/babka.jpg',
     description:

@@ -25,12 +25,15 @@ export class Neynar {
     const data = await res.json()
 
     if (data.code) {
-      const error = data as NeynarError
-      return { error }
+      if ((data as NeynarError).code === 'NotFound') {
+        return { error: 'Address is not associated with a Farcaster account' }
+      } else {
+        return { error: 'Error fetching Farcaster profile from address' }
+      }
     }
 
     const json = data as NeynarVerificationData
     const lowercaseAddress = address.toLowerCase() as Address
-    return { data: json?.[lowercaseAddress]?.[0] }
+    return { data: json[lowercaseAddress][0] }
   }
 }

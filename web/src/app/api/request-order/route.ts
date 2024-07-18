@@ -34,11 +34,11 @@ export async function POST(req: NextRequest) {
   const farcasterAccount = await neynar.getFarcasterAccountByAddress(account)
 
   if (farcasterAccount.error) {
-    return NextResponse.json(farcasterAccount.error, { status: 400 })
+    return NextResponse.json(farcasterAccount, { status: 400 })
   }
 
-  const followsGreg = farcasterAccount.data.viewer_context.followed_by
-  const gregFollows = farcasterAccount.data.viewer_context.following
+  const followsGreg = farcasterAccount.data?.viewer_context.followed_by
+  const gregFollows = farcasterAccount.data?.viewer_context.following
 
   if (followsGreg === false) {
     return NextResponse.json(

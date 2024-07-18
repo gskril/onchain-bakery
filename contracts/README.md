@@ -1,9 +1,11 @@
 # Contracts
 
-There are two primary smart contracts in this project:
+There are a few smart contracts in this project:
 
 - [Bread.sol](src/Bread.sol) - ERC1155 contract with inventory management that acts as an ordering system.
 - [ProofOfBread.sol](src/ProofOfBread.sol) - ERC1155 contract for celebratory NFTs when customers pickup their bread.
+- [OpenMinter.sol](src/OpenMinter.sol) - Contract that has permission to admin mint NFTs from Bread.sol to make open mints easier.
+- [CrossChainBread.sol](src/CrossChainBread.sol) - Across handler ([see docs](https://docs.across.to/integration-guides/across+-integration/using-a-custom-handler-contract)).
 
 ## Bread.sol
 

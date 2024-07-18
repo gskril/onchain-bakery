@@ -114,7 +114,7 @@ export default function Cart() {
 
   return (
     <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
-      <div className="mb-8 flex flex-col justify-between gap-2 lowercase sm:mb-14 sm:flex-row sm:items-center sm:gap-6">
+      <div className="mb-8 flex flex-col justify-between gap-2 sm:mb-14 sm:flex-row sm:items-center sm:gap-6">
         <h1>
           <Link href="/" className="section-title flex items-center gap-3">
             <img src="/misc/greg.svg" className="w-8" />
@@ -126,13 +126,13 @@ export default function Cart() {
       </div>
 
       {(() => {
-        if (!cart.length) return <p className="lowercase">Your cart is empty</p>
+        if (!cart.length) return <p>Your cart is empty</p>
 
         if (inventory.isLoading) {
           return <p>Loading...</p>
         }
 
-        if (!inventory.data) return <p className="lowercase">No inventory</p>
+        if (!inventory.data) return <p>No inventory</p>
 
         return (
           <>
@@ -147,7 +147,7 @@ export default function Cart() {
                       className="m-0 h-fit w-fit"
                       onClick={() => removeFromCart(item.id)}
                     >
-                      ✖︎ remove
+                      ✖︎ Remove
                     </button>
 
                     {item.quantity.formatted === 0 && (
@@ -172,11 +172,11 @@ export default function Cart() {
               ))}
             </div>
             <div className="mt-2 self-end text-right">
-              {discountRaw && <p>discount: {discountFormatted} ETH</p>}
+              {discountRaw && <p>Discount: {discountFormatted} ETH</p>}
 
               {!!totalPriceRaw && (
                 <p className="font-semibold">
-                  total: {totalPriceFormatted} ETH{' '}
+                  Total: {totalPriceFormatted} ETH{' '}
                   {ethPrice &&
                     `($${(Number(totalPriceFormatted) * ethPrice).toFixed(0)} USD)`}
                 </p>
@@ -237,7 +237,7 @@ export default function Cart() {
                       Buy Bread
                     </Button>
 
-                    <span className="text-right lowercase">
+                    <span className="text-right">
                       {orderRequest.error && orderRequest.error.message}
 
                       {usedClaim

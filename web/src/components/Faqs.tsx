@@ -31,9 +31,9 @@ export function Faqs({ className }: { className?: string }) {
           className="border-brand-primary group border-b py-3 first:border-t"
           key={question}
         >
-          <summary className="summary font-pangram flex cursor-pointer items-center justify-between text-2xl group-open:font-semibold">
+          <summary className="summary font-pangram flex cursor-pointer items-center justify-between gap-4 text-xl group-open:font-semibold sm:text-2xl">
             <span>{question}</span>
-            <Arrow className="group-open:rotate-180" />
+            <Arrow className="min-w-8 group-open:rotate-180" />
           </summary>
           <p className="max-w-3xl pt-2">{answer}</p>
         </details>

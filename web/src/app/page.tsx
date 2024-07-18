@@ -33,13 +33,13 @@ export default function Home() {
           <div />
 
           <Logo className="max-w-44 pb-8 sm:max-w-60 lg:max-w-80" />
-          <div className="py-8 pr-0 lowercase lg:py-0 lg:pb-1 lg:pr-6 lg:pt-8">
+          <div className="py-8 pr-0 lg:py-0 lg:pb-1 lg:pr-6 lg:pt-8">
             <span className="font-pangram mb-1 block text-2xl font-extrabold">
               Made with love, built on Ethereum
             </span>
 
             <p className="max-w-96 text-lg">
-              This is greg. He loves bread and he wants you to love bread too.
+              This is Greg. He loves bread and he wants you to love bread too.
               He has baked stuff for you to eat.
             </p>
 
@@ -89,7 +89,7 @@ export default function Home() {
 
         <div className="bg-brand-background-secondary">
           <div className="mx-auto flex max-w-7xl flex-col items-center px-6 py-12">
-            <h2 className="section-title">how it works</h2>
+            <h2 className="section-title">How it works</h2>
 
             <UnderlineScribble className="-mt-3 mb-10 pl-2" />
 
@@ -131,14 +131,14 @@ export default function Home() {
         <DividerTwo />
 
         <div className="mx-auto flex max-w-7xl flex-col items-center px-6 pb-12 pt-0 text-center">
-          <h2 className="section-title xs:mb-0 mb-10">these are the breads</h2>
+          <h2 className="section-title xs:mb-0 mb-10">These are the breads</h2>
 
           <CircleScribble className="xs:block pointer-events-none -mt-[6.25rem] mb-10 hidden w-[21rem] pl-2 sm:-mt-[6.75rem] sm:w-[34rem]" />
 
           <Products />
         </div>
 
-        <div className="mx-auto mt-6 flex flex-col items-center lowercase">
+        <div className="mx-auto mt-6 flex flex-col items-center">
           <h2 className="section-title mb-2 max-w-lg px-6 text-center sm:mb-3">
             Questions that we thought you might ask
           </h2>

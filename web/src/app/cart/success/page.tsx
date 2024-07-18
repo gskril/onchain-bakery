@@ -38,11 +38,11 @@ export default function Success() {
       <main className="flex min-h-svh flex-col justify-between gap-12">
         <div className="max-w-xl self-end px-6 py-12">
           <h1 className="font-pangram text-6xl font-semibold">
-            thanks for buying greg&apos;s bread!
+            Thanks for buying Greg&apos;s bread!
           </h1>
 
           <p className="mb-3 mt-6 text-lg">
-            you should get a message from{' '}
+            You should get a message from{' '}
             <a
               className="underline"
               href="https://warpcast.com/greg"
@@ -50,7 +50,7 @@ export default function Success() {
             >
               @greg
             </a>{' '}
-            on warpcast shortly.
+            on Warpcast shortly.
           </p>
 
           {isMounted() && address && (

@@ -20,9 +20,7 @@ export function Products() {
     <div className="grid items-stretch gap-10 md:grid-cols-3">
       {inventory.data.map((product) => (
         <div key={product.name} className="flex flex-col items-center">
-          <h3 className="font-pangram mb-2 text-3xl lowercase">
-            {product.name}
-          </h3>
+          <h3 className="font-pangram mb-2 text-3xl">{product.name}</h3>
 
           <img
             src={product.image}
@@ -30,32 +28,35 @@ export function Products() {
             className="border-brand-primary w-full rounded-lg border sm:max-w-72"
           />
 
-          <div className="bg-brand-background-secondary relative mb-4 mt-8 flex h-full w-full flex-col items-start gap-4 rounded-lg p-8 text-left">
+          <div className="bg-brand-background-secondary relative mb-4 mt-8 flex h-full w-full flex-col items-start justify-between gap-4 rounded-lg p-8 pb-6 text-left">
             <div className="text-brand-background-secondary bg-brand-primary absolute -top-6 right-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold italic">
               {product.quantity.formatted} left
             </div>
 
-            <hr className="border-brand-primary w-full" />
+            <div className="grid gap-4">
+              <hr className="border-brand-primary w-full" />
+              <p className="leading-5">{product.description}</p>
+            </div>
 
-            <p className="lowercase leading-5">{product.description}</p>
+            <div className="grid gap-4">
+              <hr className="border-brand-primary w-[20%]" />
+              <span className="font-pangram font-extrabold">Ingredients</span>
+              <p className="leading-5">{product.ingredients}</p>
+            </div>
 
-            <hr className="border-brand-primary w-[20%]" />
+            <div className="grid w-full gap-4">
+              <hr className="border-brand-primary w-full" />
 
-            <span className="font-pangram font-extrabold">ingredients</span>
-
-            <p className="lowercase leading-5">{product.ingredients}</p>
-
-            <hr className="border-brand-primary w-full" />
-
-            <div className="flex w-full justify-between gap-4">
-              <span className="font-pangram text-lg font-extrabold">
-                {product.price.formatted} ETH{' '}
-              </span>
-              {ethPrice && (
-                <span>
-                  ${(product.price.formatted * ethPrice).toFixed(0)} USD
+              <div className="flex w-full justify-between gap-4">
+                <span className="font-pangram text-lg font-extrabold">
+                  {product.price.formatted} ETH{' '}
                 </span>
-              )}
+                {ethPrice && (
+                  <span>
+                    ${(product.price.formatted * ethPrice).toFixed(0)} USD
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 

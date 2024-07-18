@@ -19,7 +19,7 @@ export const products: Product[] = [
   {
     id: BigInt(2),
     active: true,
-    name: 'Chocolate Sourdough',
+    name: 'Chocolate sourdough',
     image: '/product/chocolate-loaf.jpg',
     description:
       'Double chocolate sourdough loaf because more chocolate is always a good thing.',
@@ -29,7 +29,7 @@ export const products: Product[] = [
   {
     id: BigInt(3),
     active: true,
-    name: 'chocolate babka',
+    name: 'Chocolate babka',
     image: '/product/babka.jpg',
     description:
       "Most normal people eat babka for dessert but there's nothing better than a warm slice for breakfast.",
@@ -39,11 +39,11 @@ export const products: Product[] = [
   {
     id: BigInt(4),
     active: true,
-    name: 'snack pass',
+    name: 'Snack pass',
     image: '/product/snack-pass.png',
     description:
-      "Don't want to commit to a whole loaf? Come hang out and taste a few things instead.",
+      'Don’t want to commit to a whole bread? Get a slice of bread. It’s snack sized and tiny and you get a small treat to have while you hang out.',
     ingredients:
-      'See the other items for an idea. May include additional surprises that will be listed on the day of.',
+      'See the others. If more snacks appear, the ingredients will be listed at pickup.',
   },
 ]

@@ -174,7 +174,7 @@ export function TextLogo({ className }: { className?: string }) {
       </div>
 
       <div>
-        <span className="font-pangram text-[3.875rem] font-extrabold lowercase sm:text-[5.2rem] lg:text-[6.9rem]">
+        <span className="font-pangram text-[3.875rem] font-extrabold sm:text-[5.2rem] lg:text-[6.9rem]">
           Bread
         </span>
       </div>

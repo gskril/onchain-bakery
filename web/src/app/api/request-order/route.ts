@@ -5,6 +5,8 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { isAddress } from 'viem/utils'
 import { z } from 'zod'
 
+import { products } from '@/lib/products'
+
 const schema = z.object({
   account: z.string().refine(isAddress, { message: 'Invalid address' }),
   ids: z.array(z.number().positive()),
@@ -28,6 +30,24 @@ export async function POST(req: NextRequest) {
   // Make sure that no quantity is greater than 1
   if (quantities.some((quantity) => quantity > 1)) {
     return NextResponse.json({ error: 'Quantity must be 1' }, { status: 400 })
+  }
+
+  const fullLoaves = products.filter((product) => product.fullLoaf)
+
+  const numberOfFullLoaves = ids.reduce((acc, id) => {
+    if (fullLoaves.some((loaf) => loaf.id === BigInt(id))) {
+      return acc + 1
+    }
+
+    return acc
+  })
+
+  // Make sure that you can't order multiple loaves in one order
+  if (numberOfFullLoaves > 1) {
+    return NextResponse.json(
+      { error: 'You can only order one full loaf at a time' },
+      { status: 400 }
+    )
   }
 
   const neynar = new Neynar(process.env.NEYNAR_API_KEY)

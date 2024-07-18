@@ -45,7 +45,7 @@ app.transaction('/mint', (c) => {
     abi: parseAbi([
       'function mint(address to, uint256 id, uint256 quantity) public payable',
     ]),
-    to: '0xB2EAD24f1048962dEe725828Ad4DC1942f154f63', // OpenMinter.sol
+    to: '0xB2EAD16A323cCc825C80E91157cF426B2E2E2c3f', // OpenMinter.sol
     functionName: 'mint',
     chainId: `eip155:${primaryChain.id}`,
     args: [c.address as Address, BigInt(1), BigInt(1)],

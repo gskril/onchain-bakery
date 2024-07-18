@@ -16,35 +16,36 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 ///////////////////////////////////////////////////////////
 
 interface IBread {
+    struct Inventory {
+        uint256 quantity;
+        uint256 price;
+    }
+
     function adminOrder(
         address account,
         uint256[] calldata ids,
         uint256[] calldata quantities
     ) external payable;
+
+    function inventory(uint256 id) external view returns (Inventory memory);
 }
 
 contract OpenMinter is Ownable {
     error InsufficientValue();
     error Unauthorized();
 
-    struct Status {
-        bool active;
-        uint256 price;
-    }
-
     IBread public immutable bread;
-    mapping(uint256 => Status) public status;
+    mapping(uint256 => bool) public open;
 
     constructor(address _bread, address _owner) Ownable(_owner) {
         bread = IBread(_bread);
     }
 
     function mint(address to, uint256 id, uint256 quantity) public payable {
-        Status memory s = status[id];
-        if (!s.active) revert Unauthorized();
+        if (!open[id]) revert Unauthorized();
 
-        uint256 price = s.price * quantity;
-        if (msg.value < price) revert InsufficientValue();
+        uint256 _price = bread.inventory(id).price * quantity;
+        if (msg.value < _price) revert InsufficientValue();
 
         uint256[] memory ids = new uint256[](1);
         ids[0] = id;
@@ -55,11 +56,11 @@ contract OpenMinter is Ownable {
         bread.adminOrder{value: msg.value}(to, ids, quantities);
     }
 
-    function updateStatus(
-        uint256 id,
-        bool active,
-        uint256 price
-    ) public onlyOwner {
-        status[id] = Status(active, price);
+    function price(uint256 id) public view returns (uint256) {
+        return bread.inventory(id).price;
+    }
+
+    function updateStatus(uint256 _id, bool _open) public onlyOwner {
+        open[_id] = _open;
     }
 }

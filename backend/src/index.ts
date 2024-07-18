@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import { createPublicClient, http } from 'viem'
+import { base } from 'viem/chains'
 
 import { breadContract } from './contracts.js'
 import { Neynar } from './neynar.js'
@@ -12,6 +13,7 @@ type Required<T> = {
 console.log('Starting notifier')
 
 const client = createPublicClient({
+  chain: base,
   transport: http(process.env.RPC_URL),
 })
 

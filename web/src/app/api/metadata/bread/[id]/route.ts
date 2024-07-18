@@ -19,6 +19,11 @@ export async function GET(
 
   const { id } = safeParse.data
   const product = products.find((product) => product.id === id)
+
+  if (!product) {
+    return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+  }
+
   const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000').origin
 
   const metadata = {

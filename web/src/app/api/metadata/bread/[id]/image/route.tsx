@@ -21,10 +21,9 @@ export async function GET(
   const { id } = safeParse.data
   const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000').origin
 
-  if (id === BigInt(1)) {
-    return fetch(`${DOMAIN}/nft/launch.png`)
-  }
+  return fetch(`${DOMAIN}/nft/${id}.svg`)
 
+  // TODO: Generate the images rather than exporting each one individually
   return new ImageResponse(
     (
       <div style={{ display: 'flex' }}>

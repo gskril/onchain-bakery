@@ -57,7 +57,7 @@ export default function Success() {
           {isMounted() && address && (
             <a
               className={buttonStyles()}
-              href={`https://rainbow.me/profile/${address}?family=base/${breadContract.address}`}
+              href={`https://rainbow.me/profile/${address}?family=base/${breadContract.address.toLowerCase()}`}
             >
               View NFTs
             </a>

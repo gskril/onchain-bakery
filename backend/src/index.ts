@@ -10,7 +10,7 @@ type Required<T> = {
   [P in keyof T]-?: T[P]
 }
 
-console.log('Starting notifier')
+console.log('Starting notifier', process.env.RPC_URL)
 
 const client = createPublicClient({
   chain: base,

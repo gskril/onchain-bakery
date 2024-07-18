@@ -174,7 +174,7 @@ export default function Cart() {
             <div className="mt-2 self-end text-right">
               {discountRaw && <p>Discount: {discountFormatted} ETH</p>}
 
-              {!!totalPriceRaw && (
+              {totalPriceRaw !== undefined && (
                 <p className="font-semibold">
                   Total: {totalPriceFormatted} ETH{' '}
                   {ethPrice &&

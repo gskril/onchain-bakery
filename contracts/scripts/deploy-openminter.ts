@@ -10,7 +10,7 @@ async function main() {
   const walletClient = walletClients[0]
 
   const args = [
-    '0xB2EAD6Bd8129752715C3F94A6f90f9745540515e', // _bread
+    '0xB2EAD1C95A41Dc617fFAe193d75386Bf65D31F7c', // _bread
     '0x179A862703a4adfb29896552DF9e307980D19285', // _owner
   ] as const
 
@@ -26,10 +26,8 @@ async function main() {
     vanity: '0xB2EAD',
     initCode,
     caseSensitive: true,
-    startingIteration: 40611000,
+    startingIteration: 4664000,
   })
-
-  console.log({ salt, expectedAddress })
 
   const deployTx = await walletClient.writeContract({
     ...create2Factory,

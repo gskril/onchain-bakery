@@ -15,10 +15,8 @@ async function main() {
     vanity: '0xB2EAD',
     initCode,
     caseSensitive: true,
-    startingIteration: 16594000,
+    startingIteration: 745000,
   })
-
-  console.log({ salt, expectedAddress })
 
   const deployTx = await walletClient.writeContract({
     ...create2Factory,

@@ -14,7 +14,7 @@ async function main() {
     vanity: '0xB2EAD',
     initCode,
     caseSensitive: true,
-    startingIteration: 1251000,
+    startingIteration: 4950000,
   })
 
   const deployTx = await walletClient.writeContract({

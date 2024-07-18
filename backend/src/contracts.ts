@@ -1,6 +1,6 @@
 // TODO: Fix importing from the `shared` package so we don't need this duplicate file
 export const breadContract = {
-  address: '0xB2EAD6Bd8129752715C3F94A6f90f9745540515e',
+  address: '0xB2EAD1C95A41Dc617fFAe193d75386Bf65D31F7c',
   abi: [
     {
       inputs: [
@@ -915,6 +915,19 @@ export const breadContract = {
           internalType: 'bool',
           name: '',
           type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'name',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
         },
       ],
       stateMutability: 'view',

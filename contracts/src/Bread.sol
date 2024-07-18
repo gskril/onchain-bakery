@@ -71,6 +71,9 @@ contract Bread is ERC1155, AccessControl, ERC1155Pausable, ERC1155Supply {
     /// @notice A role that can manually call the remaining admin functions.
     bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
 
+    /// @notice The name of the contract.
+    string public constant name = "Good Bread by Greg";
+
     /// @notice The ProofOfBread NFT contract.
     address public proofOfBread;
 

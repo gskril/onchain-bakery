@@ -3,6 +3,7 @@
 import JSConfetti from 'js-confetti'
 import { useEffect, useRef } from 'react'
 import React from 'react'
+import { breadContract } from 'shared/contracts'
 import { useIsMounted } from 'usehooks-ts'
 import { useAccount } from 'wagmi'
 
@@ -56,7 +57,7 @@ export default function Success() {
           {isMounted() && address && (
             <a
               className={buttonStyles()}
-              href={`https://rainbow.me/profile/${address}?family=base/0xB2EAD6Bd8129752715C3F94A6f90f9745540515e`}
+              href={`https://rainbow.me/profile/${address}?family=base/${breadContract.address}`}
             >
               View NFTs
             </a>

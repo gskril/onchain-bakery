@@ -25,13 +25,6 @@ export async function POST(req: NextRequest) {
 
   const { account, ids, quantities } = safeParse.data
 
-  // TODO: break this logic into the `shared` package since it's duplicated in the backend app
-  // Don't sign open mints, otherwise they can be minted for free
-  const openMints = [1]
-  if (ids.length === 1 && openMints.includes(ids[0])) {
-    return NextResponse.json({ error: 'Invalid order' }, { status: 400 })
-  }
-
   // Make sure that no quantity is greater than 1
   if (quantities.some((quantity) => quantity > 1)) {
     return NextResponse.json({ error: 'Quantity must be 1' }, { status: 400 })

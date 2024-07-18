@@ -125,6 +125,10 @@ export default function Cart() {
         <WalletProfile address={address} />
       </div>
 
+      <p className="mb-4 text-lg font-semibold sm:-mt-10 sm:mb-10 sm:text-xl">
+        Pickup in NYC this weekend only.
+      </p>
+
       {(() => {
         if (!cart.length) return <p>Your cart is empty</p>
 

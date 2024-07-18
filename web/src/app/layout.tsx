@@ -1,4 +1,5 @@
 import '@rainbow-me/rainbowkit/styles.css'
+import { getFrameMetadata } from 'frog/next'
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 
@@ -7,13 +8,17 @@ import { cn } from '@/lib/utils'
 
 import './globals.css'
 
-export const metadata: Metadata = {
-  title: 'Good Bread by Greg',
-  description: 'Made with love, built on Ethereum.',
-  metadataBase: new URL(process.env.DOMAIN || 'http://localhost:3000'),
-  openGraph: {
-    images: ['/opengraph.png'],
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000')
+  const frameMetadata = await getFrameMetadata(`${DOMAIN}/api/frame`)
+
+  return {
+    title: 'Good Bread by Greg',
+    description: 'Made with love, built on Ethereum.',
+    metadataBase: new URL(process.env.DOMAIN || 'http://localhost:3000'),
+    openGraph: { images: ['/opengraph.png'] },
+    other: frameMetadata,
+  }
 }
 
 const pangramSans = localFont({

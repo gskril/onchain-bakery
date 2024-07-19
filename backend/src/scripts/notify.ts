@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { createPublicClient, decodeEventLog, http } from 'viem'
 
+import { openMints } from '../constants.js'
 import { breadContract } from '../contracts.js'
 import { Neynar } from '../neynar.js'
 import { sendDirectCast } from '../warpcast.js'
@@ -17,7 +18,10 @@ const neynar = new Neynar(process.env.NEYNAR_API_KEY)
 
 const _logs = await client.getLogs({
   ...breadContract,
-  fromBlock: 17250960n,
+  event: breadContract.abi.find(
+    (x) => x.type === 'event' && x.name === 'OrderPlaced'
+  ),
+  fromBlock: 17250868n,
   toBlock: 'latest',
 })
 
@@ -37,9 +41,7 @@ for (const log of logs) {
   const { account, ids } = log.args as Required<LogArgs>
 
   // Ignore open mints
-  const openMints = [1n]
   if (ids.length === 1 && openMints.includes(ids[0])) {
-    console.log(`Ignoring open mint from ${account}`)
     continue
   }
 
@@ -52,10 +54,14 @@ for (const log of logs) {
 
   const { fid } = farcasterAccount.data
 
+  const messageParts = [
+    'Thanks for buying my bread! 🍞',
+    'I will be in touch soon with more info about the pickup time and location',
+  ]
+
   await sendDirectCast({
     recipientFid: fid,
-    message:
-      'Thanks for buying my bread! 🍞 \n\nI will be in touch soon with more info about the pickup time and location',
+    message: messageParts.join('\n\n'),
     idempotencyKey: log.data,
   })
 }

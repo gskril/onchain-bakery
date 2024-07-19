@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { createPublicClient, http } from 'viem'
 
+import { openMints } from './constants.js'
 import { breadContract } from './contracts.js'
 import { Neynar } from './neynar.js'
 import { sendDirectCast } from './warpcast.js'
@@ -26,7 +27,6 @@ client.watchContractEvent({
       const { account, ids } = log.args as Required<LogArgs>
 
       // Ignore open mints
-      const openMints = [1n]
       if (ids.length === 1 && openMints.includes(ids[0])) {
         console.log(`Ignoring open mint from ${account}`)
         continue

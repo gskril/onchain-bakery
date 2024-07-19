@@ -1,7 +1,7 @@
 # Good Bread by Greg
 
-![Cover image](https://github.com/gskril/onchain-bakery/assets/35093316/c6b87629-4e64-4113-ab0e-dfaf888a27a1)
+![Cover image](https://github.com/user-attachments/assets/37f69b20-3b4e-426c-a13a-1946e76b07bb)
 
-An onchain bakery where orders are placed on Ethereum, receipts are issued as NFTs, and bread is eaten in New York City.
+An onchain bakery where orders are placed on [Base](https://www.base.org/), receipts are issued as [NFTs](https://opensea.io/collection/good-bread-by-greg), and bread is eaten in New York City.
 
-See [/web](/web/README.md) and [/contracts](/contracts/README.md) for more details.
+See [/contracts](/contracts/README.md), [/web](/web/README.md), and [/backend](/backend/README.md) for more details.

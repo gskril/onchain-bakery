@@ -1,6 +1,7 @@
 /** @jsxImportSource frog/jsx */
 import { Button, Frog, TextInput } from 'frog'
 import { handle } from 'frog/next'
+import { openMinterContract } from 'shared/contracts'
 import { Address, parseAbi, parseEther } from 'viem'
 
 import { primaryChain } from '@/lib/constants'
@@ -42,10 +43,8 @@ app.frame('/thanks', (c) => {
 
 app.transaction('/mint', (c) => {
   return c.contract({
-    abi: parseAbi([
-      'function mint(address to, uint256 id, uint256 quantity) public payable',
-    ]),
-    to: '0xB2EAD16A323cCc825C80E91157cF426B2E2E2c3f', // OpenMinter.sol
+    abi: openMinterContract.abi,
+    to: openMinterContract.address,
     functionName: 'mint',
     chainId: `eip155:${primaryChain.id}`,
     args: [c.address as Address, BigInt(1), BigInt(1)],

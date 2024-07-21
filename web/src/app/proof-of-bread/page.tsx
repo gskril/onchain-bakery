@@ -3,10 +3,14 @@
 import JSConfetti from 'js-confetti'
 import { useEffect, useRef, useState } from 'react'
 import React from 'react'
+import { useAccount, useEnsName } from 'wagmi'
 
 import { Logo } from '@/components/Logo'
 
 export default function ProofOfBread() {
+  const { address } = useAccount()
+  const ensName = useEnsName({ address, chainId: 1 })
+
   const jsConfettiRef = useRef<JSConfetti>()
   const [status, setStatus] = useState<'idle' | 'pending' | 'success' | 'fail'>(
     'idle'
@@ -85,6 +89,13 @@ export default function ProofOfBread() {
           <input
             id="addressOrName"
             disabled={status !== 'idle'}
+            defaultValue={
+              ensName.isLoading
+                ? undefined
+                : ensName.data
+                  ? ensName.data
+                  : address
+            }
             placeholder="ENS name or address"
             className="bg-brand-background-primary border-brand-primary focus:outline-brand-primary w-full rounded-lg border px-3 py-1"
           />

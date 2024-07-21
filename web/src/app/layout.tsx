@@ -7,6 +7,7 @@ import localFont from 'next/font/local'
 import { ClientProviders } from '@/components/ClientProviders'
 import { cn } from '@/lib/utils'
 
+import tailwindConfig from '../../tailwind.config'
 import './globals.css'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -18,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: 'Made with love, built on Ethereum.',
     metadataBase: new URL(process.env.DOMAIN || 'http://localhost:3000'),
     openGraph: { images: ['/opengraph.png'] },
-    other: frameMetadata,
+    other: { ...frameMetadata, 'theme-color': '#FFF6EA' },
   }
 }
 

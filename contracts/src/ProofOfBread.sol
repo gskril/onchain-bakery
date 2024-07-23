@@ -26,14 +26,17 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                                  ERRORS
     //////////////////////////////////////////////////////////////*/
 
-    error Unauthorized();
+    error InvalidInput();
     error TransferFailed();
+    error Unauthorized();
 
     /*//////////////////////////////////////////////////////////////
                                PARAMETERS
     //////////////////////////////////////////////////////////////*/
 
     address public signer;
+    address public bread;
+    mapping(bytes32 => bool) public usedClaims;
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
@@ -42,9 +45,11 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     constructor(
         address _owner,
         address _signer,
+        address _bread,
         string memory _uri
     ) ERC1155(_uri) Ownable(_owner) {
         signer = _signer;
+        bread = _bread;
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -55,16 +60,15 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         address account,
         uint256 id,
         bytes memory data
-    ) public payable onlyOwner {
-        (bytes memory message, bytes memory signature) = abi.decode(
-            data,
-            (bytes, bytes)
-        );
-
-        if (!isValidSignature(message, signature)) {
+    ) public payable {
+        if (!canMint(account, data)) {
             revert Unauthorized();
         }
 
+        bytes memory message = abi.decode(data, (bytes));
+        (, bytes32 claimId) = abi.decode(message, (address, bytes32));
+
+        usedClaims[claimId] = true;
         _mint(account, id, 1, "");
     }
 
@@ -72,20 +76,23 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                             ADMIN FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function adminMint(
-        address account,
-        uint256 id,
-        uint256 amount
-    ) public onlyOwner {
-        _mint(account, id, amount, "");
+    function distributeBread(
+        address[] calldata accounts,
+        uint256[] calldata ids
+    ) public onlyOwnerOrSigner {
+        for (uint256 i = 0; i < accounts.length; i++) {
+            _mint(accounts[i], ids[i], 1, "");
+        }
     }
 
     function revokeBread(
-        address account,
-        uint256 id,
-        uint256 amount
-    ) public onlyOwner {
-        _burn(account, id, amount);
+        address[] calldata account,
+        uint256[] calldata id,
+        uint256[] calldata amount
+    ) public onlyOwnerOrSigner {
+        for (uint256 i = 0; i < account.length; i++) {
+            _burn(account[i], id[i], amount[i]);
+        }
     }
 
     function setSigner(address _signer) public onlyOwner {
@@ -96,12 +103,6 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         _setURI(_uri);
     }
 
-    /**
-     * @notice Withdraw ETH from the contract.
-     *
-     * @param account The address to withdraw the ETH to.
-     * @param amount The amount of ETH to transfer.
-     */
     function withdraw(address account, uint256 amount) public onlyOwner {
         (bool success, ) = account.call{value: amount}("");
 
@@ -110,13 +111,6 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
         }
     }
 
-    /**
-     * @notice Recover ERC20 tokens sent to the contract by mistake.
-     *
-     * @param account The address to send the tokens to.
-     * @param token  The address of the ERC20 token to recover.
-     * @param amount  The amount of tokens to transfer.
-     */
     function recoverERC20(
         address account,
         address token,
@@ -137,16 +131,41 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
                             HELPER FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function isValidSignature(
-        bytes memory message,
-        bytes memory signature
+    function canMint(
+        address account,
+        bytes memory data
     ) public view returns (bool) {
+        (bytes memory message, bytes memory signature) = abi.decode(
+            data,
+            (bytes, bytes)
+        );
+
+        (address minter, bytes32 claimId, uint256 expiration) = abi.decode(
+            message,
+            (address, bytes32, uint256)
+        );
+
+        if (minter != account) return false;
+        if (usedClaims[claimId]) return false;
+        if (block.timestamp > expiration) return false;
+
         address _signer = ECDSA.recover(
             MessageHashUtils.toEthSignedMessageHash(message),
             signature
         );
 
         return _signer == signer;
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                               MODIFIERS
+    //////////////////////////////////////////////////////////////*/
+
+    modifier onlyOwnerOrSigner() {
+        if (msg.sender != owner() && msg.sender != signer) {
+            revert Unauthorized();
+        }
+        _;
     }
 
     /*//////////////////////////////////////////////////////////////

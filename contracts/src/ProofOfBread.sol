@@ -86,12 +86,12 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     }
 
     function revokeBread(
-        address[] calldata account,
-        uint256[] calldata id,
-        uint256[] calldata amount
+        address[] calldata accounts,
+        uint256[] calldata ids,
+        uint256[] calldata amounts
     ) public onlyOwnerOrSigner {
-        for (uint256 i = 0; i < account.length; i++) {
-            _burn(account[i], id[i], amount[i]);
+        for (uint256 i = 0; i < accounts.length; i++) {
+            _burn(accounts[i], ids[i], amounts[i]);
         }
     }
 

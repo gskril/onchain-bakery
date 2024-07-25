@@ -18,13 +18,22 @@ const content = [
       'You will recieve a message from Greg via Warpcast or SMS by Friday evening with detailed pickup instructions. Pickup will be in a group setting in Manhattan over the weekend.',
   },
   {
-    question: 'Who designed this website?',
+    question: 'Who designed this brand and website?',
     answer: (
       <p>
+        Erin! You can find her on{' '}
+        <a
+          href="https://warpcast.com/erinboo.eth"
+          target="_blank"
+          className="underline"
+        >
+          Warpcast
+        </a>{' '}
+        and{' '}
         <a href="https://x.com/erineboo" target="_blank" className="underline">
-          Erin
+          Twitter
         </a>
-        !
+        .
       </p>
     ),
   },

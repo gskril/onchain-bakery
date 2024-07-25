@@ -19,7 +19,6 @@ export const products: Product[] = [
   },
   {
     id: BigInt(2),
-    active: true,
     loaf: true,
     name: 'Chocolate sourdough',
     image: '/product/chocolate-loaf.jpg',
@@ -30,7 +29,6 @@ export const products: Product[] = [
   },
   {
     id: BigInt(3),
-    active: true,
     loaf: true,
     name: 'Chocolate babka',
     image: '/product/babka.jpg',
@@ -41,6 +39,35 @@ export const products: Product[] = [
   },
   {
     id: BigInt(4),
+    name: 'Snack pass',
+    image: '/product/snack-pass.png',
+    description:
+      'Don’t want to commit to a whole bread? Get a taste of a few different breads! It’s snack sized so you can have a treat while you hang out.',
+    ingredients:
+      'See the others. If more snacks appear, the ingredients will be listed at pickup.',
+  },
+  {
+    id: BigInt(5),
+    active: true,
+    loaf: true,
+    name: 'Sourdough loaf',
+    image: '/product/plain-loaf.jpg',
+    description:
+      "Good ol' plain loaf of sourdough bread. Great for daily sandwiches or toast.",
+    ingredients: 'Flour, water, salt.',
+  },
+  {
+    id: BigInt(6),
+    active: true,
+    loaf: true,
+    name: 'Banana bread',
+    image: '/product/banana-bread.jpg',
+    description:
+      'Chocolate chip banana bread because everything is better with chocolate!',
+    ingredients: 'Lots of things (I have to update).',
+  },
+  {
+    id: BigInt(7),
     active: true,
     name: 'Snack pass',
     image: '/product/snack-pass.png',

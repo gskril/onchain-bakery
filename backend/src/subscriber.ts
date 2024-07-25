@@ -1,7 +1,7 @@
 import { createPublicClient, http } from 'viem'
 
 import { breadContract } from './contracts.js'
-import { openMints } from './lib.js'
+import { openMints, redis, twilio } from './lib.js'
 import { Neynar } from './neynar.js'
 import { sendDirectCast } from './warpcast.js'
 
@@ -28,25 +28,45 @@ export function subscribe() {
           continue
         }
 
-        const farcasterAccount =
-          await neynar.getFarcasterAccountByAddress(account)
+        const message =
+          'Thanks for supporting Good Bread by Greg! 🍞 \n\nI will be in touch soon with more info about the pickup time and location'
 
-        if (farcasterAccount.error) {
-          console.error(
-            'Failed to get farcaster account:',
-            farcasterAccount.error
-          )
-          continue
+        const phoneAccount = await redis.get<string>(account)
+
+        if (phoneAccount) {
+          try {
+            await twilio.messages.create({
+              from: process.env.TWILIO_PHONE_NUMBER,
+              to: phoneAccount,
+              body: message,
+            })
+
+            console.log(`SMS sent to ${account}`)
+          } catch (error) {
+            console.error(`Failed to send SMS to ${account}`, error)
+          }
+
+          // TODO: keep track of sent messages with idempotency key
+        } else {
+          const farcasterAccount =
+            await neynar.getFarcasterAccountByAddress(account)
+
+          if (farcasterAccount.error) {
+            console.error(
+              'Failed to get farcaster account:',
+              farcasterAccount.error
+            )
+            continue
+          }
+
+          const { fid } = farcasterAccount.data
+
+          await sendDirectCast({
+            recipientFid: fid,
+            message,
+            idempotencyKey: log.data,
+          })
         }
-
-        const { fid } = farcasterAccount.data
-
-        await sendDirectCast({
-          recipientFid: fid,
-          message:
-            'Thanks for buying my bread! 🍞 \n\nI will be in touch soon with more info about the pickup time and location',
-          idempotencyKey: log.data,
-        })
       }
     },
     onError: (error) => {

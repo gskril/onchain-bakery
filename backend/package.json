@@ -8,7 +8,9 @@
     "start": "tsc && node ./dist/app.js"
   },
   "dependencies": {
+    "@upstash/redis": "^1.33.0",
     "dotenv": "^16.4.5",
+    "twilio": "^5.2.2",
     "viem": "^2.17.4"
   },
   "devDependencies": {

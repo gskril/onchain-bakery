@@ -1,10 +1,9 @@
 'use client'
 
 import JSConfetti from 'js-confetti'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import React from 'react'
 import { breadContract } from 'shared/contracts'
-import { useIsMounted } from 'usehooks-ts'
 import { useAccount } from 'wagmi'
 
 import { buttonStyles } from '@/components/Button'
@@ -14,7 +13,8 @@ export default function Success() {
   const { address } = useAccount()
   const { cart, removeFromCart } = useCart()
   const jsConfettiRef = useRef<JSConfetti>()
-  const isMounted = useIsMounted()
+  const [isMounted, setIsMounted] = useState(false)
+  useEffect(() => setIsMounted(true), [])
 
   useEffect(() => {
     // Empty the cart after a successful purchase
@@ -29,7 +29,7 @@ export default function Success() {
           confettiNumber: 35,
         })
       }
-    }, 1000)
+    }, 500)
 
     return () => clearTimeout(timeoutId)
   }, [])
@@ -43,18 +43,10 @@ export default function Success() {
           </h1>
 
           <p className="mb-3 mt-6 text-lg">
-            You should get a message from{' '}
-            <a
-              className="underline"
-              href="https://warpcast.com/greg"
-              target="_blank"
-            >
-              @greg
-            </a>{' '}
-            on Warpcast shortly.
+            You should get a message from Greg shortly.
           </p>
 
-          {isMounted() && address && (
+          {isMounted && address && (
             <a
               className={buttonStyles()}
               href={`https://rainbow.me/profile/${address}?family=base/${breadContract.address.toLowerCase()}`}

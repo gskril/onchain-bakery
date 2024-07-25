@@ -32,7 +32,7 @@ export function Products() {
             className="border-brand-primary w-full rounded-lg border sm:max-w-72"
           />
 
-          <div className="bg-brand-background-secondary relative mb-4 mt-8 flex h-full w-full flex-col items-start justify-between gap-4 rounded-lg p-8 pb-6 text-left">
+          <div className="bg-brand-background-secondary relative mb-4 mt-8 flex h-full w-full flex-col items-start gap-4 rounded-lg p-8 pb-6 text-left">
             <div className="text-brand-background-secondary bg-brand-primary absolute -top-6 right-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold italic">
               {product.quantity.formatted} left
             </div>
@@ -42,11 +42,9 @@ export function Products() {
               <p className="leading-5">{product.description}</p>
             </div>
 
-            <div className="grid gap-4">
-              <hr className="border-brand-primary w-[20%]" />
-              <span className="font-pangram font-extrabold">Ingredients</span>
-              <p className="leading-5">{product.ingredients}</p>
-            </div>
+            <a href="/ingredients" className="mt-4">
+              See ingredients →
+            </a>
 
             <div className="grid w-full gap-4">
               <hr className="border-brand-primary w-full" />

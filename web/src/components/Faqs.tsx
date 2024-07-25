@@ -42,7 +42,10 @@ export function Faqs({ className }: { className?: string }) {
             <span>{question}</span>
             <Arrow className="min-w-8 group-open:rotate-180" />
           </summary>
-          <p className="max-w-3xl pt-2">{answer}</p>
+
+          <div className="max-w-3xl pt-2">
+            {typeof answer === 'string' ? <p>{answer}</p> : answer}
+          </div>
         </details>
       ))}
     </div>

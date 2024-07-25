@@ -116,6 +116,11 @@ export default function Cart() {
     chainId: primaryChain.id,
   })
 
+  const [isMounted, setIsMounted] = useState(false)
+  useEffect(() => setIsMounted(true), [])
+
+  if (!isMounted) return null
+
   return (
     <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
       <div className="mb-8 flex flex-col justify-between gap-2 sm:mb-14 sm:flex-row sm:items-center sm:gap-6">

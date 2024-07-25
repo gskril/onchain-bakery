@@ -15,6 +15,20 @@
   overflow: hidden;
 }
 
+.embla__viewport::after {
+  content: '';
+  width: 100%;
+  height: 6rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+}
+
 .embla__container {
   backface-visibility: hidden;
   display: flex;

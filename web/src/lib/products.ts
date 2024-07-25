@@ -39,8 +39,8 @@ export const products: Product[] = [
   },
   {
     id: BigInt(4),
-    name: 'Snack pass',
-    image: '/product/snack-pass.png',
+    name: 'Snack pack',
+    image: '/product/snack-pack.png',
     description:
       'Don’t want to commit to a whole bread? Get a taste of a few different breads! It’s snack sized so you can have a treat while you hang out.',
     ingredients:
@@ -49,8 +49,8 @@ export const products: Product[] = [
   {
     id: BigInt(7),
     active: true,
-    name: 'Snack pass',
-    image: '/product/snack-pass.png',
+    name: 'Snack pack',
+    image: '/product/snack-pack.png',
     description:
       'Taste a few different breads! It’s snack sized so you can have a treat while you hang out.',
     ingredients:

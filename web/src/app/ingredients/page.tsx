@@ -5,7 +5,7 @@ import { products as _products } from '@/lib/products'
 
 const products = [
   ..._products.filter(
-    (product) => product.ingredients && product.name !== 'Snack pass'
+    (product) => product.ingredients && product.name !== 'Snack pack'
   ),
 ]
 

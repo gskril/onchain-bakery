@@ -3,7 +3,8 @@
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useFormState, useFormStatus } from 'react-dom'
 import { breadContract } from 'shared/contracts'
 import { formatEther } from 'viem'
 import {
@@ -12,6 +13,7 @@ import {
   useChainId,
   useReadContract,
   useReadContracts,
+  useSignMessage,
   useSimulateContract,
   useSwitchChain,
   useWaitForTransactionReceipt,
@@ -26,6 +28,8 @@ import { useInventory } from '@/hooks/useInventory'
 import { useRequestOrder } from '@/hooks/useRequestOrder'
 import { primaryChain } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+
+import { savePhoneNumber } from './actions'
 
 export default function Cart() {
   const { address } = useAccount()
@@ -126,7 +130,7 @@ export default function Cart() {
       </div>
 
       <p className="mb-4 text-lg font-semibold sm:-mt-10 sm:mb-10 sm:text-xl">
-        Pickup in NYC this weekend only.
+        Pickup in Manhattan this Saturday from 2:30pm - 5pm.
       </p>
 
       {(() => {
@@ -225,6 +229,17 @@ export default function Cart() {
                   )
                 }
 
+                if (
+                  orderRequest.error?.message ===
+                  'You must provide a phone number'
+                ) {
+                  return (
+                    <PhoneCollection
+                      refetchOrderRequest={orderRequest.refetch}
+                    />
+                  )
+                }
+
                 return (
                   <>
                     <Button
@@ -242,15 +257,34 @@ export default function Cart() {
                     </Button>
 
                     <span className="text-right">
-                      {orderRequest.error && orderRequest.error.message}
+                      {(() => {
+                        if (simulation.error) {
+                          return (
+                            (simulation.error as BaseError).shortMessage ||
+                            'Simulated transaction failed.'
+                          )
+                        }
 
-                      {usedClaim
-                        ? 'Orders are limited to 1 per person per week.'
-                        : canOrder === false && 'You cannot place this order.'}
+                        if (usedClaim) {
+                          return 'Orders are limited to 1 per person per week.'
+                        }
 
-                      {simulation.error &&
-                        ((simulation.error as BaseError).shortMessage ||
-                          'Simulated transaction failed.')}
+                        if (canOrder === false) {
+                          return 'You cannot place this order.'
+                        }
+
+                        if (orderRequest.error) {
+                          return orderRequest.error.message
+                        }
+
+                        if (orderRequest.data) {
+                          if (orderRequest.data.accountType === 'farcaster') {
+                            return "We'll send you order-related messages via Warpcast DCs."
+                          } else {
+                            return "We'll send you order-related messages via SMS."
+                          }
+                        }
+                      })()}
                     </span>
                   </>
                 )
@@ -260,5 +294,87 @@ export default function Cart() {
         )
       })()}
     </main>
+  )
+}
+
+function PhoneCollection({
+  refetchOrderRequest,
+}: {
+  refetchOrderRequest: () => void
+}) {
+  const { signMessage, isPending, data, reset } = useSignMessage()
+  const [state, formAction] = useFormState(savePhoneNumber, { ok: false })
+  const formRef = useRef<HTMLFormElement>(null)
+
+  // Refetch the order request once we have a saved account
+  useEffect(() => {
+    if (state.ok) {
+      refetchOrderRequest()
+    } else {
+      reset()
+    }
+  }, [state.ok])
+
+  // Submit the form once we have a signature
+  useEffect(() => {
+    if (data) {
+      formRef.current?.requestSubmit()
+    }
+  }, [data])
+
+  return (
+    <form
+      ref={formRef}
+      className="flex w-full flex-col gap-2 sm:max-w-64"
+      action={async (e: FormData) => {
+        if (data) {
+          return formAction(e)
+        }
+
+        signMessage({
+          message: e.get('phone') as string,
+        })
+      }}
+    >
+      <p>We need a phone number to text you order-related updates.</p>
+
+      {!state.ok && state.message && (
+        <p className="text-brand-accent-orange">{state.message}</p>
+      )}
+
+      <FormInputs signature={data} signatureIsPending={isPending} />
+    </form>
+  )
+}
+
+function FormInputs({
+  signature,
+  signatureIsPending,
+}: {
+  signature?: string
+  signatureIsPending: boolean
+}) {
+  const { address } = useAccount()
+  const { pending } = useFormStatus()
+
+  return (
+    <>
+      <input name="account" type="hidden" value={address} />
+      <input name="signature" type="hidden" value={signature} />
+
+      <input
+        id="phone"
+        name="phone"
+        placeholder="Phone number"
+        type="tel"
+        disabled={pending}
+        required
+        className="bg-brand-background-primary border-brand-primary focus:outline-brand-primary w-full rounded-lg border px-3 py-1"
+      />
+
+      <Button className="w-full" loading={pending || signatureIsPending}>
+        Save number
+      </Button>
+    </>
   )
 }

@@ -4,7 +4,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 
 export const buttonStyles = cva(
-  'flex flex-row gap-2 items-center font-pangram border-brand-primary text-brand-primary hover:bg-brand-accent-purple w-fit rounded-full border px-4 py-1 text-center text-xl uppercase disabled:cursor-not-allowed disabled:hover:bg-transparent'
+  'flex flex-row gap-2 items-center justify-center font-pangram border-brand-primary text-brand-primary hover:bg-brand-accent-purple w-fit rounded-full border px-4 py-1 text-center text-xl uppercase disabled:cursor-not-allowed disabled:hover:bg-transparent'
 )
 
 export function Button({
@@ -14,7 +14,11 @@ export function Button({
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading?: boolean }) {
   return (
-    <button className={cn(buttonStyles({ className }))} {...props}>
+    <button
+      className={cn(buttonStyles({ className }))}
+      disabled={props.disabled || loading}
+      {...props}
+    >
       {loading && (
         <svg
           className="text-brand-primary h-4 w-4 animate-spin"

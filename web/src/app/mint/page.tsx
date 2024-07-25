@@ -130,7 +130,7 @@ export default function LaunchNFT() {
               return <ButtonFilled>Error minting &#9785;</ButtonFilled>
             }
 
-            if (!receipt.isSuccess) {
+            if (receipt.isSuccess) {
               return (
                 <div className="grid w-full grid-cols-[2fr,3fr] gap-2">
                   <Link

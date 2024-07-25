@@ -1,14 +1,10 @@
 import 'dotenv/config'
 import { createPublicClient, decodeEventLog, http } from 'viem'
 
-import { openMints } from '../constants.js'
 import { breadContract } from '../contracts.js'
+import { openMints } from '../lib.js'
 import { Neynar } from '../neynar.js'
 import { sendDirectCast } from '../warpcast.js'
-
-type Required<T> = {
-  [P in keyof T]-?: T[P]
-}
 
 const client = createPublicClient({
   transport: http(process.env.RPC_URL),

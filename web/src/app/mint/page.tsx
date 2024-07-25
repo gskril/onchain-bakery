@@ -63,7 +63,7 @@ export default function LaunchNFT() {
       <header className={cn(address && 'extra-short:mb-20')} />
 
       <main className="flex flex-col items-center">
-        <div className="relative mb-12 h-52 w-52 md:h-64 md:w-64">
+        <div className="relative mb-12 h-52 w-52 transition-transform hover:-rotate-2 md:h-64 md:w-64">
           <img
             src="/mint-page/bottom-left.svg"
             className="absolute -bottom-8 -right-8 z-20"
@@ -168,7 +168,6 @@ export default function LaunchNFT() {
                   href="/"
                   className={buttonFilledStyles({
                     variant: 'secondary',
-                    className: '',
                   })}
                 >
                   Go Home

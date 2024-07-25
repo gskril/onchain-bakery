@@ -5,7 +5,8 @@ const content = [
   },
   {
     question: 'When can I place an order?',
-    answer: 'New breads will be listed on Thursday afternoons on this website.',
+    answer:
+      'New breads will be listed on this website every Thursday afternoon.',
   },
   {
     question: 'How do I pay for my order?',
@@ -14,12 +15,18 @@ const content = [
   {
     question: 'How do I get my bread?',
     answer:
-      'You will recieve a direct message from @greg on Warpcast by Friday evening with detailed pickup instructions. Pickup will be in a group setting in Manhattan over the weekend.',
+      'You will recieve a message from Greg via Warpcast or SMS by Friday evening with detailed pickup instructions. Pickup will be in a group setting in Manhattan over the weekend.',
   },
   {
-    question: 'Why do I need a farcaster account to buy bread?',
-    answer:
-      'It makes communication significantly easier. We can lean on direct messages in Warpcast instead of building out separate messaging infrastructure.',
+    question: 'Who designed this website?',
+    answer: (
+      <p>
+        <a href="https://x.com/erineboo" target="_blank" className="underline">
+          Erin
+        </a>
+        !
+      </p>
+    ),
   },
 ]
 

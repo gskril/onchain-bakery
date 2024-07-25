@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 import { buttonStyles } from '@/components/Button'
 import { Cart } from '@/components/Cart'
 import { DividerOne, DividerTwo } from '@/components/Dividers'
@@ -43,12 +45,21 @@ export default function Home() {
               He has baked stuff for you to eat.
             </p>
 
-            <a
-              className={buttonStyles({ className: 'mt-4 block px-8 py-2' })}
-              href="#shop"
-            >
-              Buy Greg's Bread
-            </a>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <a
+                className={buttonStyles({ className: 'px-8 py-2' })}
+                href="#shop"
+              >
+                Buy Greg's Bread
+              </a>
+
+              <Link
+                className={buttonStyles({ className: 'py-2' })}
+                href="/mint"
+              >
+                Mint NFT
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -153,11 +164,16 @@ export default function Home() {
 
       <Tagline className="mx-auto max-w-96 px-6 pb-12 pt-4" />
 
-      <footer className="bg-brand-primary text-brand-background-secondary flex justify-between gap-4 px-6 py-2 text-sm">
+      <footer className="bg-brand-primary text-brand-background-secondary flex justify-between gap-4 px-2 py-2 text-sm sm:px-6">
         <span>&copy; 2024 Good Bread by Greg</span>
-        <a href="https://warpcast.com/greg" target="_blank">
-          Farcaster &#8599;
-        </a>
+        <div className="flex gap-4 sm:gap-6">
+          <a href="https://x.com/gregskril" target="_blank">
+            Twitter &#8599;
+          </a>
+          <a href="https://warpcast.com/greg" target="_blank">
+            Farcaster &#8599;
+          </a>
+        </div>
       </footer>
     </>
   )

@@ -5,7 +5,7 @@ import JSConfetti from 'js-confetti'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import React from 'react'
-import { breadContract, openMinterContract } from 'shared/contracts'
+import { openMinterContract } from 'shared/contracts'
 import { parseEther } from 'viem'
 import {
   useAccount,
@@ -15,11 +15,12 @@ import {
   useWriteContract,
 } from 'wagmi'
 
-import { Button, buttonStyles } from '@/components/Button'
+import { ButtonFilled, buttonFilledStyles } from '@/components/Button'
 import { WalletProfile } from '@/components/WalletProfile'
 import { primaryChain } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
+// TODO: Break this file into smaller components since it's basically the same as /proof-of-bread
 export default function LaunchNFT() {
   const chainId = useChainId()
   const { address } = useAccount()
@@ -28,7 +29,7 @@ export default function LaunchNFT() {
   const [isMounted, setIsMounted] = useState(false)
   useEffect(() => setIsMounted(true), [])
 
-  const { switchChain } = useSwitchChain()
+  const { switchChain, isPending: switchChainIsPending } = useSwitchChain()
   const { openConnectModal } = useConnectModal()
 
   const tx = useWriteContract()
@@ -54,115 +55,138 @@ export default function LaunchNFT() {
   if (!isMounted) return null
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-7xl flex-col justify-between gap-2 px-6 py-12">
-      <header className="flex items-center justify-between gap-4">
-        <h1>
-          <Link href="/">
-            <img src="/misc/greg.svg" className="w-8" />
-          </Link>
-        </h1>
+    <div className="bg-brand-background-primary mx-auto flex min-h-svh flex-col items-center justify-between overflow-hidden px-6 py-11">
+      {address && (
+        <WalletProfile address={address} className="absolute right-6 top-6" />
+      )}
 
-        <WalletProfile address={address} />
-      </header>
+      <header className={cn(address && 'extra-short:mb-20')} />
 
-      <main className="mt-6 grid items-center gap-10 lg:mt-0 lg:grid-cols-[7fr,4fr]">
-        <img
-          src="/nft/1.svg"
-          className="border-brand-primary mx-auto w-[32rem] max-w-[90%] -rotate-3 rounded-lg border-2 transition-transform hover:-rotate-3 lg:-rotate-6"
-        />
+      <main className="flex flex-col items-center">
+        <div className="relative mb-12 h-52 w-52 md:h-64 md:w-64">
+          <img
+            src="/mint-page/bottom-left.svg"
+            className="absolute -bottom-8 -right-8 z-20"
+          />
 
-        <div className="py-8 pr-0 lg:py-0 lg:pb-1 lg:pr-6 lg:pt-8">
-          <span className="font-pangram mb-1 block text-2xl font-extrabold lg:mb-2 lg:text-4xl">
-            Celebrate &amp; Support Greg's Bread
+          <img
+            src="/mint-page/top-right.svg"
+            className="absolute -right-8 -top-8 z-20"
+          />
+
+          <div className="border-brand-primary bg-brand-primary relative z-10 h-full w-full overflow-hidden rounded-lg border-2">
+            <img src="/nft/1.svg" alt="Good Bread by Greg" />
+          </div>
+
+          <img
+            src="/mint-page/top-left.svg"
+            className="absolute -left-[4.5rem] -top-8 z-0"
+          />
+        </div>
+
+        <div className="flex max-w-96 flex-col items-center text-center">
+          <span className="font-pangram mb-2 block text-3xl font-extrabold">
+            Mint Greg's Bread
           </span>
 
-          <p className="max-w-96 text-lg">
-            Celebrate the launch of Good Bread by Greg, an onchain bakery for
-            onchain summer.
+          <p className="mb-4 text-lg">
+            Celebrate and support the launch of Good Bread by Greg, an onchain
+            bakery for onchain summer.
           </p>
 
           {(() => {
-            const btnClasses = 'mt-4 px-8 py-2'
-
             if (!address) {
               return (
-                <Button className={btnClasses} onClick={openConnectModal}>
-                  Connect Wallet
-                </Button>
+                <div className="grid w-full grid-cols-[2fr,3fr] gap-2">
+                  <Link
+                    href="/"
+                    className={buttonFilledStyles({
+                      variant: 'secondary',
+                      className: '',
+                    })}
+                  >
+                    Go Home
+                  </Link>
+
+                  <ButtonFilled onClick={openConnectModal}>
+                    Connect Wallet
+                  </ButtonFilled>
+                </div>
               )
             }
 
             if (chainId !== primaryChain.id) {
               return (
-                <Button
-                  className={btnClasses}
+                <ButtonFilled
                   onClick={() => switchChain({ chainId: primaryChain.id })}
+                  loading={switchChainIsPending}
                 >
                   Switch network
-                </Button>
+                </ButtonFilled>
               )
             }
 
             if (receipt.isError) {
-              return (
-                <Button className={btnClasses} disabled>
-                  Error minting
-                </Button>
-              )
+              return <ButtonFilled>Error minting &#9785;</ButtonFilled>
             }
 
-            if (receipt.isSuccess) {
+            if (!receipt.isSuccess) {
               return (
-                <div className="w-fit">
-                  <a
-                    className={buttonStyles({ className: btnClasses })}
-                    href={`https://rainbow.me/profile/${address}?family=base/${breadContract.address.toLowerCase()}`}
-                  >
-                    View on Rainbow
-                  </a>
-
+                <div className="grid w-full grid-cols-[2fr,3fr] gap-2">
                   <Link
-                    className={buttonStyles({
-                      className: 'mt-2 w-full justify-center',
-                    })}
                     href="/"
+                    className={buttonFilledStyles({
+                      variant: 'secondary',
+                      className: '',
+                    })}
                   >
-                    Go home
+                    Go Home
                   </Link>
+
+                  <a
+                    href="https://x.com/intent/post?text=i like (good) bread (by @gregskril) 🍞&url=https://goodbread.nyc?ref=twitter"
+                    target="_blank"
+                    className={buttonFilledStyles()}
+                  >
+                    Share on Twitter
+                  </a>
                 </div>
               )
             }
 
             if (receipt.isLoading) {
-              return (
-                <Button className={btnClasses} disabled loading>
-                  Processing transaction
-                </Button>
-              )
+              return <ButtonFilled loading>Pending...</ButtonFilled>
             }
 
             if (tx.isPending) {
-              return (
-                <Button className={btnClasses} disabled loading>
-                  Confirm in wallet
-                </Button>
-              )
+              return <ButtonFilled loading>Confirm in wallet...</ButtonFilled>
             }
 
             return (
-              <Button
-                className={btnClasses}
-                onClick={() => {
-                  tx.writeContract({
-                    ...openMinterContract,
-                    functionName: 'mint',
-                    args: [address, BigInt(1), BigInt(1)],
-                    value: parseEther('0.000777'),
-                  })
-                }}
-              >
-                Mint NFT
-              </Button>
+              <div className="grid w-full grid-cols-[2fr,3fr] gap-2">
+                <Link
+                  href="/"
+                  className={buttonFilledStyles({
+                    variant: 'secondary',
+                    className: '',
+                  })}
+                >
+                  Go Home
+                </Link>
+
+                <ButtonFilled
+                  onClick={() => {
+                    tx.writeContract({
+                      ...openMinterContract,
+                      functionName: 'mint',
+                      args: [address, BigInt(1), BigInt(1)],
+                      value: parseEther('0.000777'),
+                    })
+                  }}
+                >
+                  Mint NFT
+                </ButtonFilled>
+              </div>
             )
           })()}
         </div>

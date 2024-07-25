@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import React from 'react'
 import { useAccount, useEnsName } from 'wagmi'
 
+import { ButtonFilled } from '@/components/Button'
 import { Logo } from '@/components/Logo'
 
 export default function ProofOfBread() {
@@ -100,21 +101,15 @@ export default function ProofOfBread() {
             className="bg-brand-background-primary border-brand-primary focus:outline-brand-primary w-full rounded-lg border px-3 py-1"
           />
 
-          <button
-            type="submit"
-            disabled={status !== 'idle'}
-            className="bg-brand-primary text-brand-background-primary mt-2 w-full rounded-lg px-4 py-2 font-semibold disabled:bg-[#7E97EF]"
-          >
+          <ButtonFilled type="submit" disabled={status !== 'idle'}>
             {status === 'pending'
               ? 'Saving...'
               : status === 'success'
                 ? 'Saved!'
                 : 'Collect'}
-          </button>
+          </ButtonFilled>
         </form>
       </div>
-
-      <footer />
     </div>
   )
 }

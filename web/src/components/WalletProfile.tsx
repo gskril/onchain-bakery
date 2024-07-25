@@ -1,11 +1,14 @@
 import { useAccountModal } from '@rainbow-me/rainbowkit'
-import { useIsMounted } from 'usehooks-ts'
+import { useEffect, useState } from 'react'
 import { Hex } from 'viem'
 import { useEnsAvatar, useEnsName } from 'wagmi'
 
-import { truncateAddress } from '@/lib/utils'
+import { cn, truncateAddress } from '@/lib/utils'
 
-export function WalletProfile({ address }: { address?: Hex }) {
+export function WalletProfile({
+  address,
+  className,
+}: { address?: Hex } & React.HTMLAttributes<HTMLButtonElement>) {
   const { openAccountModal } = useAccountModal()
   const { data: ensName } = useEnsName({ address, chainId: 1 })
 
@@ -14,13 +17,17 @@ export function WalletProfile({ address }: { address?: Hex }) {
     chainId: 1,
   })
 
-  const isMounted = useIsMounted()
+  const [isMounted, setIsMounted] = useState(false)
+  useEffect(() => setIsMounted(true), [])
 
-  if (!isMounted() || !address) return null
+  if (!isMounted || !address) return null
 
   return (
     <button
-      className="bg-brand-background-secondary border-brand-primary flex w-fit items-center gap-2 rounded-full border p-1 pr-4 shadow transition-all hover:-translate-y-[1px]"
+      className={cn([
+        'bg-brand-background-secondary border-brand-primary flex w-fit items-center gap-2 rounded-full border p-1 pr-4 shadow transition-all hover:-translate-y-[1px]',
+        className,
+      ])}
       onClick={openAccountModal}
     >
       <img

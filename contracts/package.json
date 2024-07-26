@@ -9,6 +9,8 @@
     "deploy:bread-baseSepolia": "hardhat run scripts/deploy-bread.ts --network baseSepolia",
     "deploy:openminter-base": "hardhat run scripts/deploy-openminter.ts --network base",
     "deploy:openminter-baseSepolia": "hardhat run scripts/deploy-openminter.ts --network baseSepolia",
+    "deploy:proofofbread-base": "hardhat run scripts/deploy-proofofbread.ts --network base",
+    "deploy:proofofbread-baseSepolia": "hardhat run scripts/deploy-proofofbread.ts --network baseSepolia",
     "deploy:crosschainbread-base": "hardhat run scripts/deploy-crosschainbread.ts --network base",
     "deploy:crosschainbread-baseSepolia": "hardhat run scripts/deploy-crosschainbread.ts --network baseSepolia"
   },

@@ -26,9 +26,6 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
-      shared:
-        specifier: workspace:^
-        version: link:../shared
       twilio:
         specifier: ^5.2.2
         version: 5.2.2

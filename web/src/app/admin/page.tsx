@@ -2,7 +2,15 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { breadContract } from 'shared/contracts'
-import { Hex, formatEther, isAddress, keccak256, parseEther, toHex } from 'viem'
+import {
+  type Hex,
+  formatEther,
+  getAddress,
+  isAddress,
+  keccak256,
+  parseEther,
+  toHex,
+} from 'viem'
 import { usePublicClient, useWriteContract } from 'wagmi'
 
 import { Form } from '@/components/Form'
@@ -32,14 +40,14 @@ export default function AdminPage() {
               handler={async (targets) => {
                 const { account } = targets
 
-                if (!isAddress(account)) {
+                if (!account || isAddress(account)) {
                   return alert('Fill out all fields')
                 }
 
                 const data = await viemClient.readContract({
                   ...breadContract,
                   functionName: 'credit',
-                  args: [account],
+                  args: [getAddress(account)],
                 })
 
                 alert(formatEther(data))
@@ -54,14 +62,14 @@ export default function AdminPage() {
               handler={async (targets) => {
                 const { account, role } = targets
 
-                if (!isAddress(account) || !role) {
+                if (!account || isAddress(account) || !role) {
                   return alert('Fill out all fields')
                 }
 
                 const data = await viemClient.readContract({
                   ...breadContract,
                   functionName: 'hasRole',
-                  args: [keccak256(toHex(role)), account],
+                  args: [keccak256(toHex(role)), getAddress(account)],
                 })
 
                 alert(data ? 'Yes' : 'No')
@@ -77,7 +85,7 @@ export default function AdminPage() {
               handler={async (targets) => {
                 const { account, data } = targets
 
-                if (!isAddress(account) || !data) {
+                if (!account || !isAddress(account) || !data) {
                   return alert('Fill out all fields')
                 }
 
@@ -149,7 +157,7 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { id, recipient } = targets
 
-                if (!id || !isAddress(recipient)) {
+                if (!id || !recipient || !isAddress(recipient)) {
                   return alert('Fill out all fields')
                 }
 
@@ -173,7 +181,7 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { amount, account } = targets
 
-                if (!amount || !isAddress(account)) {
+                if (!amount || !account || !isAddress(account)) {
                   return alert('Fill out all fields')
                 }
 
@@ -198,7 +206,7 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { amount, account } = targets
 
-                if (!amount || !isAddress(account)) {
+                if (!amount || !account || !isAddress(account)) {
                   return alert('Fill out all fields')
                 }
 
@@ -223,7 +231,7 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { account, id, quantity } = targets
 
-                if (!id || !quantity || !isAddress(account)) {
+                if (!id || !quantity || !account || !isAddress(account)) {
                   return alert('Fill out all fields')
                 }
 
@@ -244,14 +252,14 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { address } = targets
 
-                if (!isAddress(address)) {
+                if (!address || isAddress(address)) {
                   return alert('Fill out all fields')
                 }
 
                 writeContract({
                   ...breadContract,
                   functionName: 'setProofOfBread',
-                  args: [address],
+                  args: [getAddress(address)],
                 })
               }}
             >
@@ -282,14 +290,14 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { account, amount } = targets
 
-                if (!isAddress(account) || !amount) {
+                if (!account || isAddress(account) || !amount) {
                   return alert('Fill out all fields')
                 }
 
                 writeContract({
                   ...breadContract,
                   functionName: 'withdraw',
-                  args: [account, parseEther(amount)],
+                  args: [getAddress(account), parseEther(amount)],
                 })
               }}
             >
@@ -307,7 +315,13 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { account, token, amount } = targets
 
-                if (!isAddress(account) || !isAddress(token) || !amount) {
+                if (
+                  !account ||
+                  !isAddress(account) ||
+                  !token ||
+                  !isAddress(token) ||
+                  !amount
+                ) {
                   return alert('Fill out all fields')
                 }
 
@@ -333,7 +347,7 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { account, role } = targets
 
-                if (!isAddress(account) || !role) {
+                if (!account || !isAddress(account) || !role) {
                   return alert('Fill out all fields')
                 }
 
@@ -353,7 +367,7 @@ export default function AdminPage() {
               handler={(targets) => {
                 const { account, role } = targets
 
-                if (!isAddress(account) || !role) {
+                if (!account || !isAddress(account) || !role) {
                   return alert('Fill out all fields')
                 }
 

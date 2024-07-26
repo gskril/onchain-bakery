@@ -1,9 +1,9 @@
 import 'dotenv/config'
+import { breadContract } from 'shared/contracts'
+import { Neynar } from 'shared/neynar'
 import { createPublicClient, decodeEventLog, http } from 'viem'
 
-import { breadContract } from '../contracts.js'
 import { openMints } from '../lib.js'
-import { Neynar } from '../neynar.js'
 import { sendDirectCast } from '../warpcast.js'
 
 const client = createPublicClient({
@@ -48,7 +48,12 @@ for (const log of logs) {
     continue
   }
 
-  const { fid } = farcasterAccount.data
+  const fid = farcasterAccount.data?.fid
+
+  if (!fid) {
+    console.error('No farcaster account found for:', account)
+    continue
+  }
 
   const messageParts = [
     'Thanks for buying my bread! 🍞',

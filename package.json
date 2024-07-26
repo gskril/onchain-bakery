@@ -2,10 +2,13 @@
   "name": "onchain-bakery",
   "private": true,
   "scripts": {
+    "build": "pnpm web:build && pnpm backend:build",
     "web:build": "pnpm --filter=web build",
     "web:dev": "pnpm --filter=web dev",
     "backend:build": "pnpm --filter=backend build",
-    "backend:start": "pnpm --filter=backend start"
+    "backend:start": "pnpm --filter=backend start",
+    "format": "prettier --write . --config=.prettierrc --ignore-path=.prettierignore --ignore-path=gitignore --cache",
+    "typecheck": "pnpm --filter=web typecheck && pnpm --filter=backend typecheck"
   },
   "engines": {
     "node": ">=18"
@@ -13,6 +16,6 @@
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "prettier": "^3.3.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.5.4"
   }
 }

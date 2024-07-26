@@ -1,4 +1,8 @@
-import { Address, NeynarError, NeynarVerificationData } from './neynar-types'
+import type {
+  Address,
+  NeynarError,
+  NeynarVerificationData,
+} from './neynar-types'
 
 export class Neynar {
   private headers: HeadersInit
@@ -27,13 +31,12 @@ export class Neynar {
     if (data.code) {
       if ((data as NeynarError).code === 'NotFound') {
         return { error: 'Address is not associated with a Farcaster account' }
-      } else {
-        return { error: 'Error fetching Farcaster profile from address' }
       }
+      return { error: 'Error fetching Farcaster profile from address' }
     }
 
     const json = data as NeynarVerificationData
     const lowercaseAddress = address.toLowerCase() as Address
-    return { data: json[lowercaseAddress][0] }
+    return { data: json[lowercaseAddress]?.[0] }
   }
 }

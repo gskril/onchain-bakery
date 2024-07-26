@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
 import { withPlausibleProxy } from 'next-plausible'
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   webpack: (config) => {

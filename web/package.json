@@ -2,11 +2,13 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.0.7",
@@ -25,7 +27,7 @@
     "pino-pretty": "^11.1.0",
     "react": "^18",
     "react-dom": "^18",
-    "shared": "workspace:^",
+    "shared": "workspace:*",
     "tailwind-merge": "^2.3.0",
     "twilio": "^5.2.2",
     "usehooks-ts": "^3.1.0",
@@ -34,12 +36,13 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.14.12",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8",
     "prettier": "^3.3.1",
     "prettier-plugin-tailwindcss": "^0.6.2",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.5.4"
   }
 }

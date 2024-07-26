@@ -2,7 +2,7 @@
 import { Button, Frog } from 'frog'
 import { handle } from 'frog/next'
 import { openMinterContract } from 'shared/contracts'
-import { Address, parseEther } from 'viem'
+import { type Address, parseEther } from 'viem'
 
 import { primaryChain } from '@/lib/constants'
 

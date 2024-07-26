@@ -1,6 +1,6 @@
 import { useAccountModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from 'react'
-import { Hex } from 'viem'
+import type { Hex } from 'viem'
 import { useEnsAvatar, useEnsName } from 'wagmi'
 
 import { cn, truncateAddress } from '@/lib/utils'

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Neynar } from 'shared/neynar'
-import { Hex, encodeAbiParameters, keccak256, toHex } from 'viem'
+import { type Hex, encodeAbiParameters, keccak256, toHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { isAddress } from 'viem/utils'
 import { z } from 'zod'

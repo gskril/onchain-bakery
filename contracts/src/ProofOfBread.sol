@@ -37,6 +37,7 @@ contract ProofOfBread is ERC1155, Ownable, ERC1155Pausable, ERC1155Supply {
     address public signer;
     address public bread;
     mapping(bytes32 => bool) public usedClaims;
+    string public constant name = "Proof of Bread";
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR

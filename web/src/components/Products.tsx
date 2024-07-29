@@ -14,9 +14,15 @@ export function Products() {
 
   if (!inventory.data || inventory.data.length === 0) {
     return (
-      <p className="text-center text-lg">
-        No bread available right now &#9785;
-      </p>
+      <>
+        <p className="pt-4 text-center text-lg">
+          No bread available right now &#9785;
+        </p>
+
+        <p className="pb-4 text-center text-lg">
+          Come back on August 7th for more
+        </p>
+      </>
     )
   }
 

@@ -2,7 +2,7 @@ import 'dotenv/config'
 import { createPublicClient, decodeEventLog, http } from 'viem'
 
 import { breadContract } from '../contracts.js'
-import { openMints } from '../lib.js'
+import { openMints, redis, twilio } from '../lib.js'
 import { Neynar } from '../neynar.js'
 import { sendDirectCast } from '../warpcast.js'
 
@@ -17,7 +17,7 @@ const _logs = await client.getLogs({
   event: breadContract.abi.find(
     (x) => x.type === 'event' && x.name === 'OrderPlaced'
   ),
-  fromBlock: 17250868n,
+  fromBlock: 17573730n,
   toBlock: 'latest',
 })
 
@@ -41,23 +41,42 @@ for (const log of logs) {
     continue
   }
 
-  const farcasterAccount = await neynar.getFarcasterAccountByAddress(account)
-
-  if (farcasterAccount.error) {
-    console.error('Failed to get farcaster account:', farcasterAccount.error)
-    continue
-  }
-
-  const { fid } = farcasterAccount.data
-
   const messageParts = [
     'Thanks for buying my bread! 🍞',
     'I will be in touch soon with more info about the pickup time and location',
   ]
+  const message = messageParts.join('\n\n')
 
-  await sendDirectCast({
-    recipientFid: fid,
-    message: messageParts.join('\n\n'),
-    idempotencyKey: log.data,
-  })
+  const phoneAccount = await redis.get<string>(account)
+
+  if (phoneAccount) {
+    try {
+      await twilio.messages.create({
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: phoneAccount,
+        body: message,
+      })
+
+      console.log(`SMS sent to ${account}`)
+    } catch (error) {
+      console.error(`Failed to send SMS to ${account}`, error)
+    }
+
+    // TODO: keep track of sent messages with idempotency key
+  } else {
+    const farcasterAccount = await neynar.getFarcasterAccountByAddress(account)
+
+    if (farcasterAccount.error) {
+      console.error('Failed to get farcaster account:', farcasterAccount.error)
+      continue
+    }
+
+    const { fid } = farcasterAccount.data
+
+    await sendDirectCast({
+      recipientFid: fid,
+      message,
+      idempotencyKey: log.data,
+    })
+  }
 }

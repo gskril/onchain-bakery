@@ -7,8 +7,8 @@ on:
       - edited
       - synchronize
   schedule:
-    # Check every minute
-    - cron: '* * * * *'
+    # Check every hour
+    - cron: '0 * * * *'
 
 jobs:
   merge_schedule:

@@ -5,8 +5,27 @@ const content = [
   },
   {
     question: 'When can I place an order?',
-    answer:
-      'New breads will be listed on this website every Thursday afternoon.',
+    answer: (
+      <p>
+        Greg will announce when orders open on{' '}
+        <a
+          href="https://warpcast.com/greg"
+          target="_blank"
+          className="underline"
+        >
+          Warpcast
+        </a>{' '}
+        and{' '}
+        <a
+          href="https://twitter.com/gregskril"
+          target="_blank"
+          className="underline"
+        >
+          Twitter
+        </a>
+        .
+      </p>
+    ),
   },
   {
     question: 'How do I pay for my order?',

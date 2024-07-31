@@ -31,7 +31,7 @@ app.frame('/thanks', (c) => {
   return c.res({
     image: <img src={`${DOMAIN.origin}/frame/2.svg`} />,
     intents: [
-      <Button.Link href="https://warpcast.com/~/compose?text=i%20like%20(good)%20bread%20(by%20@greg)%20%F0%9F%8D%9E&embeds[]=https://goodbread.nyc?ref=farcaster">
+      <Button.Link href="https://warpcast.com/~/compose?text=i%20like%20(good)%20bread%20(by%20@greg)%20%F0%9F%8D%9E&embeds[]=https://goodbread.nyc?ref=farcaster&channelKey=goodbread">
         Share
       </Button.Link>,
       <Button.Link href="https://goodbread.nyc?ref=farcaster">

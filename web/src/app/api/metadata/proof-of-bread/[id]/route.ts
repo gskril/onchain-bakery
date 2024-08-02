@@ -4,8 +4,14 @@ import z from 'zod'
 const proofOfBreads = [
   {
     name: 'Proof of Bread #1',
-    description: 'This NFT is proof that you picked up bread from Greg in New York City on July 21, 2024.',
-  }
+    description:
+      'This NFT is proof that you picked up bread from Greg in New York City on July 21, 2024.',
+  },
+  {
+    name: 'Proof of Bread #2',
+    description:
+      'This NFT is proof that you picked up bread from Greg in New York City on July 27, 2024.',
+  },
 ]
 
 const schema = z.object({

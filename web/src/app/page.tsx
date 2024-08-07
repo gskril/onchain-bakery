@@ -54,7 +54,9 @@ export default function Home() {
               </a>
 
               <Link
-                className={buttonStyles({ className: 'py-2' })}
+                className={buttonStyles({
+                  className: 'px-8 py-2 sm:px-4',
+                })}
                 href="/mint"
               >
                 Mint NFT

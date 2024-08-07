@@ -29,7 +29,7 @@ const content = [
   },
   {
     question: 'How do I pay for my order?',
-    answer: 'To start, we are only accepting ETH on Base.',
+    answer: 'You can pay with ETH on Base or with credit card.',
   },
   {
     question: 'How do I get my bread?',

@@ -23,6 +23,7 @@ import {
 import { Button } from '@/components/Button'
 import { WalletProfile } from '@/components/WalletProfile'
 import { useCart } from '@/hooks/useCart'
+import { useCreateWallet } from '@/hooks/useCreateWallet'
 import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
 import { useRequestOrder } from '@/hooks/useRequestOrder'
@@ -40,6 +41,7 @@ export default function Cart() {
   const { switchChain } = useSwitchChain()
   const contract = useWriteContract()
   const inventory = useInventory({ tokenIds: cart })
+  const { createWallet } = useCreateWallet()
 
   const cartItemIdsInStock =
     inventory.data
@@ -200,7 +202,12 @@ export default function Cart() {
               {(() => {
                 if (!address) {
                   return (
-                    <Button onClick={openConnectModal}>Connect Wallet</Button>
+                    <div className="flex flex-col items-end gap-2 sm:flex-row">
+                      <Button onClick={openConnectModal}>Connect</Button>
+                      <Button variant="filled" onClick={createWallet}>
+                        Create Account
+                      </Button>
+                    </div>
                   )
                 }
 

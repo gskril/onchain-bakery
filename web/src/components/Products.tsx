@@ -20,7 +20,7 @@ export function Products() {
         </p>
 
         <p className="pb-4 text-center text-lg">
-          Come back on August 7th for more
+          Come back on August 8th for more
         </p>
       </>
     )

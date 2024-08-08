@@ -147,7 +147,7 @@ export default function Cart() {
       </div>
 
       <p className="mb-4 text-lg font-semibold sm:-mt-10 sm:mb-10 sm:text-xl">
-        Pickup in Manhattan this Saturday from 2:30pm - 5pm.
+        Pickup in Manhattan this Sunday from 2:30pm - 5pm.
       </p>
 
       {(() => {

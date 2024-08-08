@@ -9,14 +9,6 @@ const products = [
   ),
 ]
 
-products.unshift({
-  id: BigInt(0),
-  name: 'Plain sourdough loaf',
-  ingredients: 'Flour, water, salt.',
-  image: '',
-  description: '',
-})
-
 export default function Ingredients() {
   return (
     <div className="bg-brand-background-secondary mx-auto flex min-h-svh flex-col overflow-hidden px-6 py-11">

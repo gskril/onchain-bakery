@@ -54,7 +54,9 @@ export default function Home() {
               </a>
 
               <Link
-                className={buttonStyles({ className: 'py-2' })}
+                className={buttonStyles({
+                  className: 'px-8 py-2 sm:px-4',
+                })}
                 href="/mint"
               >
                 Mint NFT
@@ -107,7 +109,7 @@ export default function Home() {
             {(() => {
               const steps = [
                 'Order bread',
-                'Pay on Ethereum',
+                'Greg bakes your bread',
                 'Pick up bread on the weekend in Manhattan',
               ]
 

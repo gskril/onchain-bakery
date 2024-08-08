@@ -1,6 +1,7 @@
 'use client'
 
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { UseQueryResult } from '@tanstack/react-query'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -10,6 +11,7 @@ import { formatEther } from 'viem'
 import {
   BaseError,
   useAccount,
+  useBalance,
   useChainId,
   useReadContract,
   useReadContracts,
@@ -23,13 +25,14 @@ import {
 import { Button } from '@/components/Button'
 import { WalletProfile } from '@/components/WalletProfile'
 import { useCart } from '@/hooks/useCart'
+import { useCreateWallet } from '@/hooks/useCreateWallet'
 import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
 import { useRequestOrder } from '@/hooks/useRequestOrder'
 import { primaryChain } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-import { savePhoneNumber } from './actions'
+import { createCheckoutSession, savePhoneNumber } from './actions'
 
 export default function Cart() {
   const { address } = useAccount()
@@ -40,6 +43,7 @@ export default function Cart() {
   const { switchChain } = useSwitchChain()
   const contract = useWriteContract()
   const inventory = useInventory({ tokenIds: cart })
+  const { createWallet } = useCreateWallet()
 
   const cartItemIdsInStock =
     inventory.data
@@ -66,6 +70,11 @@ export default function Cart() {
 
   const { claimId, encodedMessageAndData } = orderRequest.data || {}
 
+  const { data: balance } = useBalance({
+    address,
+    chainId: primaryChain.id,
+  })
+
   const { data: multicall } = useReadContracts({
     query: { enabled: !!orderRequest.data },
     contracts: [
@@ -84,9 +93,12 @@ export default function Cart() {
     ],
   })
 
-  const canOrder = multicall?.[0].result
-  const usedClaim = multicall?.[1].result
   const totalPriceRaw = price.data?.[0]
+  const hasSufficientBalance =
+    (balance?.value || BigInt(0)) > (totalPriceRaw || BigInt(0))
+
+  const canOrder = multicall?.[0].result && hasSufficientBalance
+  const usedClaim = multicall?.[1].result
   const discountRaw = price.data?.[1]
   const totalPriceFormatted = formatEther(totalPriceRaw || BigInt(0))
   const discountFormatted = formatEther(discountRaw || BigInt(0))
@@ -200,7 +212,12 @@ export default function Cart() {
               {(() => {
                 if (!address) {
                   return (
-                    <Button onClick={openConnectModal}>Connect Wallet</Button>
+                    <div className="flex flex-col items-end gap-2 sm:flex-row">
+                      <Button onClick={openConnectModal}>Connect</Button>
+                      <Button variant="filled" onClick={createWallet}>
+                        Create Account
+                      </Button>
+                    </div>
                   )
                 }
 
@@ -241,6 +258,18 @@ export default function Cart() {
                   return (
                     <PhoneCollection
                       refetchOrderRequest={orderRequest.refetch}
+                    />
+                  )
+                }
+
+                if (!hasSufficientBalance) {
+                  // Let the user pay with credit card
+                  return (
+                    <StripeForm
+                      usdPrice={(
+                        Number(totalPriceFormatted) * ethPrice!
+                      ).toFixed(0)}
+                      orderRequest={orderRequest}
                     />
                   )
                 }
@@ -381,5 +410,73 @@ function FormInputs({
         Save number
       </Button>
     </>
+  )
+}
+
+function StripeForm({
+  usdPrice,
+  orderRequest,
+}: {
+  usdPrice: string
+  orderRequest: UseQueryResult
+}) {
+  const { cart } = useCart()
+  const { address } = useAccount()
+  const [state, formAction] = useFormState(createCheckoutSession, { ok: false })
+  const inventory = useInventory({ tokenIds: cart })
+
+  const areCartItemsInStock = inventory.data?.every(
+    (item) => item.quantity.formatted > 0
+  )
+
+  return (
+    <form action={formAction} className="flex flex-col gap-2">
+      <input name="usdPrice" type="hidden" value={usdPrice} />
+      <input name="address" type="hidden" value={address} />
+      <input name="tokenIds" type="hidden" value={cart.join(',')} />
+
+      <StripeButton
+        orderRequest={orderRequest}
+        areCartItemsInStock={areCartItemsInStock}
+      />
+
+      <span className="text-right">
+        {(() => {
+          if (state.message) {
+            return state.message
+          }
+
+          if (orderRequest.error) {
+            return orderRequest.error.message
+          }
+
+          if (!areCartItemsInStock) {
+            return 'Some items are out of stock.'
+          }
+        })()}
+      </span>
+    </form>
+  )
+}
+
+function StripeButton({
+  orderRequest,
+  areCartItemsInStock,
+}: {
+  orderRequest: UseQueryResult
+  areCartItemsInStock: boolean | undefined
+}) {
+  const { pending } = useFormStatus()
+
+  return (
+    <Button
+      disabled={!orderRequest.data || !areCartItemsInStock || pending}
+      loading={
+        orderRequest.isLoading || areCartItemsInStock === undefined || pending
+      }
+      type="submit"
+    >
+      Buy Bread
+    </Button>
   )
 }

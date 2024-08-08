@@ -4,18 +4,33 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 
 export const buttonStyles = cva(
-  'flex flex-row gap-2 items-center justify-center font-pangram border-brand-primary text-brand-primary hover:bg-brand-accent-purple w-fit rounded-full border px-4 py-1 text-center text-xl uppercase disabled:cursor-not-allowed disabled:hover:bg-transparent'
+  'flex flex-row gap-2 items-center justify-center font-pangram border-brand-primary w-fit rounded-full border px-4 py-1 text-center text-xl uppercase disabled:cursor-not-allowed',
+  {
+    variants: {
+      variant: {
+        outline:
+          'text-brand-primary hover:bg-brand-accent-purple disabled:hover:bg-transparent',
+        filled:
+          'bg-brand-primary text-brand-background-secondary hover:bg-[#365eea]',
+      },
+    },
+    defaultVariants: {
+      variant: 'outline',
+    },
+  }
 )
 
 export function Button({
   children,
   className,
   loading,
+  variant,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading?: boolean }) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonStyles> & { loading?: boolean }) {
   return (
     <button
-      className={cn(buttonStyles({ className }))}
+      className={cn(buttonStyles({ className, variant }))}
       disabled={props.disabled || loading}
       {...props}
     >

@@ -1,6 +1,7 @@
+import { randomBytes } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { Neynar } from 'shared/neynar'
-import { Hex, encodeAbiParameters, keccak256, toHex } from 'viem'
+import { Hex, encodeAbiParameters } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { isAddress } from 'viem/utils'
 import { z } from 'zod'
@@ -33,17 +34,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Quantity must be 1' }, { status: 400 })
   }
 
-  const loaves = products
-    .filter((product) => ids.includes(Number(product.id)))
-    .filter((product) => product.loaf)
+  // const loaves = products
+  //   .filter((product) => ids.includes(Number(product.id)))
+  //   .filter((product) => product.loaf)
 
   // Make sure that the user is only order 1 loaf at a time
-  if (loaves.length > 1) {
-    return NextResponse.json(
-      { error: 'You can only order 1 loaf at a time' },
-      { status: 400 }
-    )
-  }
+  // if (loaves.length > 1) {
+  //   return NextResponse.json(
+  //     { error: 'You can only order 1 loaf at a time' },
+  //     { status: 400 }
+  //   )
+  // }
 
   let accountType
   const phoneAccount = await redis.get<string>(account)
@@ -73,8 +74,8 @@ export async function POST(req: NextRequest) {
     accountType = 'phone'
   }
 
-  // TODO: Improve this logic. Currently it will only allow for one order per drop
-  const claimId = keccak256(toHex(account + ':3'))
+  // Generate a new claimId on each request, removing restrictions for now
+  const claimId = ('0x' + randomBytes(32).toString('hex')) as `0x${string}`
 
   const messageToSign = encodeAbiParameters(
     [

@@ -9,7 +9,7 @@ if (!WALLETCONNECT_ID) {
 }
 
 const { connectors } = getDefaultWallets({
-  appName: 'Onchain Bakery',
+  appName: 'Good Bread by Greg',
   projectId: WALLETCONNECT_ID,
 })
 

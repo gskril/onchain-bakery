@@ -43,17 +43,17 @@ export default function Success() {
           </h1>
 
           <p className="mb-3 mt-6 text-lg">
-            You should get a message from Greg shortly.
+            You should get a message from Greg shortly with next steps.
           </p>
 
-          {isMounted && address && (
+          {/* {isMounted && address && (
             <a
               className={buttonStyles()}
               href={`https://rainbow.me/profile/${address}?family=base/${breadContract.address.toLowerCase()}`}
             >
               View NFTs
             </a>
-          )}
+          )} */}
         </div>
 
         <img

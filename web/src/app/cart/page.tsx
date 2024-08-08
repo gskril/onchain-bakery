@@ -433,6 +433,7 @@ function StripeForm({
     <form action={formAction} className="flex flex-col gap-2">
       <input name="usdPrice" type="hidden" value={usdPrice} />
       <input name="address" type="hidden" value={address} />
+      <input name="tokenIds" type="hidden" value={cart.join(',')} />
 
       <StripeButton
         orderRequest={orderRequest}

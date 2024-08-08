@@ -82,6 +82,7 @@ export async function createCheckoutSession(
   try {
     const usdPrice = formData.get('usdPrice') as string
     const address = formData.get('address') as string
+    const tokenIds = formData.get('tokenIds') as string
 
     const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000').origin
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '')
@@ -106,6 +107,7 @@ export async function createCheckoutSession(
       cancel_url: `${DOMAIN}/cart`,
       metadata: {
         address,
+        tokenIds,
       },
     })
 

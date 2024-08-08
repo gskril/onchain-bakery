@@ -1,6 +1,7 @@
 'use client'
 
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { UseQueryResult } from '@tanstack/react-query'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -10,6 +11,7 @@ import { formatEther } from 'viem'
 import {
   BaseError,
   useAccount,
+  useBalance,
   useChainId,
   useReadContract,
   useReadContracts,
@@ -30,7 +32,7 @@ import { useRequestOrder } from '@/hooks/useRequestOrder'
 import { primaryChain } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-import { savePhoneNumber } from './actions'
+import { createCheckoutSession, savePhoneNumber } from './actions'
 
 export default function Cart() {
   const { address } = useAccount()
@@ -68,6 +70,11 @@ export default function Cart() {
 
   const { claimId, encodedMessageAndData } = orderRequest.data || {}
 
+  const { data: balance } = useBalance({
+    address,
+    chainId: primaryChain.id,
+  })
+
   const { data: multicall } = useReadContracts({
     query: { enabled: !!orderRequest.data },
     contracts: [
@@ -86,9 +93,12 @@ export default function Cart() {
     ],
   })
 
-  const canOrder = multicall?.[0].result
-  const usedClaim = multicall?.[1].result
   const totalPriceRaw = price.data?.[0]
+  const hasSufficientBalance =
+    (balance?.value || BigInt(0)) > (totalPriceRaw || BigInt(0))
+
+  const canOrder = multicall?.[0].result && hasSufficientBalance
+  const usedClaim = multicall?.[1].result
   const discountRaw = price.data?.[1]
   const totalPriceFormatted = formatEther(totalPriceRaw || BigInt(0))
   const discountFormatted = formatEther(discountRaw || BigInt(0))
@@ -252,6 +262,18 @@ export default function Cart() {
                   )
                 }
 
+                if (!hasSufficientBalance) {
+                  // Let the user pay with credit card
+                  return (
+                    <StripeForm
+                      usdPrice={(
+                        Number(totalPriceFormatted) * ethPrice!
+                      ).toFixed(0)}
+                      orderRequest={orderRequest}
+                    />
+                  )
+                }
+
                 return (
                   <>
                     <Button
@@ -388,5 +410,40 @@ function FormInputs({
         Save number
       </Button>
     </>
+  )
+}
+
+function StripeForm({
+  usdPrice,
+  orderRequest,
+}: {
+  usdPrice: string
+  orderRequest: UseQueryResult
+}) {
+  const { pending } = useFormStatus()
+  const [state, formAction] = useFormState(createCheckoutSession, { ok: false })
+
+  return (
+    <form action={formAction} className="flex flex-col gap-2">
+      <input name="usdPrice" type="hidden" value={usdPrice} />
+
+      <StripeButton orderRequest={orderRequest} />
+
+      {state.message && <span className="text-right">{state.message}</span>}
+    </form>
+  )
+}
+
+function StripeButton({ orderRequest }: { orderRequest: UseQueryResult }) {
+  const { pending } = useFormStatus()
+
+  return (
+    <Button
+      disabled={!orderRequest.data || pending}
+      loading={orderRequest.isLoading || pending}
+      type="submit"
+    >
+      Buy Bread
+    </Button>
   )
 }

@@ -95,7 +95,7 @@ export async function createCheckoutSession(
             unit_amount: Number(usdPrice) * 100,
             product_data: {
               name: 'Bread',
-              description: 'Pickup in Manhattan this weekend.',
+              description: 'Pickup is in Manhattan this weekend.',
             },
           },
           quantity: 1,

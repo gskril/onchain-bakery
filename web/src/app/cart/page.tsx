@@ -420,27 +420,59 @@ function StripeForm({
   usdPrice: string
   orderRequest: UseQueryResult
 }) {
-  const { pending } = useFormStatus()
+  const { cart } = useCart()
+  const { address } = useAccount()
   const [state, formAction] = useFormState(createCheckoutSession, { ok: false })
+  const inventory = useInventory({ tokenIds: cart })
+
+  const areCartItemsInStock = inventory.data?.every(
+    (item) => item.quantity.formatted > 0
+  )
 
   return (
     <form action={formAction} className="flex flex-col gap-2">
       <input name="usdPrice" type="hidden" value={usdPrice} />
+      <input name="address" type="hidden" value={address} />
 
-      <StripeButton orderRequest={orderRequest} />
+      <StripeButton
+        orderRequest={orderRequest}
+        areCartItemsInStock={areCartItemsInStock}
+      />
 
-      {state.message && <span className="text-right">{state.message}</span>}
+      <span className="text-right">
+        {(() => {
+          if (state.message) {
+            return state.message
+          }
+
+          if (orderRequest.error) {
+            return orderRequest.error.message
+          }
+
+          if (!areCartItemsInStock) {
+            return 'Some items are out of stock.'
+          }
+        })()}
+      </span>
     </form>
   )
 }
 
-function StripeButton({ orderRequest }: { orderRequest: UseQueryResult }) {
+function StripeButton({
+  orderRequest,
+  areCartItemsInStock,
+}: {
+  orderRequest: UseQueryResult
+  areCartItemsInStock: boolean | undefined
+}) {
   const { pending } = useFormStatus()
 
   return (
     <Button
-      disabled={!orderRequest.data || pending}
-      loading={orderRequest.isLoading || pending}
+      disabled={!orderRequest.data || !areCartItemsInStock || pending}
+      loading={
+        orderRequest.isLoading || areCartItemsInStock === undefined || pending
+      }
       type="submit"
     >
       Buy Bread

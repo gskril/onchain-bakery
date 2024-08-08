@@ -3,11 +3,16 @@
 import { Logo } from '@/components/Logo'
 import { products as _products } from '@/lib/products'
 
-const products = [
-  ..._products.filter(
-    (product) => product.ingredients && product.name !== 'Snack pack'
-  ),
-]
+// Deduplicate products
+const productNames = new Set()
+const products = _products.filter((product) => {
+  if (productNames.has(product.name) || product.name === 'Snack pack') {
+    return false
+  }
+
+  productNames.add(product.name)
+  return true
+})
 
 export default function Ingredients() {
   return (

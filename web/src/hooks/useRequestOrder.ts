@@ -11,29 +11,43 @@ export function useRequestOrder({
   return useQuery({
     queryKey: ['order', account, ids, quantities],
     queryFn: async () => {
-      if (!account || ids?.length === 0 || quantities?.length === 0) {
+      if (
+        !ids ||
+        !account ||
+        !quantities ||
+        ids?.length === 0 ||
+        quantities?.length === 0
+      ) {
         return null
       }
 
-      const response = await fetch('/api/request-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ account, ids, quantities }),
-      })
-
-      const json = await response.json()
-
-      if (json.error) {
-        throw new Error(json.error)
-      }
-
-      return json.data as {
-        claimId: Hex
-        encodedMessageAndData: Hex
-        accountType: 'farcaster' | 'phone'
-      }
+      return getOrderRequest({ account, ids, quantities })
     },
   })
+}
+
+export async function getOrderRequest({
+  account,
+  ids,
+  quantities,
+}: OrderRequest) {
+  const response = await fetch('/api/request-order', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ account, ids, quantities }),
+  })
+
+  const json = await response.json()
+
+  if (json.error) {
+    throw new Error(json.error)
+  }
+
+  return json.data as {
+    claimId: Hex
+    encodedMessageAndData: Hex
+    accountType: 'farcaster' | 'phone'
+  }
 }

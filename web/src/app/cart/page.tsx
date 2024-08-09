@@ -1,34 +1,26 @@
 'use client'
 
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { UseQueryResult } from '@tanstack/react-query'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useFormState, useFormStatus } from 'react-dom'
-import { breadContract } from 'shared/contracts'
-import { formatEther } from 'viem'
 import {
-  BaseError,
   useAccount,
-  useBalance,
   useChainId,
-  useReadContract,
-  useReadContracts,
   useSignMessage,
-  useSimulateContract,
   useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi'
 
 import { Button } from '@/components/Button'
+import { Spinner } from '@/components/Spinner'
 import { WalletProfile } from '@/components/WalletProfile'
 import { useCart } from '@/hooks/useCart'
+import { useCheckout, useInitialCheckoutData } from '@/hooks/useCheckout'
 import { useCreateWallet } from '@/hooks/useCreateWallet'
-import { useEthPrice } from '@/hooks/useEthPrice'
 import { useInventory } from '@/hooks/useInventory'
-import { useRequestOrder } from '@/hooks/useRequestOrder'
 import { primaryChain } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
@@ -38,90 +30,27 @@ export default function Cart() {
   const { address } = useAccount()
   const chainId = useChainId()
   const { cart, removeFromCart } = useCart()
-  const { data: ethPrice } = useEthPrice()
   const { openConnectModal } = useConnectModal()
   const { switchChain } = useSwitchChain()
   const contract = useWriteContract()
   const inventory = useInventory({ tokenIds: cart })
   const { createWallet } = useCreateWallet()
 
-  const cartItemIdsInStock =
-    inventory.data
-      ?.filter((product) => product.quantity.formatted > 0)
-      .map((product) => product.id) || []
-
-  const price = useReadContract({
-    ...breadContract,
-    chainId: primaryChain.id,
-    functionName: 'price',
-    args: [
-      address!,
-      cartItemIdsInStock,
-      cartItemIdsInStock.map(() => BigInt(1)),
-    ],
-    query: { enabled: !!address },
-  })
-
-  const orderRequest = useRequestOrder({
-    account: address,
-    ids: cartItemIdsInStock.map((id) => Number(id)),
-    quantities: cartItemIdsInStock.map(() => 1),
-  })
-
-  const { claimId, encodedMessageAndData } = orderRequest.data || {}
-
-  const { data: balance } = useBalance({
-    address,
-    chainId: primaryChain.id,
-  })
-
-  const { data: multicall } = useReadContracts({
-    query: { enabled: !!orderRequest.data },
-    contracts: [
-      {
-        ...breadContract,
-        chainId: primaryChain.id,
-        functionName: 'canOrder',
-        args: [address!, encodedMessageAndData!],
-      },
-      {
-        ...breadContract,
-        chainId: primaryChain.id,
-        functionName: 'usedClaims',
-        args: [claimId!],
-      },
-    ],
-  })
-
-  const totalPriceRaw = price.data?.[0]
-  const hasSufficientBalance =
-    (balance?.value || BigInt(0)) > (totalPriceRaw || BigInt(0))
-
-  const canOrder = multicall?.[0].result && hasSufficientBalance
-  const usedClaim = multicall?.[1].result
-  const discountRaw = price.data?.[1]
-  const totalPriceFormatted = formatEther(totalPriceRaw || BigInt(0))
-  const discountFormatted = formatEther(discountRaw || BigInt(0))
+  const checkout = useCheckout()
+  const initialCheckoutData = useInitialCheckoutData(cart, address)
+  const {
+    usdValue,
+    orderPriceFormatted,
+    discountFormatted,
+    cartItemIdsInStock,
+  } = initialCheckoutData.data ?? {}
 
   // Refetch the inventory and price when the cart changes
   useEffect(() => {
+    initialCheckoutData.refetch()
+    checkout.refetch()
     inventory.refetch()
-    price.refetch()
-  }, [cart])
-
-  const simulation = useSimulateContract({
-    ...breadContract,
-    chainId: primaryChain.id,
-    functionName: 'buyBread',
-    args: [
-      address!,
-      cartItemIdsInStock,
-      cartItemIdsInStock.map(() => BigInt(1)),
-      encodedMessageAndData!,
-    ],
-    value: totalPriceRaw,
-    query: { enabled: !!canOrder },
-  })
+  }, [address, cart])
 
   const receipt = useWaitForTransactionReceipt({
     hash: contract.data,
@@ -151,16 +80,15 @@ export default function Cart() {
       </p>
 
       {(() => {
-        if (!cart.length) return <p>Your cart is empty</p>
+        if (!cart.length) return <p>Your cart is empty &#9785;</p>
 
         if (inventory.isLoading) {
           return <p>Loading...</p>
         }
 
-        if (!inventory.data) return <p>No inventory</p>
-
         return (
           <>
+            {/* CART ITEMS */}
             <div className="flex flex-col gap-4">
               {inventory.data?.map((item) => (
                 <div
@@ -196,20 +124,23 @@ export default function Cart() {
                 </div>
               ))}
             </div>
-            <div className="mt-2 self-end text-right">
-              {discountRaw && <p>Discount: {discountFormatted} ETH</p>}
 
-              {totalPriceRaw !== undefined && (
-                <p className="font-semibold">
-                  Total: {totalPriceFormatted} ETH{' '}
-                  {ethPrice &&
-                    `($${(Number(totalPriceFormatted) * ethPrice).toFixed(0)} USD)`}
-                </p>
-              )}
+            {/* CART TOTAL */}
+            <div className="mt-2 self-end text-right">
+              <p>Discount: {discountFormatted || '0'} ETH</p>
+
+              <p className="font-semibold">
+                Total: {orderPriceFormatted || '0.000'} ETH (${usdValue || '0'}{' '}
+                USD)
+              </p>
             </div>
 
             <div className="mt-12 flex flex-col items-end gap-2">
               {(() => {
+                if (checkout.isLoading) {
+                  return <Spinner />
+                }
+
                 if (!address) {
                   return (
                     <div className="flex flex-col items-end gap-2 sm:flex-row">
@@ -251,54 +182,60 @@ export default function Cart() {
                   )
                 }
 
-                if (
-                  orderRequest.error?.message ===
-                  'You must provide a phone number'
-                ) {
-                  return (
-                    <PhoneCollection
-                      refetchOrderRequest={orderRequest.refetch}
-                    />
-                  )
+                if (checkout.error) {
+                  // TODO: Find a better way to detect each error
+                  switch (checkout.error.message) {
+                    case 'You must provide a phone number': {
+                      return (
+                        <PhoneCollection
+                          refetchOrderRequest={checkout.refetch}
+                        />
+                      )
+                    }
+                    default: {
+                      return <p>{checkout.error.message}</p>
+                    }
+                  }
                 }
 
-                if (!hasSufficientBalance) {
-                  // Let the user pay with credit card
-                  return (
-                    <StripeForm
-                      usdPrice={(
-                        Number(totalPriceFormatted) * ethPrice!
-                      ).toFixed(0)}
-                      orderRequest={orderRequest}
-                    />
-                  )
-                }
+                const {
+                  hasSufficientBalance,
+                  orderRequest,
+                  canOrder,
+                  usedClaim,
+                  simulation,
+                } = checkout.data ?? {}
 
                 return (
                   <>
-                    <Button
-                      disabled={!simulation.data}
-                      loading={orderRequest.isLoading || simulation.isLoading}
-                      onClick={() => {
-                        if (!simulation.data) {
-                          return alert("Transaction hasn't been simulated yet.")
+                    {/* Buttons */}
+                    <div className="flex flex-col items-end gap-2 sm:flex-row">
+                      <StripeForm
+                        usdPrice={usdValue}
+                        inStockCartItems={cartItemIdsInStock}
+                        text={
+                          hasSufficientBalance ? 'Pay with Card' : 'Buy Bread'
                         }
+                      />
 
-                        contract.writeContract(simulation.data.request)
-                      }}
-                    >
-                      Buy Bread
-                    </Button>
+                      {hasSufficientBalance && (
+                        <Button
+                          variant="filled"
+                          disabled={!simulation?.request}
+                          onClick={() => {
+                            if (!simulation?.request) return
 
+                            contract.writeContract(simulation.request)
+                          }}
+                        >
+                          Pay with ETH
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Messages */}
                     <span className="text-right">
                       {(() => {
-                        if (simulation.error) {
-                          return (
-                            (simulation.error as BaseError).shortMessage ||
-                            'Simulated transaction failed.'
-                          )
-                        }
-
                         if (usedClaim) {
                           return 'Orders are limited to 1 per person per week.'
                         }
@@ -307,12 +244,8 @@ export default function Cart() {
                           return 'You cannot place this order.'
                         }
 
-                        if (orderRequest.error) {
-                          return orderRequest.error.message
-                        }
-
-                        if (orderRequest.data) {
-                          if (orderRequest.data.accountType === 'farcaster') {
+                        if (orderRequest) {
+                          if (orderRequest.accountType === 'farcaster') {
                             return "We'll send you order-related messages via Warpcast DCs."
                           } else {
                             return "We'll send you order-related messages via SMS."
@@ -415,68 +348,37 @@ function FormInputs({
 
 function StripeForm({
   usdPrice,
-  orderRequest,
+  inStockCartItems,
+  text,
 }: {
-  usdPrice: string
-  orderRequest: UseQueryResult
+  usdPrice?: string
+  inStockCartItems?: bigint[]
+  text: string
 }) {
-  const { cart } = useCart()
   const { address } = useAccount()
-  const [state, formAction] = useFormState(createCheckoutSession, { ok: false })
-  const inventory = useInventory({ tokenIds: cart })
 
-  const areCartItemsInStock = inventory.data?.every(
-    (item) => item.quantity.formatted > 0
-  )
+  if (!usdPrice || !inStockCartItems) {
+    console.error('Unable to show Stripe form')
+    return null
+  }
 
   return (
-    <form action={formAction} className="flex flex-col gap-2">
+    <form action={createCheckoutSession} className="flex flex-col gap-2">
       <input name="usdPrice" type="hidden" value={usdPrice} />
       <input name="address" type="hidden" value={address} />
-      <input name="tokenIds" type="hidden" value={cart.join(',')} />
+      <input name="tokenIds" type="hidden" value={inStockCartItems.join(',')} />
 
-      <StripeButton
-        orderRequest={orderRequest}
-        areCartItemsInStock={areCartItemsInStock}
-      />
-
-      <span className="text-right">
-        {(() => {
-          if (state.message) {
-            return state.message
-          }
-
-          if (orderRequest.error) {
-            return orderRequest.error.message
-          }
-
-          if (!areCartItemsInStock) {
-            return 'Some items are out of stock.'
-          }
-        })()}
-      </span>
+      <StripeButton text={text} />
     </form>
   )
 }
 
-function StripeButton({
-  orderRequest,
-  areCartItemsInStock,
-}: {
-  orderRequest: UseQueryResult
-  areCartItemsInStock: boolean | undefined
-}) {
+function StripeButton({ text }: { text: string }) {
   const { pending } = useFormStatus()
 
   return (
-    <Button
-      disabled={!orderRequest.data || !areCartItemsInStock || pending}
-      loading={
-        orderRequest.isLoading || areCartItemsInStock === undefined || pending
-      }
-      type="submit"
-    >
-      Buy Bread
+    <Button disabled={pending} loading={pending} type="submit">
+      {text}
     </Button>
   )
 }

@@ -69,10 +69,7 @@ export async function savePhoneNumber(
   return { ok: true, message: 'Phone number saved' }
 }
 
-export async function createCheckoutSession(
-  prevState: any,
-  formData: FormData
-): Promise<{
+export async function createCheckoutSession(formData: FormData): Promise<{
   ok: boolean
   message?: string
   stripeUrl?: string

@@ -198,6 +198,15 @@ export default function Cart() {
                   }
                 }
 
+                // I think this should be unreachable but somehow it is
+                if (!checkout.data) {
+                  console.error(
+                    "Not loading, no error, but somehow there's still no data"
+                  )
+
+                  return <Spinner />
+                }
+
                 const {
                   hasSufficientBalance,
                   orderRequest,

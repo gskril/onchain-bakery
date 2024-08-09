@@ -109,7 +109,7 @@ export default function Home() {
             {(() => {
               const steps = [
                 'Order bread',
-                'Greg bakes your bread',
+                'Greg bakes the bread',
                 'Pick up bread on the weekend in Manhattan',
               ]
 

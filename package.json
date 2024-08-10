@@ -9,7 +9,7 @@
   },
   "engines": {
     "node": ">=18",
-    "pnpm": ">=9"
+    "pnpm": ">=8"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

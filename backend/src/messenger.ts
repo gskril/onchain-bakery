@@ -9,10 +9,12 @@ const neynar = new Neynar(process.env.NEYNAR_API_KEY)
 export async function sendMessage({
   account,
   message,
+  mediaUrl,
   idempotencyKey,
 }: {
   account: Hex
   message: string
+  mediaUrl?: string
   idempotencyKey: string
 }) {
   const phoneAccount = await redis.get<string>(account)
@@ -23,6 +25,7 @@ export async function sendMessage({
         from: process.env.TWILIO_PHONE_NUMBER,
         to: phoneAccount,
         body: message,
+        mediaUrl: mediaUrl ? [mediaUrl] : undefined,
       })
 
       console.log(`SMS sent to ${account}`)
@@ -43,7 +46,7 @@ export async function sendMessage({
 
     await sendDirectCast({
       recipientFid: fid,
-      message,
+      message: (mediaUrl ? `${mediaUrl} ` : '') + message,
       idempotencyKey,
     })
   }

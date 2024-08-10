@@ -75,5 +75,7 @@ for (const log of logs) {
     'Feel free to come hang out for as long or as short as you want. Lmk if you have any questions or feedback!',
   ].join('\n\n')
 
-  await sendMessage({ account, message, idempotencyKey: log.data })
+  const mediaUrl = undefined
+
+  await sendMessage({ account, message, mediaUrl, idempotencyKey: log.data })
 }

@@ -2,29 +2,48 @@ import 'dotenv/config'
 import { createPublicClient, decodeEventLog, http } from 'viem'
 
 import { breadContract } from '../contracts.js'
-import { openMints, redis, twilio } from '../lib.js'
-import { Neynar } from '../neynar.js'
-import { sendDirectCast } from '../warpcast.js'
+import { openMints } from '../lib.js'
+import { sendMessage } from '../messenger.js'
 
+const fromBlock = 18242464n // 3:15am on Aug 10th
+const toBlock = 'latest'
 const client = createPublicClient({
   transport: http(process.env.RPC_URL),
 })
-
-const neynar = new Neynar(process.env.NEYNAR_API_KEY)
 
 const _logs = await client.getLogs({
   ...breadContract,
   event: breadContract.abi.find(
     (x) => x.type === 'event' && x.name === 'OrderPlaced'
   ),
-  fromBlock: 17573730n,
-  toBlock: 'latest',
+  fromBlock,
+  toBlock,
 })
 
 const logs = _logs.map((log) => {
   const decodedLog = decodeEventLog({
     ...breadContract,
     eventName: 'OrderPlaced',
+    data: log.data,
+    topics: log.topics,
+  })
+
+  return { ...decodedLog, ...log }
+})
+
+const _revokedOrders = await client.getLogs({
+  ...breadContract,
+  event: breadContract.abi.find(
+    (x) => x.type === 'event' && x.name === 'OrderRevoked'
+  ),
+  fromBlock,
+  toBlock,
+})
+
+const revokedOrders = _revokedOrders.map((log) => {
+  const decodedLog = decodeEventLog({
+    ...breadContract,
+    eventName: 'OrderRevoked',
     data: log.data,
     topics: log.topics,
   })
@@ -41,42 +60,20 @@ for (const log of logs) {
     continue
   }
 
-  const messageParts = [
-    'Thanks for buying my bread! 🍞',
-    'I will be in touch soon with more info about the pickup time and location',
-  ]
-  const message = messageParts.join('\n\n')
+  const revokedOrdersFromAccount = revokedOrders.find(
+    (order) => order.args.account === account
+  )
 
-  const phoneAccount = await redis.get<string>(account)
-
-  if (phoneAccount) {
-    try {
-      await twilio.messages.create({
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: phoneAccount,
-        body: message,
-      })
-
-      console.log(`SMS sent to ${account}`)
-    } catch (error) {
-      console.error(`Failed to send SMS to ${account}`, error)
-    }
-
-    // TODO: keep track of sent messages with idempotency key
-  } else {
-    const farcasterAccount = await neynar.getFarcasterAccountByAddress(account)
-
-    if (farcasterAccount.error) {
-      console.error('Failed to get farcaster account:', farcasterAccount.error)
-      continue
-    }
-
-    const { fid } = farcasterAccount.data
-
-    await sendDirectCast({
-      recipientFid: fid,
-      message,
-      idempotencyKey: log.data,
-    })
+  // Ignore revoked orders
+  if (revokedOrdersFromAccount) {
+    console.log(`Skipping revoked order for ${account}`)
+    continue
   }
+
+  const message = [
+    'Good Bread by Greg pickup #3 is this Sunday from 2:30pm - 5pm at ______________',
+    'Feel free to come hang out for as long or as short as you want. Lmk if you have any questions or feedback!',
+  ].join('\n\n')
+
+  await sendMessage({ account, message, idempotencyKey: log.data })
 }

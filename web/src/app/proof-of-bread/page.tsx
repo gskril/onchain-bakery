@@ -2,7 +2,6 @@
 
 import JSConfetti from 'js-confetti'
 import Error from 'next/error'
-import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import React from 'react'
 import { useFormState, useFormStatus } from 'react-dom'
@@ -16,8 +15,7 @@ import { claimProofOfBread } from './actions'
 export default function ProofOfBread() {
   const jsConfettiRef = useRef<JSConfetti>()
   const [isSuccess, setIsSuccess] = useState(false)
-  const searchParams = useSearchParams()
-  const tokenId = searchParams.get('pickup')
+  const tokenId = '3'
 
   useEffect(() => {
     if (isSuccess) {

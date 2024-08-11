@@ -75,16 +75,6 @@ export const products: Product[] = [
       'See the others. If more snacks appear, the ingredients will be listed at pickup.',
   },
   {
-    id: BigInt(10),
-    active: true,
-    name: 'Snack pack',
-    image: '/product/snack-pack.png',
-    description:
-      'Taste a few different breads! It’s snack sized so you can have a treat while you hang out.',
-    ingredients:
-      'See the others. If more snacks appear, the ingredients will be listed at pickup.',
-  },
-  {
     id: BigInt(8),
     active: true,
     loaf: true,
@@ -105,5 +95,15 @@ export const products: Product[] = [
       'Chocolate chip banana bread because everything is better with chocolate!',
     ingredients:
       'Bananas, brown sugar, pure vanilla extract, eggs, flour, water, salt, baking soda, chocolate chips, milk, avocado oil.',
+  },
+  {
+    id: BigInt(10),
+    active: true,
+    name: 'Snack pack',
+    image: '/product/snack-pack.png',
+    description:
+      'Taste a few different breads! It’s snack sized so you can have a treat while you hang out.',
+    ingredients:
+      'See the others. If more snacks appear, the ingredients will be listed at pickup.',
   },
 ]

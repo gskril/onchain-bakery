@@ -53,8 +53,9 @@ export default function ProofOfBread() {
           className="absolute -right-8 -top-8 z-20"
         />
 
-        <div
-          className={`relative z-10 h-full w-full bg-[url('/proof-of-bread/${tokenId}.svg')] bg-cover`}
+        <img
+          src={`/proof-of-bread/${tokenId}.svg`}
+          className={`relative z-10 h-full w-full`}
         />
 
         <img

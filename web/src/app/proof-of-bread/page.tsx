@@ -109,6 +109,7 @@ function MintForm({
 
 function MintFormInputs({ ok, tokenId }: { ok: boolean; tokenId: string }) {
   const { address } = useAccount()
+  const ensName = useEnsName({ address, chainId: 1 })
 
   const { pending } = useFormStatus()
   const disabled = pending || ok
@@ -119,7 +120,9 @@ function MintFormInputs({ ok, tokenId }: { ok: boolean; tokenId: string }) {
         id="addressOrName"
         name="addressOrName"
         disabled={disabled}
-        defaultValue={address}
+        defaultValue={
+          ensName.isLoading ? undefined : ensName.data ? ensName.data : address
+        }
         placeholder="ENS name or address"
         className="bg-brand-background-primary border-brand-primary focus:outline-brand-primary w-full rounded-lg border px-3 py-1"
       />

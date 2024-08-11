@@ -52,7 +52,7 @@ export async function claimProofOfBread(
 
   const mainnetClient = createClient({
     chain: mainnet,
-    transport: http(),
+    transport: http(process.env.MAINNET_RPC),
   }).extend(publicActions)
 
   let address: Hex
@@ -72,7 +72,8 @@ export async function claimProofOfBread(
 
       address = ensAddress
     } catch (error) {
-      return { ok: false, message: 'Invalid ENS name' }
+      console.error(error)
+      return { ok: false, message: 'Error resolving ENS name' }
     }
   }
 

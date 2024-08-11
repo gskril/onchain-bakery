@@ -12,6 +12,11 @@ const proofOfBreads = [
     description:
       'This NFT is proof that you picked up bread from Greg in New York City on July 27, 2024.',
   },
+  {
+    name: 'Proof of Bread #3',
+    description:
+      'This NFT is proof that you picked up bread from Greg in New York City on August 11, 2024.',
+  },
 ]
 
 const schema = z.object({

@@ -67,12 +67,12 @@ export async function claimProofOfBread(
       })
 
       if (!ensAddress) {
-        return { ok: false, message: 'Invalid address or ENS name' }
+        return { ok: false, message: 'No address for that ENS name' }
       }
 
       address = ensAddress
     } catch (error) {
-      return { ok: false, message: 'Invalid address or ENS name' }
+      return { ok: false, message: 'Invalid ENS name' }
     }
   }
 

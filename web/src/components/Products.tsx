@@ -12,6 +12,14 @@ export function Products() {
     return <p className="text-center text-lg">Loading...</p>
   }
 
+  if (inventory.error) {
+    console.log(inventory.error)
+
+    return (
+      <p className="text-center text-lg">Error loading inventory &#9785;</p>
+    )
+  }
+
   if (!inventory.data || inventory.data.length === 0) {
     return (
       <>
@@ -20,7 +28,7 @@ export function Products() {
         </p>
 
         <p className="pb-4 text-center text-lg">
-          Come back on August 8th for more
+          Come back on August 22nd for more
         </p>
       </>
     )

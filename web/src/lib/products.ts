@@ -76,7 +76,6 @@ export const products: Product[] = [
   },
   {
     id: BigInt(8),
-    active: true,
     loaf: true,
     name: 'Chocolate sourdough',
     image: '/product/chocolate-loaf.jpg',
@@ -87,7 +86,6 @@ export const products: Product[] = [
   },
   {
     id: BigInt(9),
-    active: true,
     loaf: true,
     name: 'Banana bread',
     image: '/product/banana-bread.jpg',
@@ -98,7 +96,6 @@ export const products: Product[] = [
   },
   {
     id: BigInt(10),
-    active: true,
     name: 'Snack pack',
     image: '/product/snack-pack.png',
     description:

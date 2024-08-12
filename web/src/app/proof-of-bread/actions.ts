@@ -20,6 +20,8 @@ const schema = z.object({
   tokenId: z.coerce.number(),
 })
 
+const isOpen = false
+
 export async function claimProofOfBread(
   prevState: any,
   formData: FormData
@@ -27,6 +29,10 @@ export async function claimProofOfBread(
   ok: boolean
   message?: string
 }> {
+  if (!isOpen) {
+    return { ok: false, message: 'Mint is closed' }
+  }
+
   const safeParse = schema.safeParse({
     addressOrName: formData.get('addressOrName'),
     tokenId: formData.get('tokenId'),

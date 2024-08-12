@@ -51,6 +51,8 @@ const revokedOrders = _revokedOrders.map((log) => {
   return { ...decodedLog, ...log }
 })
 
+const sentMessages = new Set()
+
 for (const log of logs) {
   type LogArgs = typeof log.args
   const { account, ids } = log.args as Required<LogArgs>
@@ -70,6 +72,12 @@ for (const log of logs) {
     continue
   }
 
+  // Ignore addresses that have already been sent a message (same person placing multiple orders)
+  if (sentMessages.has(account)) {
+    console.log(`Already sent message to ${account}`)
+    continue
+  }
+
   const message = [
     'Good Bread by Greg pickup #3 is this Sunday from 2:30pm - 5pm at ______________',
     'Feel free to come hang out for as long or as short as you want. Lmk if you have any questions or feedback!',
@@ -78,4 +86,5 @@ for (const log of logs) {
   const mediaUrl = undefined
 
   await sendMessage({ account, message, mediaUrl, idempotencyKey: log.data })
+  sentMessages.add(account)
 }

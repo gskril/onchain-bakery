@@ -63,213 +63,217 @@ export default function Cart() {
   if (!isMounted) return null
 
   return (
-    <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
-      <div className="mb-8 flex flex-col justify-between gap-2 sm:mb-14 sm:flex-row sm:items-center sm:gap-6">
-        <h1>
-          <Link href="/" className="section-title flex items-center gap-3">
-            <img src="/misc/greg.svg" className="w-8" />
-            <span>Checkout</span>
-          </Link>
-        </h1>
+    <>
+      <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
+        <div className="mb-8 flex flex-col justify-between gap-2 sm:mb-14 sm:flex-row sm:items-center sm:gap-6">
+          <h1>
+            <Link href="/" className="section-title flex items-center gap-3">
+              <img src="/misc/greg.svg" className="w-8" />
+              <span>Checkout</span>
+            </Link>
+          </h1>
 
-        <WalletProfile address={address} />
-      </div>
+          <WalletProfile address={address} />
+        </div>
 
-      <p className="mb-4 text-lg font-semibold sm:-mt-10 sm:mb-10 sm:text-xl">
-        Pickup in Manhattan this Sunday from 2:30pm - 5pm.
-      </p>
+        <p className="mb-4 text-lg font-semibold sm:-mt-10 sm:mb-10 sm:text-xl">
+          Pickup in Manhattan this Sunday from 2:30pm - 5pm.
+        </p>
 
-      {(() => {
-        if (!cart.length) return <p>Your cart is empty &#9785;</p>
+        {(() => {
+          if (!cart.length) return <p>Your cart is empty &#9785;</p>
 
-        if (inventory.isLoading) {
-          return <p>Loading...</p>
-        }
+          if (inventory.isLoading) {
+            return <p>Loading...</p>
+          }
 
-        return (
-          <>
-            {/* CART ITEMS */}
-            <div className="flex flex-col gap-4">
-              {inventory.data?.map((item) => (
-                <div
-                  key={item.id}
-                  className="border-brand-primary grid w-full gap-4 border-b py-6 first:border-t md:grid-cols-[2fr,3fr,8fr]"
-                >
-                  <div>
-                    <button
-                      className="m-0 h-fit w-fit"
-                      onClick={() => removeFromCart(item.id)}
-                    >
-                      ✖︎ Remove
-                    </button>
+          return (
+            <>
+              {/* CART ITEMS */}
+              <div className="flex flex-col gap-4">
+                {inventory.data?.map((item) => (
+                  <div
+                    key={item.id}
+                    className="border-brand-primary grid w-full gap-4 border-b py-6 first:border-t md:grid-cols-[2fr,3fr,8fr]"
+                  >
+                    <div>
+                      <button
+                        className="m-0 h-fit w-fit"
+                        onClick={() => removeFromCart(item.id)}
+                      >
+                        ✖︎ Remove
+                      </button>
 
-                    {item.quantity.formatted === 0 && (
-                      <p className="font-pangram text-brand-accent-orange font-semibold">
-                        SOLD OUT
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <p>{item.name}</p>
-                    <p>{item.price.formatted} ETH</p>
-                  </div>
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className={cn(
-                      'border-brand-primary h-32 w-32 rounded-lg border',
-                      item.quantity.formatted === 0 && 'saturate-0'
-                    )}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* CART TOTAL */}
-            <div className="mt-2 self-end text-right">
-              <p>Discount: {discountFormatted || '0'} ETH</p>
-
-              <p className="font-semibold">
-                Total: {orderPriceFormatted || '0.000'} ETH (${usdValue || '0'}{' '}
-                USD)
-              </p>
-            </div>
-
-            <div className="mt-12 flex flex-col items-end gap-2">
-              {(() => {
-                if (checkout.isLoading) {
-                  return <Spinner />
-                }
-
-                if (!address) {
-                  return (
-                    <div className="flex flex-col items-end gap-2 sm:flex-row">
-                      <Button onClick={openConnectModal}>Connect</Button>
-                      <Button variant="filled" onClick={createWallet}>
-                        Create Account
-                      </Button>
-                    </div>
-                  )
-                }
-
-                if (receipt.isSuccess) {
-                  redirect('/cart/success')
-                }
-
-                if (receipt.isLoading) {
-                  return (
-                    <Button disabled loading>
-                      Processing transaction
-                    </Button>
-                  )
-                }
-
-                if (contract.isPending) {
-                  return (
-                    <Button disabled loading>
-                      Confirm in wallet
-                    </Button>
-                  )
-                }
-
-                if (chainId !== primaryChain.id) {
-                  return (
-                    <Button
-                      onClick={() => switchChain({ chainId: primaryChain.id })}
-                    >
-                      Switch network
-                    </Button>
-                  )
-                }
-
-                if (checkout.error) {
-                  // TODO: Find a better way to detect each error
-                  switch (checkout.error.message) {
-                    case 'You must provide a phone number': {
-                      return (
-                        <PhoneCollection
-                          refetchOrderRequest={checkout.refetch}
-                        />
-                      )
-                    }
-                    default: {
-                      return <p>{checkout.error.message}</p>
-                    }
-                  }
-                }
-
-                // I think this should be unreachable but somehow it is
-                if (!checkout.data) {
-                  console.error(
-                    "Not loading, no error, but somehow there's still no data"
-                  )
-
-                  return <Spinner />
-                }
-
-                const {
-                  hasSufficientBalance,
-                  orderRequest,
-                  canOrder,
-                  usedClaim,
-                  simulation,
-                } = checkout.data ?? {}
-
-                return (
-                  <>
-                    {/* Buttons */}
-                    <div className="flex flex-col items-end gap-2 sm:flex-row">
-                      <StripeForm
-                        usdPrice={usdValue}
-                        inStockCartItems={cartItemIdsInStock}
-                        text={
-                          hasSufficientBalance ? 'Pay with Card' : 'Buy Bread'
-                        }
-                      />
-
-                      {hasSufficientBalance && (
-                        <Button
-                          variant="filled"
-                          disabled={!simulation?.request}
-                          onClick={() => {
-                            if (!simulation?.request) return
-
-                            contract.writeContract(simulation.request)
-                          }}
-                        >
-                          Pay with ETH
-                        </Button>
+                      {item.quantity.formatted === 0 && (
+                        <p className="font-pangram text-brand-accent-orange font-semibold">
+                          SOLD OUT
+                        </p>
                       )}
                     </div>
+                    <div>
+                      <p>{item.name}</p>
+                      <p>{item.price.formatted} ETH</p>
+                    </div>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className={cn(
+                        'border-brand-primary h-32 w-32 rounded-lg border',
+                        item.quantity.formatted === 0 && 'saturate-0'
+                      )}
+                    />
+                  </div>
+                ))}
+              </div>
 
-                    {/* Messages */}
-                    <span className="text-right">
-                      {(() => {
-                        if (usedClaim) {
-                          return 'Orders are limited to 1 per person per week.'
+              {/* CART TOTAL */}
+              <div className="mt-2 self-end text-right">
+                <p>Discount: {discountFormatted || '0'} ETH</p>
+
+                <p className="font-semibold">
+                  Total: {orderPriceFormatted || '0.000'} ETH ($
+                  {usdValue || '0'} USD)
+                </p>
+              </div>
+
+              <div className="mt-12 flex flex-col items-end gap-2">
+                {(() => {
+                  if (checkout.isLoading) {
+                    return <Spinner />
+                  }
+
+                  if (!address) {
+                    return (
+                      <div className="flex flex-col items-end gap-2 sm:flex-row">
+                        <Button onClick={openConnectModal}>Connect</Button>
+                        <Button variant="filled" onClick={createWallet}>
+                          Create Account
+                        </Button>
+                      </div>
+                    )
+                  }
+
+                  if (receipt.isSuccess) {
+                    redirect('/cart/success')
+                  }
+
+                  if (receipt.isLoading) {
+                    return (
+                      <Button disabled loading>
+                        Processing transaction
+                      </Button>
+                    )
+                  }
+
+                  if (contract.isPending) {
+                    return (
+                      <Button disabled loading>
+                        Confirm in wallet
+                      </Button>
+                    )
+                  }
+
+                  if (chainId !== primaryChain.id) {
+                    return (
+                      <Button
+                        onClick={() =>
+                          switchChain({ chainId: primaryChain.id })
                         }
+                      >
+                        Switch network
+                      </Button>
+                    )
+                  }
 
-                        if (canOrder === false) {
-                          return 'You cannot place this order.'
-                        }
+                  if (checkout.error) {
+                    // TODO: Find a better way to detect each error
+                    switch (checkout.error.message) {
+                      case 'You must provide a phone number': {
+                        return (
+                          <PhoneCollection
+                            refetchOrderRequest={checkout.refetch}
+                          />
+                        )
+                      }
+                      default: {
+                        return <p>{checkout.error.message}</p>
+                      }
+                    }
+                  }
 
-                        if (orderRequest) {
-                          if (orderRequest.accountType === 'farcaster') {
-                            return "We'll send you order-related messages via Warpcast DCs."
-                          } else {
-                            return "We'll send you order-related messages via SMS."
+                  // I think this should be unreachable but somehow it is
+                  if (!checkout.data) {
+                    console.error(
+                      "Not loading, no error, but somehow there's still no data"
+                    )
+
+                    return <Spinner />
+                  }
+
+                  const {
+                    hasSufficientBalance,
+                    orderRequest,
+                    canOrder,
+                    usedClaim,
+                    simulation,
+                  } = checkout.data ?? {}
+
+                  return (
+                    <>
+                      {/* Buttons */}
+                      <div className="flex flex-col items-end gap-2 sm:flex-row">
+                        <StripeForm
+                          usdPrice={usdValue}
+                          inStockCartItems={cartItemIdsInStock}
+                          text={
+                            hasSufficientBalance ? 'Pay with Card' : 'Buy Bread'
                           }
-                        }
-                      })()}
-                    </span>
-                  </>
-                )
-              })()}
-            </div>
-          </>
-        )
-      })()}
-    </main>
+                        />
+
+                        {hasSufficientBalance && (
+                          <Button
+                            variant="filled"
+                            disabled={!simulation?.request}
+                            onClick={() => {
+                              if (!simulation?.request) return
+
+                              contract.writeContract(simulation.request)
+                            }}
+                          >
+                            Pay with ETH
+                          </Button>
+                        )}
+                      </div>
+
+                      {/* Messages */}
+                      <span className="text-right">
+                        {(() => {
+                          if (usedClaim) {
+                            return 'Orders are limited to 1 per person per week.'
+                          }
+
+                          if (canOrder === false) {
+                            return 'You cannot place this order.'
+                          }
+
+                          if (orderRequest) {
+                            if (orderRequest.accountType === 'farcaster') {
+                              return "We'll send you order-related messages via Warpcast DCs."
+                            } else {
+                              return "We'll send you order-related messages via SMS."
+                            }
+                          }
+                        })()}
+                      </span>
+                    </>
+                  )
+                })()}
+              </div>
+            </>
+          )
+        })()}
+      </main>
+    </>
   )
 }
 

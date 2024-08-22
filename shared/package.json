@@ -1,4 +1,14 @@
 {
   "name": "shared",
-  "private": true
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "exports": {
+    "./contracts": "./dist/contracts.js",
+    "./neynar": "./dist/neynar.js"
+  }
 }

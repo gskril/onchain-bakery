@@ -1,6 +1,6 @@
+import { breadContract } from 'shared/contracts'
 import { createPublicClient, http } from 'viem'
 
-import { breadContract } from './contracts.js'
 import { openMints } from './lib.js'
 import { sendMessage } from './messenger.js'
 

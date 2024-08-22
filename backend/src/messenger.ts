@@ -1,7 +1,7 @@
+import { Neynar } from 'shared/neynar'
 import { Hex } from 'viem'
 
 import { redis, twilio } from './lib.js'
-import { Neynar } from './neynar.js'
 import { sendDirectCast } from './warpcast.js'
 
 const neynar = new Neynar(process.env.NEYNAR_API_KEY)
@@ -37,7 +37,7 @@ export async function sendMessage({
   } else {
     const farcasterAccount = await neynar.getFarcasterAccountByAddress(account)
 
-    if (farcasterAccount.error) {
+    if (farcasterAccount.error || !farcasterAccount.data) {
       console.error('Failed to get farcaster account:', farcasterAccount.error)
       return
     }

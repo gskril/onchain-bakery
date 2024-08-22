@@ -2,10 +2,12 @@
   "name": "onchain-bakery",
   "private": true,
   "scripts": {
-    "web:build": "pnpm --filter=web build",
-    "web:dev": "pnpm --filter=web dev",
-    "backend:build": "pnpm --filter=backend build",
-    "backend:start": "pnpm --filter=backend start"
+    "web:build": "pnpm shared:build && pnpm --filter=web build",
+    "web:dev": "pnpm shared:build && pnpm --filter=web dev",
+    "backend:build": "pnpm shared:build && pnpm --filter=backend build",
+    "backend:start": "pnpm shared:build && pnpm --filter=backend start",
+    "shared:build": "pnpm --filter=shared build",
+    "build": "pnpm --parallel build"
   },
   "engines": {
     "node": ">=18",

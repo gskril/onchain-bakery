@@ -16,7 +16,7 @@ export function Modal({
         onClick={() => setIsModalOpen(false)}
       />
 
-      <div className="bg-brand-background-primary absolute flex max-w-lg flex-col gap-4 rounded-lg p-6">
+      <div className="bg-brand-background-primary absolute flex w-[92%] max-w-lg flex-col gap-4 rounded-lg p-6">
         {children}
       </div>
     </div>

@@ -21,10 +21,10 @@ export async function GET(
   let idBigint: bigint
   const { id } = safeParse.data
 
-  if (typeof id === 'string') {
-    idBigint = fromHex(('0x' + id) as any, 'bigint')
-  } else {
+  if (id.match(/^\d+$/)) {
     idBigint = BigInt(id)
+  } else {
+    idBigint = fromHex(('0x' + id) as any, 'bigint')
   }
 
   const product = products.find((product) => product.id === idBigint)

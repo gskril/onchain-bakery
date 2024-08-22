@@ -3,7 +3,7 @@
 import JSConfetti from 'js-confetti'
 import { useEffect, useRef, useState } from 'react'
 import React from 'react'
-import { breadContract } from 'shared/contracts'
+import { breadContract } from 'shared/src/contracts'
 import { useAccount } from 'wagmi'
 
 import { buttonStyles } from '@/components/Button'

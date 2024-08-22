@@ -1,6 +1,6 @@
 'use server'
 
-import { proofOfBreadContract } from 'shared/contracts'
+import { proofOfBreadContract } from 'shared/src/contracts'
 import {
   Hex,
   createClient,

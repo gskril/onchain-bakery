@@ -1,7 +1,7 @@
 /** @jsxImportSource frog/jsx */
 import { Button, Frog } from 'frog'
 import { handle } from 'frog/next'
-import { openMinterContract } from 'shared/contracts'
+import { openMinterContract } from 'shared/src/contracts'
 import { Address, parseEther } from 'viem'
 
 import { primaryChain } from '@/lib/constants'

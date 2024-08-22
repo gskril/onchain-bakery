@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { breadContract } from 'shared/contracts'
+import { breadContract } from 'shared/src/contracts'
 import Stripe from 'stripe'
 import { Hex, createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'

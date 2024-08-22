@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
-import { Neynar } from 'shared/neynar'
+import { Neynar } from 'shared/src/neynar'
 import { Hex, encodeAbiParameters } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { isAddress } from 'viem/utils'

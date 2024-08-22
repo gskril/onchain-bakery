@@ -6,8 +6,7 @@
     "web:dev": "pnpm shared:build && pnpm --filter=web dev",
     "backend:build": "pnpm shared:build && pnpm --filter=backend build",
     "backend:start": "pnpm shared:build && pnpm --filter=backend start",
-    "shared:build": "pnpm --filter=shared build",
-    "build": "pnpm --parallel build"
+    "shared:build": "pnpm --filter=shared build"
   },
   "engines": {
     "node": ">=18",

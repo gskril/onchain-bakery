@@ -9,6 +9,7 @@
   },
   "exports": {
     "./contracts": "./dist/contracts.js",
-    "./neynar": "./dist/neynar.js"
+    "./neynar": "./dist/neynar.js",
+    "./src/*": "./src/*.ts"
   }
 }

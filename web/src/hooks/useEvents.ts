@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { breadContract } from 'shared/contracts'
+import { breadContract } from 'shared/src/contracts'
 import { decodeEventLog } from 'viem'
 import { usePublicClient } from 'wagmi'
 

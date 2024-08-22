@@ -5,7 +5,7 @@ import JSConfetti from 'js-confetti'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import React from 'react'
-import { openMinterContract } from 'shared/contracts'
+import { openMinterContract } from 'shared/src/contracts'
 import { parseEther } from 'viem'
 import {
   useAccount,

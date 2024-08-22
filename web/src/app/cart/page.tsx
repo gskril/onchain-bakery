@@ -15,6 +15,7 @@ import {
 } from 'wagmi'
 
 import { Button } from '@/components/Button'
+import { Modal } from '@/components/Modal'
 import { Spinner } from '@/components/Spinner'
 import { WalletProfile } from '@/components/WalletProfile'
 import { useCart } from '@/hooks/useCart'
@@ -35,6 +36,7 @@ export default function Cart() {
   const contract = useWriteContract()
   const inventory = useInventory({ tokenIds: cart })
   const { createWallet } = useCreateWallet()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const checkout = useCheckout()
   const initialCheckoutData = useInitialCheckoutData(cart, address)
@@ -60,10 +62,34 @@ export default function Cart() {
   const [isMounted, setIsMounted] = useState(false)
   useEffect(() => setIsMounted(true), [])
 
+  // Close modal when the user creates a wallet
+  useEffect(() => {
+    if (address) {
+      setIsModalOpen(false)
+    }
+  }, [address])
+
   if (!isMounted) return null
 
   return (
     <>
+      <Modal open={isModalOpen} setIsModalOpen={setIsModalOpen}>
+        <p>
+          When you click the button below, you'll be redirected to a page
+          prompting you to "Sign up". Under the hood, this creates a blockchain
+          account using Face ID.
+        </p>
+
+        <p>
+          Don't worry about crypto — you will be redirected back here to pay
+          with Apple Pay.
+        </p>
+
+        <Button variant="filled" onClick={createWallet}>
+          Create Account
+        </Button>
+      </Modal>
+
       <main className="mx-auto flex max-w-7xl flex-col px-6 py-12">
         <div className="mb-8 flex flex-col justify-between gap-2 sm:mb-14 sm:flex-row sm:items-center sm:gap-6">
           <h1>
@@ -77,7 +103,7 @@ export default function Cart() {
         </div>
 
         <p className="mb-4 text-lg font-semibold sm:-mt-10 sm:mb-10 sm:text-xl">
-          Pickup in Manhattan this Sunday from 2:30pm - 5pm.
+          Pickup in Manhattan this Saturday from 2:30pm - 5pm.
         </p>
 
         {(() => {
@@ -146,7 +172,10 @@ export default function Cart() {
                     return (
                       <div className="flex flex-col items-end gap-2 sm:flex-row">
                         <Button onClick={openConnectModal}>Connect</Button>
-                        <Button variant="filled" onClick={createWallet}>
+                        <Button
+                          variant="filled"
+                          onClick={() => setIsModalOpen(true)}
+                        >
                           Create Account
                         </Button>
                       </div>
@@ -312,7 +341,7 @@ function PhoneCollection({
         }
 
         signMessage({
-          message: e.get('phone') as string,
+          message: `My phone number is ${e.get('phone')}`,
         })
       }}
     >

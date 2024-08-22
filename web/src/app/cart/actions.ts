@@ -44,7 +44,7 @@ export async function savePhoneNumber(
 
   const isValidSignature = viemClient.verifyMessage({
     address: account,
-    message: phone,
+    message: `My phone number is ${phone}`,
     signature,
   })
 

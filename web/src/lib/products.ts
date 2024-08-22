@@ -103,4 +103,46 @@ export const products: Product[] = [
     ingredients:
       'See the others. If more snacks appear, the ingredients will be listed at pickup.',
   },
+  {
+    id: BigInt(11),
+    active: true,
+    loaf: true,
+    name: 'Chocolate babka',
+    image: '/product/babka.jpg',
+    description:
+      "Normal people eat babka for dessert but there's nothing better than a warm slice for breakfast.",
+    ingredients:
+      'Flour, water, salt, yeast, sugar, pure vanilla extract, whole milk, butter, eggs, chocolate chips, cocoa powder, cinnamon.',
+  },
+  {
+    id: BigInt(12),
+    active: true,
+    loaf: true,
+    name: 'Banana bread',
+    image: '/product/banana-bread.jpg',
+    description:
+      'Chocolate chip banana bread because everything is better with chocolate!',
+    ingredients:
+      'Bananas, brown sugar, pure vanilla extract, eggs, flour, water, salt, baking soda, chocolate chips, milk, avocado oil.',
+  },
+  {
+    id: BigInt(13),
+    active: true,
+    loaf: true,
+    name: 'Sourdough loaf',
+    image: '/product/plain-loaf.jpg',
+    description:
+      "Good ol' loaf of plain sourdough bread. Great for daily sandwiches or toast.",
+    ingredients: 'Flour, water, salt.',
+  },
+  {
+    id: BigInt(14),
+    active: true,
+    name: 'Snack pack',
+    image: '/product/snack-pack.png',
+    description:
+      'Taste a few different breads! It’s snack sized so you can have a treat while you hang out.',
+    ingredients:
+      'See the others. If more snacks appear, the ingredients will be listed at pickup.',
+  },
 ]

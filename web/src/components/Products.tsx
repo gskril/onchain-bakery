@@ -35,7 +35,7 @@ export function Products() {
   }
 
   return (
-    <div className="grid items-stretch gap-10 md:grid-cols-3">
+    <div className="grid items-stretch gap-10 md:grid-cols-4">
       {inventory.data.map((product) => (
         <div key={product.name} className="flex flex-col items-center">
           <h3 className="font-pangram mb-2 text-3xl">{product.name}</h3>
@@ -46,8 +46,8 @@ export function Products() {
             className="border-brand-primary w-full rounded-lg border sm:max-w-72"
           />
 
-          <div className="bg-brand-background-secondary relative mb-4 mt-8 flex h-full w-full flex-col items-start gap-4 rounded-lg p-8 pb-6 text-left">
-            <div className="text-brand-background-secondary bg-brand-primary absolute -top-6 right-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold italic">
+          <div className="bg-brand-background-secondary relative mb-4 mt-8 flex h-full w-full flex-col items-start gap-4 rounded-lg p-6 pb-4 text-left">
+            <div className="text-brand-background-secondary bg-brand-primary absolute -top-4 right-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold italic sm:-right-4 sm:-top-6">
               {product.quantity.formatted} left
             </div>
 
@@ -65,13 +65,13 @@ export function Products() {
 
               <div className="flex w-full justify-between gap-4">
                 <span className="font-pangram text-lg font-extrabold">
-                  {product.price.formatted} ETH{' '}
+                  {ethPrice && (
+                    <span>
+                      ${(product.price.formatted * ethPrice).toFixed(0)} USD
+                    </span>
+                  )}
                 </span>
-                {ethPrice && (
-                  <span>
-                    ${(product.price.formatted * ethPrice).toFixed(0)} USD
-                  </span>
-                )}
+                {product.price.formatted} ETH{' '}
               </div>
             </div>
           </div>

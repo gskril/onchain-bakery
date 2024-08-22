@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { fromHex } from 'viem/utils'
 import z from 'zod'
 
 import { products } from '@/lib/products'
 
 const schema = z.object({
-  id: z.coerce.bigint(),
+  id: z.string(),
 })
 
 export async function GET(
@@ -17,8 +18,16 @@ export async function GET(
     return NextResponse.json(safeParse.error, { status: 400 })
   }
 
+  let idBigint: bigint
   const { id } = safeParse.data
-  const product = products.find((product) => product.id === id)
+
+  if (typeof id === 'string') {
+    idBigint = fromHex(('0x' + id) as any, 'bigint')
+  } else {
+    idBigint = BigInt(id)
+  }
+
+  const product = products.find((product) => product.id === idBigint)
 
   if (!product) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 })
@@ -28,7 +37,7 @@ export async function GET(
 
   const metadata = {
     name: product?.name,
-    image: `${DOMAIN}/api/metadata/bread/${id}/image`,
+    image: `${DOMAIN}/api/metadata/bread/${idBigint.toString()}/image`,
     description: product?.description,
   }
 

@@ -43,6 +43,7 @@ export default function Cart() {
   const {
     usdValue,
     orderPriceFormatted,
+    discountRaw,
     discountFormatted,
     cartItemIdsInStock,
   } = initialCheckoutData.data ?? {}
@@ -78,6 +79,11 @@ export default function Cart() {
           When you click the button below, you'll be redirected to a page
           prompting you to "Sign up". Under the hood, this creates a blockchain
           account using Face ID.
+        </p>
+
+        <p>
+          If you're on an Apple device, you may also be prompted to set up
+          iCloud Keychain. This is expected behavior and safe to confirm.
         </p>
 
         <p>
@@ -154,7 +160,7 @@ export default function Cart() {
 
               {/* CART TOTAL */}
               <div className="mt-2 self-end text-right">
-                <p>Discount: {discountFormatted || '0'} ETH</p>
+                {discountRaw && <p>Discount: {discountFormatted} ETH</p>}
 
                 <p className="font-semibold">
                   Total: {orderPriceFormatted || '0.000'} ETH ($
@@ -345,7 +351,7 @@ function PhoneCollection({
         })
       }}
     >
-      <p>We need a phone number to text you order-related updates.</p>
+      <p>Please provide a phone number so we can text you order updates.</p>
 
       {!state.ok && state.message && (
         <p className="text-brand-accent-orange">{state.message}</p>

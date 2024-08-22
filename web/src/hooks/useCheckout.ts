@@ -127,6 +127,7 @@ async function getInitialCheckoutData(cart: bigint[], address: Hex) {
     areAllCartItemsInStock,
     orderPriceRaw,
     orderPriceFormatted,
+    discountRaw,
     discountFormatted,
   }
 }

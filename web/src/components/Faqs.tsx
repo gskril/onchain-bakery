@@ -30,17 +30,16 @@ const content = [
   {
     question: 'Why do I need an account to order?',
     answer:
-      'Orders are managed on Base, a blockchain that requires users to have a special type of account called a wallet. Coinbase Smart Wallet is the easiest way to create a new account.',
+      'Orders are managed on Base, a blockchain where users need an account in order to transact. This might sound scary but don’t worry, it takes a few seconds to create an account and we’ll walk you through it.',
   },
   {
     question: 'How do I pay for my order?',
-    answer:
-      'If you connect an account that has ETH on Base, you will be prompted to pay with ETH. If you create a new account, you can pay with a credit card.',
+    answer: 'You can pay with ETH on Base or a credit card.',
   },
   {
     question: 'How do I get my bread?',
     answer:
-      'You will recieve a message from Greg via Warpcast or SMS by Friday evening with detailed pickup instructions. Pickup will be in a group setting in Manhattan over the weekend.',
+      'You will recieve a message from Greg by Friday evening with detailed pickup instructions. Pickup will be in a group setting in Manhattan over the weekend.',
   },
   {
     question: 'Who designed this brand and website?',

@@ -52,15 +52,6 @@ export default function Home() {
               >
                 Buy Greg's Bread
               </a>
-
-              <Link
-                className={buttonStyles({
-                  className: 'px-8 py-2 sm:px-4',
-                })}
-                href="/mint"
-              >
-                Mint NFT
-              </Link>
             </div>
           </div>
         </div>

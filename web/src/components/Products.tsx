@@ -35,7 +35,7 @@ export function Products() {
   }
 
   return (
-    <div className="grid items-stretch gap-10 md:grid-cols-4">
+    <div className="grid items-stretch gap-10 md:grid-cols-2 lg:grid-cols-4">
       {inventory.data.map((product) => (
         <div key={product.name} className="flex flex-col items-center">
           <h3 className="font-pangram mb-2 text-3xl">{product.name}</h3>

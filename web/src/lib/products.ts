@@ -104,15 +104,14 @@ export const products: Product[] = [
       'See the others. If more snacks appear, the ingredients will be listed at pickup.',
   },
   {
-    id: BigInt(11),
+    id: BigInt(14),
     active: true,
-    loaf: true,
-    name: 'Chocolate babka',
-    image: '/product/babka.jpg',
+    name: 'Snack pack',
+    image: '/product/snack-pack.png',
     description:
-      "Normal people eat babka for dessert but there's nothing better than a warm slice for breakfast.",
+      'Taste a few different breads! It’s snack sized so you can have a treat while you hang out.',
     ingredients:
-      'Flour, water, salt, yeast, sugar, pure vanilla extract, whole milk, butter, eggs, chocolate chips, cocoa powder, cinnamon.',
+      'See the others. If more snacks appear, the ingredients will be listed at pickup.',
   },
   {
     id: BigInt(12),
@@ -126,6 +125,17 @@ export const products: Product[] = [
       'Bananas, brown sugar, pure vanilla extract, eggs, flour, water, salt, baking soda, chocolate chips, milk, avocado oil.',
   },
   {
+    id: BigInt(11),
+    active: true,
+    loaf: true,
+    name: 'Chocolate babka',
+    image: '/product/babka.jpg',
+    description:
+      "Normal people eat babka for dessert but there's nothing better than a warm slice for breakfast.",
+    ingredients:
+      'Flour, water, salt, yeast, sugar, pure vanilla extract, whole milk, butter, eggs, chocolate chips, cocoa powder, cinnamon.',
+  },
+  {
     id: BigInt(13),
     active: true,
     loaf: true,
@@ -134,15 +144,5 @@ export const products: Product[] = [
     description:
       "Good ol' loaf of plain sourdough bread. Great for daily sandwiches or toast.",
     ingredients: 'Flour, water, salt.',
-  },
-  {
-    id: BigInt(14),
-    active: true,
-    name: 'Snack pack',
-    image: '/product/snack-pack.png',
-    description:
-      'Taste a few different breads! It’s snack sized so you can have a treat while you hang out.',
-    ingredients:
-      'See the others. If more snacks appear, the ingredients will be listed at pickup.',
   },
 ]

@@ -27,7 +27,7 @@ export function subscribe() {
 
         const message = [
           'Thanks for supporting Good Bread by Greg! 🍞',
-          'I will be in touch soon with more info about the pickup time and location',
+          'Pickup for your order is tomorrow (Aug 24th) from 2:30pm - 5pm at Pilgrim Hill in Central Park https://maps.app.goo.gl/3wVvk8psZDuWxEqC9',
         ].join('\n\n')
 
         await sendMessage({ account, message, idempotencyKey: log.data })

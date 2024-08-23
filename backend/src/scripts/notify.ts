@@ -5,7 +5,7 @@ import { createPublicClient, decodeEventLog, http } from 'viem'
 import { openMints } from '../lib.js'
 import { sendMessage } from '../messenger.js'
 
-const fromBlock = 18242464n // 3:15am on Aug 10th
+const fromBlock = 18788443n
 const toBlock = 'latest'
 const client = createPublicClient({
   transport: http(process.env.RPC_URL),
@@ -79,8 +79,8 @@ for (const log of logs) {
   }
 
   const message = [
-    'Good Bread by Greg pickup #3 is this Sunday from 2:30pm - 5pm at ______________',
-    'Feel free to come hang out for as long or as short as you want. Lmk if you have any questions or feedback!',
+    'Good Bread by Greg pickup #4 is tomorrow (Aug 24th) from 2:30pm - 5pm at Pilgrim Hill in Central Park https://maps.app.goo.gl/3wVvk8psZDuWxEqC9',
+    'Feel free to come hang out for as long or as short as you want. See you soon!',
   ].join('\n\n')
 
   const mediaUrl = undefined

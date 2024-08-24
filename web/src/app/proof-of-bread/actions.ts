@@ -20,7 +20,7 @@ const schema = z.object({
   tokenId: z.coerce.number(),
 })
 
-const isOpen = true
+const isOpen = false
 
 export async function claimProofOfBread(
   prevState: any,

@@ -26,10 +26,6 @@ export function Products() {
         <p className="pt-4 text-center text-lg">
           No bread available right now &#9785;
         </p>
-
-        <p className="pb-4 text-center text-lg">
-          Come back on August 22nd for more
-        </p>
       </>
     )
   }

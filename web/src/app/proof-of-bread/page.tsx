@@ -15,7 +15,7 @@ import { claimProofOfBread } from './actions'
 export default function ProofOfBread() {
   const jsConfettiRef = useRef<JSConfetti>()
   const [isSuccess, setIsSuccess] = useState(false)
-  const tokenId = '3'
+  const tokenId = '4'
 
   useEffect(() => {
     if (isSuccess) {

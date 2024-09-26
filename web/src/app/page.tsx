@@ -134,7 +134,7 @@ export default function Home() {
 
         <DividerTwo />
 
-        <div className="mx-auto flex max-w-7xl flex-col items-center px-6 pb-12 pt-0 text-center">
+        <div className="mx-auto flex max-w-5xl flex-col items-center px-6 pb-12 pt-0 text-center">
           <h2 className="section-title xs:mb-0 mb-10">These are the breads</h2>
 
           <CircleScribble className="xs:block pointer-events-none -mt-[6.25rem] mb-10 hidden w-[21rem] pl-2 sm:-mt-[6.75rem] sm:w-[34rem]" />

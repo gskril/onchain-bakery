@@ -20,10 +20,10 @@ export function subscribe() {
         const { account, ids } = log.args as Required<LogArgs>
 
         // Ignore open mints
-        // if (ids.length === 1 && openMints.includes(ids[0])) {
-        //   console.log(`Ignoring open mint from ${account}`)
-        //   continue
-        // }
+        if (ids.length === 1 && openMints.includes(ids[0])) {
+          console.log(`Ignoring open mint from ${account}`)
+          continue
+        }
 
         const message = [
           'Thanks for supporting Good Bread by Greg! 🍞',

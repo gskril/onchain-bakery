@@ -12,9 +12,8 @@ type Product = {
 export const products: Product[] = [
   {
     id: BigInt(1),
-    active: true,
     name: 'Good Bread by Greg',
-    image: '/nft/1.svg',
+    image: '/nft/launch.png',
     description:
       'Celebratory NFT to commemorate the launch of Good Bread by Greg.',
   },
@@ -116,7 +115,6 @@ export const products: Product[] = [
   },
   {
     id: BigInt(12),
-    active: true,
     loaf: true,
     name: 'Banana bread',
     image: '/product/banana-bread.jpg',
@@ -127,7 +125,6 @@ export const products: Product[] = [
   },
   {
     id: BigInt(13),
-    active: true,
     loaf: true,
     name: 'Sourdough loaf',
     image: '/product/plain-loaf.jpg',

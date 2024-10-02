@@ -1,5 +1,5 @@
 import { breadContract } from 'shared/contracts'
-import { createPublicClient, http } from 'viem'
+import { createPublicClient, webSocket } from 'viem'
 
 import { openMints } from './lib.js'
 import { sendMessage } from './messenger.js'
@@ -8,7 +8,7 @@ export function subscribe() {
   console.log('Subscribing to contract events')
 
   const client = createPublicClient({
-    transport: http(process.env.RPC_URL),
+    transport: webSocket(process.env.RPC_WS_URL),
   })
 
   client.watchContractEvent({

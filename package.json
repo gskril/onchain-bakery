@@ -27,13 +27,6 @@
           "@x402/extensions": "2.21.0",
           "@x402/svm": "2.21.0"
         }
-      },
-      "hono-og@0.0.27": {
-        "dependencies": {
-          "@resvg/resvg-wasm": "2.4.0",
-          "satori": "0.12.2",
-          "yoga-wasm-web": "0.3.3"
-        }
       }
     },
     "overrides": {

@@ -2,9 +2,9 @@
 
 import JSConfetti from 'js-confetti'
 import Error from 'next/error'
-import { useEffect, useRef, useState } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import React from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormStatus } from 'react-dom'
 import { useAccount, useEnsName } from 'wagmi'
 
 import { ButtonFilled } from '@/components/Button'
@@ -13,7 +13,7 @@ import { Logo } from '@/components/Logo'
 import { claimProofOfBread } from './actions'
 
 export default function ProofOfBread() {
-  const jsConfettiRef = useRef<JSConfetti>()
+  const jsConfettiRef = useRef<JSConfetti | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
   const tokenId = '4'
 
@@ -86,7 +86,7 @@ function MintForm({
   setIsSuccess: (isSuccess: boolean) => void
   tokenId: string
 }) {
-  const [state, formAction] = useFormState(claimProofOfBread, { ok: false })
+  const [state, formAction] = useActionState(claimProofOfBread, { ok: false })
 
   useEffect(() => {
     if (state.ok) {

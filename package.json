@@ -1,6 +1,7 @@
 {
   "name": "onchain-bakery",
   "private": true,
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
     "web:build": "pnpm shared:build && pnpm --filter=web build",
     "web:dev": "pnpm shared:build && pnpm --filter=web dev",
@@ -9,12 +10,40 @@
     "shared:build": "pnpm --filter=shared build"
   },
   "engines": {
-    "node": ">=18",
+    "node": ">=20.9",
     "pnpm": ">=8"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "prettier": "^3.3.1",
-    "typescript": "^5.2.2"
+    "prettier": "^3.9.6",
+    "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "@coinbase/cdp-sdk@1.55.0": {
+        "dependencies": {
+          "@x402/core": "2.21.0",
+          "@x402/evm": "2.21.0",
+          "@x402/extensions": "2.21.0",
+          "@x402/svm": "2.21.0"
+        }
+      }
+    },
+    "overrides": {
+      "adm-zip@<0.6.0": "0.6.0",
+      "axios@>=1.0.0 <1.18.0": "1.18.0",
+      "bn.js@<4.12.3": "4.12.3",
+      "cookie@<0.7.0": "0.7.0",
+      "diff@>=6.0.0 <8.0.3": "8.0.3",
+      "esbuild@<=0.24.2": "0.25.0",
+      "serialize-javascript@<7.0.5": "7.0.5",
+      "tmp@<0.2.7": "0.2.7",
+      "undici@<6.28.0": "6.28.0",
+      "use-sync-external-store@<1.6.0": "1.6.0",
+      "uuid@<11.1.1": "11.1.1",
+      "valibot@>=0.31.0 <1.4.2": "1.4.2",
+      "vite@<=6.4.2": "6.4.3",
+      "ws@>=8.0.0 <8.21.0": "8.21.0"
+    }
   }
 }

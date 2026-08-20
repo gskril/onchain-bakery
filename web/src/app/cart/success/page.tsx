@@ -12,7 +12,7 @@ import { useCart } from '@/hooks/useCart'
 export default function Success() {
   const { address } = useAccount()
   const { cart, removeFromCart } = useCart()
-  const jsConfettiRef = useRef<JSConfetti>()
+  const jsConfettiRef = useRef<JSConfetti | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   useEffect(() => setIsMounted(true), [])
 

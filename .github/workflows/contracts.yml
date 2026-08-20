@@ -16,20 +16,18 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: 'pnpm'
 
       - name: Install dependencies in contracts package
         run: pnpm install --filter contracts
 
       - name: Run tests
-        run: pnpm test --filter contracts
+        run: pnpm --filter contracts test
     env:
       # Default Hardhat account
       DEPLOYER_KEY: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'

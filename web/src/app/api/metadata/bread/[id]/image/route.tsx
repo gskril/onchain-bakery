@@ -1,18 +1,17 @@
-import { ImageResponse } from 'next/og'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 const schema = z.object({
   id: z.coerce.bigint(),
 })
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: [key: string] }
-): Promise<ImageResponse | NextResponse> {
-  const safeParse = schema.safeParse(params)
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+): Promise<Response> {
+  const safeParse = schema.safeParse(await params)
 
   if (!safeParse.success) {
     return NextResponse.json(safeParse.error, { status: 400 })
@@ -22,14 +21,4 @@ export async function GET(
   const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000').origin
 
   return fetch(`${DOMAIN}/nft/${id}.svg`)
-
-  // TODO: Generate the images rather than exporting each one individually
-  return new ImageResponse(
-    (
-      <div style={{ display: 'flex' }}>
-        <p>hi</p>
-      </div>
-    ),
-    {}
-  )
 }

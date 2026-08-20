@@ -1,5 +1,4 @@
 import '@rainbow-me/rainbowkit/styles.css'
-import { getFrameMetadata } from 'frog/next'
 import type { Metadata } from 'next'
 import PlausibleProvider from 'next-plausible'
 import localFont from 'next/font/local'
@@ -10,16 +9,13 @@ import { cn } from '@/lib/utils'
 import tailwindConfig from '../../tailwind.config'
 import './globals.css'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000')
-  const frameMetadata = await getFrameMetadata(`${DOMAIN.origin}/api/frame`)
-
+export function generateMetadata(): Metadata {
   return {
     title: 'Good Bread by Greg',
     description: 'Made with love, built on Ethereum.',
     metadataBase: new URL(process.env.DOMAIN || 'http://localhost:3000'),
     openGraph: { images: ['/opengraph.png'] },
-    other: { ...frameMetadata, 'theme-color': '#FFF6EA' },
+    other: { 'theme-color': '#FFF6EA' },
   }
 }
 

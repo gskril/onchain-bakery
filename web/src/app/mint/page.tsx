@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils'
 export default function LaunchNFT() {
   const chainId = useChainId()
   const { address } = useAccount()
-  const jsConfettiRef = useRef<JSConfetti>()
+  const jsConfettiRef = useRef<JSConfetti | null>(null)
 
   const [isMounted, setIsMounted] = useState(false)
   useEffect(() => setIsMounted(true), [])

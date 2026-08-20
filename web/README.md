@@ -1,3 +1,3 @@
 # Web
 
-Next.js app for the frontend, API, and Farcaster Frame.
+Next.js app for the frontend and API.

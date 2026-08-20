@@ -1,6 +1,7 @@
 {
   "name": "onchain-bakery",
   "private": true,
+  "packageManager": "pnpm@10.31.0",
   "scripts": {
     "web:build": "pnpm shared:build && pnpm --filter=web build",
     "web:dev": "pnpm shared:build && pnpm --filter=web dev",

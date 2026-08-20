@@ -42,7 +42,7 @@ export async function savePhoneNumber(
     transport: http(),
   })
 
-  const isValidSignature = viemClient.verifyMessage({
+  const isValidSignature = await viemClient.verifyMessage({
     address: account,
     message: `My phone number is ${phone}`,
     signature,
@@ -69,11 +69,7 @@ export async function savePhoneNumber(
   return { ok: true, message: 'Phone number saved' }
 }
 
-export async function createCheckoutSession(formData: FormData): Promise<{
-  ok: boolean
-  message?: string
-  stripeUrl?: string
-}> {
+export async function createCheckoutSession(formData: FormData): Promise<void> {
   let session: Stripe.Checkout.Session | undefined
 
   try {
@@ -113,7 +109,7 @@ export async function createCheckoutSession(formData: FormData): Promise<{
     }
   } catch (error) {
     console.error(error)
-    return { ok: false, message: 'Error creating payment session' }
+    return
   }
 
   redirect(session.url)

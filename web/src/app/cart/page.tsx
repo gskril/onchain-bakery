@@ -3,8 +3,8 @@
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState, useEffect, useRef, useState } from 'react'
+import { useFormStatus } from 'react-dom'
 import {
   useAccount,
   useChainId,
@@ -318,7 +318,7 @@ function PhoneCollection({
   refetchOrderRequest: () => void
 }) {
   const { signMessage, isPending, data, reset } = useSignMessage()
-  const [state, formAction] = useFormState(savePhoneNumber, { ok: false })
+  const [state, formAction] = useActionState(savePhoneNumber, { ok: false })
   const formRef = useRef<HTMLFormElement>(null)
 
   // Refetch the order request once we have a saved account

@@ -10,9 +10,9 @@ const schema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: [key: string] }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<ImageResponse | NextResponse> {
-  const safeParse = schema.safeParse(params)
+  const safeParse = schema.safeParse(await params)
 
   if (!safeParse.success) {
     return NextResponse.json(safeParse.error, { status: 400 })

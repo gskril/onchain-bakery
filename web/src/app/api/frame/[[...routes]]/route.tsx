@@ -1,6 +1,5 @@
 /** @jsxImportSource frog/jsx */
 import { Button, Frog } from 'frog'
-import { handle } from 'frog/next'
 import { openMinterContract } from 'shared/src/contracts'
 import { Address, parseEther } from 'viem'
 
@@ -52,5 +51,6 @@ app.transaction('/mint', (c) => {
   })
 })
 
-export const GET = handle(app)
-export const POST = handle(app)
+const handler = (request: Request) => app.hono.fetch(request)
+
+export { handler as GET, handler as POST }

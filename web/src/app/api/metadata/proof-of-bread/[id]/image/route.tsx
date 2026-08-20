@@ -1,17 +1,16 @@
-import { ImageResponse } from 'next/og'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 const schema = z.object({
   id: z.coerce.bigint(),
 })
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<ImageResponse | NextResponse> {
+): Promise<Response> {
   const safeParse = schema.safeParse(await params)
 
   if (!safeParse.success) {

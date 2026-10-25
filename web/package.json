@@ -17,7 +17,7 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "js-confetti": "^0.12.0",
-    "next": "16.3.1",
+    "next": "16.4.1",
     "next-plausible": "^3.12.5",
     "pino-pretty": "^11.3.0",
     "react": "^19.2.8",
@@ -29,7 +29,7 @@
     "usehooks-ts": "^3.1.1",
     "viem": "^2.55.19",
     "wagmi": "^2.19.5",
-    "zod": "^3.25.76"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@types/node": "^20.19.43",

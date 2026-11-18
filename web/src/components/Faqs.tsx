@@ -46,15 +46,7 @@ const content = [
     answer: (
       <p>
         Erin! You can find her on{' '}
-        <a
-          href="https://warpcast.com/erinboo.eth"
-          target="_blank"
-          className="underline"
-        >
-          Warpcast
-        </a>{' '}
-        and{' '}
-        <a href="https://x.com/erineboo" target="_blank" className="underline">
+        <a href="https://x.com/erni_eth" target="_blank" className="underline">
           Twitter
         </a>
         .

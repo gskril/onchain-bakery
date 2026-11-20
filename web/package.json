@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "next typegen && tsc"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.1.23",

@@ -12,7 +12,8 @@
     "deploy:proofofbread-base": "hardhat run scripts/deploy-proofofbread.ts --network base",
     "deploy:proofofbread-baseSepolia": "hardhat run scripts/deploy-proofofbread.ts --network baseSepolia",
     "deploy:crosschainbread-base": "hardhat run scripts/deploy-crosschainbread.ts --network base",
-    "deploy:crosschainbread-baseSepolia": "hardhat run scripts/deploy-crosschainbread.ts --network baseSepolia"
+    "deploy:crosschainbread-baseSepolia": "hardhat run scripts/deploy-crosschainbread.ts --network baseSepolia",
+    "typecheck": "hardhat compile --quiet && tsc"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition-viem": "^0.15.17",

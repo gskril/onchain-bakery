@@ -3,6 +3,7 @@ import { withPlausibleProxy } from 'next-plausible'
 
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: ['shared'],
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false }
     config.externals.push('pino-pretty', 'lokijs', 'encoding')

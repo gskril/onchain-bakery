@@ -1,6 +1,7 @@
 // Yoinked from https://codesandbox.io/s/dgnqct?file=/src/js/EmblaCarouselDotButton.tsx
-import { EmblaCarouselType } from 'embla-carousel'
-import React, {
+import type { EmblaCarouselType } from 'embla-carousel'
+import type React from 'react'
+import {type 
   ComponentPropsWithRef,
   useCallback,
   useEffect,

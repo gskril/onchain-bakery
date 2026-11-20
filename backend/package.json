@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "start": "tsc && node ./dist/app.js"
+    "start": "node src/app.ts",
+    "notify": "node src/scripts/notify.ts",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@upstash/redis": "^1.38.2",

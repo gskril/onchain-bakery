@@ -1,8 +1,8 @@
 'use client'
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { breadContract } from 'shared/src/contracts'
-import { Hex, formatEther, isAddress, keccak256, parseEther, toHex } from 'viem'
+import { breadContract } from 'shared/contracts'
+import { type Hex, formatEther, isAddress, keccak256, parseEther, toHex } from 'viem'
 import { usePublicClient, useWriteContract } from 'wagmi'
 
 import { Form } from '@/components/Form'

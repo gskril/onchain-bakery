@@ -3,11 +3,12 @@
   "private": true,
   "packageManager": "pnpm@12.21.0",
   "scripts": {
-    "web:build": "pnpm shared:build && pnpm --filter=web build",
-    "web:dev": "pnpm shared:build && pnpm --filter=web dev",
-    "backend:build": "pnpm shared:build && pnpm --filter=backend build",
-    "backend:start": "pnpm shared:build && pnpm --filter=backend start",
-    "shared:build": "pnpm --filter=shared build"
+    "web:dev": "pnpm --filter web dev",
+    "web:build": "pnpm --filter web build",
+    "backend:start": "pnpm --filter backend start",
+    "backend:build": "pnpm --filter backend typecheck",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "test": "pnpm -r --if-present test"
   },
   "engines": {
     "node": ">=24.22.1 <25 || >=26.12.1 <27",

@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import { subscribe } from './subscriber.js'
+import { subscribe } from './subscriber.ts'
 
 subscribe()
 

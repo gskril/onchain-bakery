@@ -3,3 +3,36 @@ packages:
   - 'backend'
   - 'shared'
   - 'web'
+
+catalog:
+  '@types/node': ^24.19.2
+  typescript: ^5.9.3
+  viem: ^2.55.19
+
+allowBuilds:
+  bufferutil: true
+  keccak: true
+  secp256k1: true
+  utf-8-validate: true
+
+packageExtensions:
+  '@coinbase/cdp-sdk@1.55.0':
+    dependencies:
+      '@x402/core': 2.21.0
+      '@x402/evm': 2.21.0
+      '@x402/extensions': 2.21.0
+      '@x402/svm': 2.21.0
+
+overrides:
+  'adm-zip@<0.6.1': 0.6.1
+  'axios@>=1.0.0 <1.20.0': 1.20.0
+  'bn.js@<4.12.3': 4.12.3
+  'cookie@<0.7.0': 0.7.0
+  'diff@>=6.0.0 <8.0.3': 8.0.3
+  'postcss-selector-parser@<7.1.6': 7.1.7
+  'serialize-javascript@<7.1.3': 7.1.3
+  'tmp@<0.2.7': 0.2.7
+  'undici@<6.29.1': 6.29.1
+  'use-sync-external-store@<1.6.0': 1.6.0
+  'uuid@<11.1.1': 11.1.1
+  'ws@>=8.0.0 <8.21.0': 8.21.0

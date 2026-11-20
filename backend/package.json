@@ -12,9 +12,10 @@
     "dotenv": "^16.6.1",
     "shared": "workspace:^",
     "twilio": "^6.1.0",
-    "viem": "^2.55.19"
+    "viem": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^20.19.43"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }

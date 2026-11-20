@@ -44,15 +44,15 @@ From the parent monorepo directory, install dependencies.
 pnpm install
 ```
 
-Navigate to the contracts directory and create a `.env` file. You don't have to change any of the values for testing purposes.
+Compile contracts and run the tests. No `.env` file is needed for this.
 
 ```bash
 cd contracts
-cp .env.example .env
+pnpm test
 ```
 
-Compile contracts and run the tests.
+To deploy or verify, create a `.env` file with a real `DEPLOYER_KEY` and `BASESCAN_API_KEY`.
 
 ```bash
-pnpm test
+cp .env.example .env
 ```

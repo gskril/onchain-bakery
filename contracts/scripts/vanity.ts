@@ -1,6 +1,5 @@
-import { Hex, getContractAddress, toHex } from 'viem'
-import { generatePrivateKey } from 'viem/accounts'
-import { privateKeyToAccount } from 'viem/accounts'
+import { getContractAddress, type Hex, toHex } from 'viem'
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 
 import { create2Factory } from './create2'
 
@@ -11,7 +10,7 @@ import { create2Factory } from './create2'
  *
  * @param vanity The first few characters of the address you want to generate, case insensitive.
  */
-function generateDeployerPrivateKey(vanity: Hex) {
+function _generateDeployerPrivateKey(vanity: Hex) {
   let tries = 0
 
   while (true) {

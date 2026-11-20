@@ -8,15 +8,16 @@
     "backend:start": "pnpm --filter backend start",
     "backend:build": "pnpm --filter backend typecheck",
     "typecheck": "pnpm -r --parallel typecheck",
-    "test": "pnpm -r --if-present test"
+    "test": "pnpm -r --if-present test",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "engines": {
     "node": ">=24.22.1 <25 || >=26.12.1 <27",
     "pnpm": ">=12"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "prettier": "^3.9.6",
+    "@biomejs/biome": "2.6.8",
     "typescript": "catalog:"
   }
 }

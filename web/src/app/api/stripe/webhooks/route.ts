@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { breadContract } from 'shared/contracts'
 import Stripe from 'stripe'
-import { type Hex, createWalletClient, http } from 'viem'
+import { createWalletClient, type Hex, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 
 import { primaryChain } from '@/lib/constants'

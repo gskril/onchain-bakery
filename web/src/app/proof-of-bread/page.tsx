@@ -1,9 +1,8 @@
 'use client'
 
 import JSConfetti from 'js-confetti'
-import Error from 'next/error'
+import NextError from 'next/error'
 import { useActionState, useEffect, useRef, useState } from 'react'
-import React from 'react'
 import { useFormStatus } from 'react-dom'
 import { useAccount, useEnsName } from 'wagmi'
 
@@ -35,7 +34,7 @@ export default function ProofOfBread() {
   }, [isSuccess])
 
   if (!tokenId) {
-    return <Error statusCode={400} />
+    return <NextError statusCode={400} />
   }
 
   return (
@@ -50,7 +49,7 @@ export default function ProofOfBread() {
 
         <img
           src="/mint-page/top-right.svg"
-          className="absolute -right-8 -top-8 z-20"
+          className="absolute -top-8 -right-8 z-20"
         />
 
         <img
@@ -60,7 +59,7 @@ export default function ProofOfBread() {
 
         <img
           src="/mint-page/top-left.svg"
-          className="absolute -left-[4.5rem] -top-8 z-0"
+          className="absolute -top-8 -left-[4.5rem] z-0"
         />
       </div>
 

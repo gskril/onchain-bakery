@@ -12,7 +12,7 @@ export function Cart() {
   return (
     <Link
       href="/cart"
-      className="bg-brand-background-primary border-brand-primary fixed right-4 top-4 z-10 flex h-16 w-16 flex-col items-center justify-center rounded-lg border p-2 shadow-md"
+      className="bg-brand-background-primary border-brand-primary fixed top-4 right-4 z-10 flex h-16 w-16 flex-col items-center justify-center rounded-lg border p-2 shadow-md"
     >
       {cart.length > 0 ? <Filled /> : <Empty />}
     </Link>

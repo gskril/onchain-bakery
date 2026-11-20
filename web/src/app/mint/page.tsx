@@ -4,7 +4,6 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import JSConfetti from 'js-confetti'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import React from 'react'
 import { openMinterContract } from 'shared/contracts'
 import { parseEther } from 'viem'
 import {
@@ -57,7 +56,7 @@ export default function LaunchNFT() {
   return (
     <div className="bg-brand-background-primary mx-auto flex min-h-svh flex-col items-center justify-between overflow-hidden px-6 py-11">
       {address && (
-        <WalletProfile address={address} className="absolute right-6 top-6" />
+        <WalletProfile address={address} className="absolute top-6 right-6" />
       )}
 
       <header className={cn(address && 'extra-short:mb-20')} />
@@ -66,12 +65,12 @@ export default function LaunchNFT() {
         <div className="relative mb-12 h-52 w-52 transition-transform hover:-rotate-2 md:h-64 md:w-64">
           <img
             src="/mint-page/bottom-left.svg"
-            className="absolute -bottom-8 -right-8 z-20"
+            className="absolute -right-8 -bottom-8 z-20"
           />
 
           <img
             src="/mint-page/top-right.svg"
-            className="absolute -right-8 -top-8 z-20"
+            className="absolute -top-8 -right-8 z-20"
           />
 
           <div className="border-brand-primary bg-brand-primary relative z-10 h-full w-full overflow-hidden rounded-lg border-2">
@@ -80,7 +79,7 @@ export default function LaunchNFT() {
 
           <img
             src="/mint-page/top-left.svg"
-            className="absolute -left-[4.5rem] -top-8 z-0"
+            className="absolute -top-8 -left-[4.5rem] z-0"
           />
         </div>
 
@@ -147,6 +146,7 @@ export default function LaunchNFT() {
                     href="https://x.com/intent/post?text=i like (good) bread (by @gregskril) 🍞&url=https://goodbread.nyc?ref=twitter"
                     target="_blank"
                     className={buttonFilledStyles()}
+                    rel="noopener"
                   >
                     Share on Twitter
                   </a>

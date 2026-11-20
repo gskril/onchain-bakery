@@ -1,7 +1,7 @@
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 import { expect } from 'chai'
 import hre from 'hardhat'
-import { Address, encodeAbiParameters, keccak256, toHex } from 'viem'
+import { type Address, encodeAbiParameters, keccak256, toHex } from 'viem'
 
 // These are not the real constructor arguments, just placeholders
 // Hardhat throws an `Unknown account` error if we use the real addresses
@@ -65,8 +65,8 @@ const signOrder = async ({
   return { messageToSign, signedMessage, encodedMessageAndData }
 }
 
-describe('Bread.sol tests', function () {
-  it('should let owner increase inventory, and disallow non-owners', async function () {
+describe('Bread.sol tests', () => {
+  it('should let owner increase inventory, and disallow non-owners', async () => {
     const { breadContract } = await loadFixture(deploy)
     const [quantityBefore] = await breadContract.read.inventory([1n])
     expect(quantityBefore).to.equal(0n)
@@ -93,7 +93,7 @@ describe('Bread.sol tests', function () {
     expect(quantityAfter).to.equal(1n)
   })
 
-  it('should revert when minting with no inventory', async function () {
+  it('should revert when minting with no inventory', async () => {
     const { breadContract } = await loadFixture(deploy)
 
     const adminOrderCall = breadContract.write.adminOrder(
@@ -104,7 +104,7 @@ describe('Bread.sol tests', function () {
     await expect(adminOrderCall).to.be.rejected
   })
 
-  it('should mint with sufficient funds', async function () {
+  it('should mint with sufficient funds', async () => {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
       account: signer,
@@ -129,7 +129,7 @@ describe('Bread.sol tests', function () {
     expect(balanceOf).to.be.equal(1n)
   })
 
-  it('should revert when mint with insufficient funds', async function () {
+  it('should revert when mint with insufficient funds', async () => {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
       account: signer,
@@ -151,7 +151,7 @@ describe('Bread.sol tests', function () {
     await expect(buyBreadCall).to.rejectedWith('InsufficientValue()')
   })
 
-  it('should return true for canOrder() when signature is valid', async function () {
+  it('should return true for canOrder() when signature is valid', async () => {
     const { breadContract } = await loadFixture(deploy)
     const { encodedMessageAndData } = await signOrder({
       relativeTimestamp: 10,
@@ -166,7 +166,7 @@ describe('Bread.sol tests', function () {
     expect(canOrder).to.be.true
   })
 
-  it('should return false for canOrder() when signature is invalid/expired', async function () {
+  it('should return false for canOrder() when signature is invalid/expired', async () => {
     const { breadContract } = await loadFixture(deploy)
     const { encodedMessageAndData } = await signOrder({
       relativeTimestamp: -10,
@@ -181,7 +181,7 @@ describe('Bread.sol tests', function () {
     expect(canOrder).to.be.false
   })
 
-  it('should get discount from credit', async function () {
+  it('should get discount from credit', async () => {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
       account: signer,
@@ -198,7 +198,7 @@ describe('Bread.sol tests', function () {
     expect(afterPrice).to.equal(0n)
   })
 
-  it('should get credit from overpaying', async function () {
+  it('should get credit from overpaying', async () => {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [1n], [1000n]], {
       account: signer,
@@ -217,7 +217,7 @@ describe('Bread.sol tests', function () {
     expect(credit).to.equal(1000n)
   })
 
-  it('should reduce credit after using it, and avoid an infinite bread glitch', async function () {
+  it('should reduce credit after using it, and avoid an infinite bread glitch', async () => {
     const { breadContract } = await loadFixture(deploy)
     const { encodedMessageAndData } = await signOrder({
       relativeTimestamp: 10,
@@ -257,7 +257,7 @@ describe('Bread.sol tests', function () {
     expect(creditAfter).to.equal(0n)
   })
 
-  it('should revoke a token', async function () {
+  it('should revoke a token', async () => {
     const { breadContract } = await loadFixture(deploy)
 
     const { encodedMessageAndData } = await signOrder({
@@ -285,7 +285,7 @@ describe('Bread.sol tests', function () {
     expect(balanceOfAfter).to.equal(0n)
   })
 
-  it('should let owner withdraw ETH and block non-owners', async function () {
+  it('should let owner withdraw ETH and block non-owners', async () => {
     const { breadContract } = await loadFixture(deploy)
     const price = 100000000000000n
     await breadContract.write.updateInventory([[1n], [1n], [price]], {
@@ -307,14 +307,14 @@ describe('Bread.sol tests', function () {
     )
 
     // Check the balance of the owner
-    const beforeBalance = await (
-      await hre.viem.getPublicClient()
-    ).getBalance({ address: manager })
+    const beforeBalance = await (await hre.viem.getPublicClient()).getBalance({
+      address: manager,
+    })
 
     // Check the balance of the contract
-    const contractBalance = await (
-      await hre.viem.getPublicClient()
-    ).getBalance({ address: breadContract.address })
+    const contractBalance = await (await hre.viem.getPublicClient()).getBalance(
+      { address: breadContract.address }
+    )
 
     // The contract should have collected the price of the bread
     expect(contractBalance).to.equal(price)
@@ -333,16 +333,16 @@ describe('Bread.sol tests', function () {
     await breadContract.write.withdraw([manager, price], { account: manager })
 
     // Check the balance of the owner after the withdrawal
-    const afterBalance = await (
-      await hre.viem.getPublicClient()
-    ).getBalance({ address: manager })
+    const afterBalance = await (await hre.viem.getPublicClient()).getBalance({
+      address: manager,
+    })
 
     // The owner should have more funds after the withdrawal
     // It's not exactly the price of the bread because of gas fees
     expect(Number(afterBalance)).to.be.gt(Number(beforeBalance))
   })
 
-  it('should return the inventory in a batch', async function () {
+  it('should return the inventory in a batch', async () => {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory(
       [
@@ -364,7 +364,7 @@ describe('Bread.sol tests', function () {
     ])
   })
 
-  it('should revert when inventory update has mismatched lengths', async function () {
+  it('should revert when inventory update has mismatched lengths', async () => {
     const { breadContract } = await loadFixture(deploy)
 
     const updateInventoryCall = breadContract.write.updateInventory(
@@ -377,7 +377,7 @@ describe('Bread.sol tests', function () {
     await expect(updateInventoryCall).to.be.rejectedWith('InvalidInput()')
   })
 
-  it('should mint multiple NFTs', async function () {
+  it('should mint multiple NFTs', async () => {
     const { breadContract } = await loadFixture(deploy)
 
     await breadContract.write.updateInventory(
@@ -414,7 +414,7 @@ describe('Bread.sol tests', function () {
     expect(balanceOf).to.be.deep.equal([1n, 1n])
   })
 
-  it('should revert when trying to use the same claimId twice', async function () {
+  it('should revert when trying to use the same claimId twice', async () => {
     const { breadContract } = await loadFixture(deploy)
     await breadContract.write.updateInventory([[1n], [2n], [1000n]], {
       account: signer,
@@ -449,7 +449,7 @@ describe('Bread.sol tests', function () {
     expect(balanceOf).to.be.equal(1n)
   })
 
-  it('should let the DEFAULT_ADMIN_ROLE update other roles', async function () {
+  it('should let the DEFAULT_ADMIN_ROLE update other roles', async () => {
     const { breadContract } = await loadFixture(deploy)
     const DEFAULT_ADMIN_ROLE = await breadContract.read.DEFAULT_ADMIN_ROLE()
 

@@ -1,12 +1,11 @@
-import { randomBytes } from 'crypto'
+import { randomBytes } from 'node:crypto'
 import { type NextRequest, NextResponse } from 'next/server'
 import { Neynar } from 'shared/neynar'
-import { type Hex, encodeAbiParameters } from 'viem'
+import { encodeAbiParameters, type Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { isAddress } from 'viem/utils'
 import { z } from 'zod'
 
-import { products } from '@/lib/products'
 import { redis } from '@/lib/redis'
 
 const schema = z.object({
@@ -46,7 +45,7 @@ export async function POST(req: NextRequest) {
   //   )
   // }
 
-  let accountType
+  let accountType: 'farcaster' | 'phone'
   const phoneAccount = await redis.get<string>(account)
 
   if (!phoneAccount) {
@@ -75,7 +74,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Generate a new claimId on each request, removing restrictions for now
-  const claimId = ('0x' + randomBytes(32).toString('hex')) as `0x${string}`
+  const claimId = `0x${randomBytes(32).toString('hex')}` as `0x${string}`
 
   const messageToSign = encodeAbiParameters(
     [

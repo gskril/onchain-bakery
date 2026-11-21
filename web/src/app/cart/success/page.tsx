@@ -1,7 +1,7 @@
 'use client'
 
 import JSConfetti from 'js-confetti'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAccount } from 'wagmi'
 
 import { useCart } from '@/hooks/useCart'
@@ -10,8 +10,6 @@ export default function Success() {
   const { address } = useAccount()
   const { cart, removeFromCart } = useCart()
   const jsConfettiRef = useRef<JSConfetti | null>(null)
-  const [_isMounted, setIsMounted] = useState(false)
-  useEffect(() => setIsMounted(true), [])
 
   useEffect(() => {
     // Empty the cart after a successful purchase

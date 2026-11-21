@@ -3,7 +3,7 @@ import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 
 import { create2Factory } from './create2'
 
-// generateDeployerPrivateKey('0x000')
+// _generateDeployerPrivateKey('0x000')
 
 /**
  * Generate a private key that will deploy a smart contract with a vanity address.

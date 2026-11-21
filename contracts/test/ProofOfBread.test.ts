@@ -136,7 +136,7 @@ describe('ProofOfBread.sol tests', () => {
       }
     )
 
-    expect(badRevokeCall).to.be.rejectedWith(`Unauthorized()`)
+    await expect(badRevokeCall).to.be.rejectedWith(`Unauthorized()`)
 
     await proofOfBread.write.revokeBread([[minter], [1n], [1n]], {
       account: signer,

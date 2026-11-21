@@ -48,13 +48,6 @@ export default function Cart() {
     cartItemIdsInStock,
   } = initialCheckoutData.data ?? {}
 
-  // Refetch the inventory and price when the cart changes
-  useEffect(() => {
-    initialCheckoutData.refetch()
-    checkout.refetch()
-    inventory.refetch()
-  }, [address, cart])
-
   const receipt = useWaitForTransactionReceipt({
     hash: contract.data,
     chainId: primaryChain.id,
@@ -170,7 +163,11 @@ export default function Cart() {
 
               <div className="mt-12 flex flex-col items-end gap-2">
                 {(() => {
-                  if (checkout.isLoading) {
+                  // Placeholder totals belong to the previous cart or address, so don't let them reach the payment forms
+                  if (
+                    checkout.isLoading ||
+                    initialCheckoutData.isPlaceholderData
+                  ) {
                     return <Spinner />
                   }
 

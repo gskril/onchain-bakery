@@ -1,7 +1,7 @@
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 import { expect } from 'chai'
 import hre from 'hardhat'
-import { Address, encodeAbiParameters, toHex } from 'viem'
+import { type Address, encodeAbiParameters, toHex } from 'viem'
 
 // These are not the real constructor arguments, just placeholders
 // Hardhat throws an `Unknown account` error if we use the real addresses
@@ -60,8 +60,8 @@ const signOrder = async ({
   return { messageToSign, signedMessage, encodedMessageAndData }
 }
 
-describe('ProofOfBread.sol tests', function () {
-  it('should return true for canMint() when signature is valid', async function () {
+describe('ProofOfBread.sol tests', () => {
+  it('should return true for canMint() when signature is valid', async () => {
     const { proofOfBread } = await loadFixture(deploy)
     const { encodedMessageAndData } = await signOrder({
       relativeTimestamp: 10,
@@ -76,7 +76,7 @@ describe('ProofOfBread.sol tests', function () {
     expect(canOrder).to.be.true
   })
 
-  it('should return false for canMint() when signature is invalid/expired', async function () {
+  it('should return false for canMint() when signature is invalid/expired', async () => {
     const { proofOfBread } = await loadFixture(deploy)
     const { encodedMessageAndData } = await signOrder({
       relativeTimestamp: -10,
@@ -91,7 +91,7 @@ describe('ProofOfBread.sol tests', function () {
     expect(canOrder).to.be.false
   })
 
-  it('should let the owner revoke a token', async function () {
+  it('should let the owner revoke a token', async () => {
     const { proofOfBread } = await loadFixture(deploy)
 
     const { encodedMessageAndData } = await signOrder({
@@ -114,7 +114,7 @@ describe('ProofOfBread.sol tests', function () {
     expect(balanceOfAfter).to.equal(0n)
   })
 
-  it('should let the signer revoke a token but not a random account', async function () {
+  it('should let the signer revoke a token but not a random account', async () => {
     const { proofOfBread } = await loadFixture(deploy)
 
     const { encodedMessageAndData } = await signOrder({
@@ -136,7 +136,7 @@ describe('ProofOfBread.sol tests', function () {
       }
     )
 
-    expect(badRevokeCall).to.be.rejectedWith(`Unauthorized()`)
+    await expect(badRevokeCall).to.be.rejectedWith(`Unauthorized()`)
 
     await proofOfBread.write.revokeBread([[minter], [1n], [1n]], {
       account: signer,
@@ -146,7 +146,7 @@ describe('ProofOfBread.sol tests', function () {
     expect(balanceOfAfter).to.equal(0n)
   })
 
-  it('should let the owner withdraw ETH and block non-owners', async function () {
+  it('should let the owner withdraw ETH and block non-owners', async () => {
     const { proofOfBread } = await loadFixture(deploy)
     const price = 100000000000000n
 
@@ -161,14 +161,14 @@ describe('ProofOfBread.sol tests', function () {
       account: minter,
     })
 
-    const beforeBalance = await (
-      await hre.viem.getPublicClient()
-    ).getBalance({ address: owner })
+    const beforeBalance = await (await hre.viem.getPublicClient()).getBalance({
+      address: owner,
+    })
 
     // Check the balance of the contract
-    const contractBalance = await (
-      await hre.viem.getPublicClient()
-    ).getBalance({ address: proofOfBread.address })
+    const contractBalance = await (await hre.viem.getPublicClient()).getBalance(
+      { address: proofOfBread.address }
+    )
 
     // The contract should have collected the tip amount
     expect(contractBalance).to.equal(price)
@@ -187,16 +187,16 @@ describe('ProofOfBread.sol tests', function () {
     await proofOfBread.write.withdraw([owner, price], { account: owner })
 
     // Check the balance of the owner after the withdrawal
-    const afterBalance = await (
-      await hre.viem.getPublicClient()
-    ).getBalance({ address: owner })
+    const afterBalance = await (await hre.viem.getPublicClient()).getBalance({
+      address: owner,
+    })
 
     // The owner should have more funds after the withdrawal
     // It's not exactly the price of the bread because of gas fees
     expect(Number(afterBalance)).to.be.gt(Number(beforeBalance))
   })
 
-  it('should revert when trying to use the same claimId twice', async function () {
+  it('should revert when trying to use the same claimId twice', async () => {
     const { proofOfBread } = await loadFixture(deploy)
 
     const { encodedMessageAndData } = await signOrder({

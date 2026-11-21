@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { Hex } from 'viem'
+import type { Hex } from 'viem'
 
-import { OrderRequest } from '@/app/api/request-order/route'
+import type { OrderRequest } from '@/app/api/request-order/route'
 
 export function useRequestOrder({
   account,

@@ -12,6 +12,7 @@ const content = [
           href="https://warpcast.com/greg"
           target="_blank"
           className="underline"
+          rel="noopener"
         >
           Warpcast
         </a>{' '}
@@ -20,6 +21,7 @@ const content = [
           href="https://twitter.com/gregskril"
           target="_blank"
           className="underline"
+          rel="noopener"
         >
           Twitter
         </a>
@@ -46,7 +48,12 @@ const content = [
     answer: (
       <p>
         Erin! You can find her on{' '}
-        <a href="https://x.com/erni_eth" target="_blank" className="underline">
+        <a
+          href="https://x.com/erni_eth"
+          target="_blank"
+          className="underline"
+          rel="noopener"
+        >
           Twitter
         </a>
         .

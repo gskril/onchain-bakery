@@ -1,8 +1,9 @@
 import hre from 'hardhat'
 
+import { getDeployerWalletClient } from './wallet'
+
 async function main() {
-  const walletClients = await hre.viem.getWalletClients()
-  const walletClient = walletClients[0]
+  const walletClient = await getDeployerWalletClient()
 
   const contract = hre.artifacts.readArtifactSync('ProofOfBread')
 

@@ -1,26 +1,22 @@
 import '@nomicfoundation/hardhat-toolbox-viem'
 import '@nomicfoundation/hardhat-verify'
 import 'dotenv/config'
-import { HardhatUserConfig } from 'hardhat/config'
+import type { HardhatUserConfig } from 'hardhat/config'
 
-const DEPLOYER_KEY = process.env.DEPLOYER_KEY
-const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY
+const { DEPLOYER_KEY, BASESCAN_API_KEY } = process.env
 
-if (!DEPLOYER_KEY) throw new Error('DEPLOYER_KEY must be set')
-if (!BASESCAN_API_KEY) throw new Error('BASESCAN_API_KEY must be set')
+// Keys are only required for deploying and verifying, so local compiling and testing work without a .env file
+const accounts = DEPLOYER_KEY ? [DEPLOYER_KEY] : []
 
 const config: HardhatUserConfig = {
   networks: {
     base: {
       url: 'https://mainnet.base.org',
-      accounts: [DEPLOYER_KEY],
+      accounts,
     },
     baseSepolia: {
       url: 'https://sepolia.base.org',
-      accounts: [DEPLOYER_KEY],
-    },
-    localhost: {
-      accounts: [DEPLOYER_KEY],
+      accounts,
     },
   },
   solidity: {
@@ -38,8 +34,8 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      base: BASESCAN_API_KEY,
-      baseSepolia: BASESCAN_API_KEY,
+      base: BASESCAN_API_KEY ?? '',
+      baseSepolia: BASESCAN_API_KEY ?? '',
     },
   },
   paths: {

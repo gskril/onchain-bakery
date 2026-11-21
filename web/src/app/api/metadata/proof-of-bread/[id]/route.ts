@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import z from 'zod'
 
 const proofOfBreads = [
@@ -29,7 +29,7 @@ const schema = z.object({
 })
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const safeParse = schema.safeParse(await params)

@@ -2,14 +2,15 @@
   "name": "shared",
   "private": true,
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc"
-  },
   "exports": {
-    "./contracts": "./dist/contracts.js",
-    "./neynar": "./dist/neynar.js",
-    "./src/*": "./src/*.ts"
+    "./contracts": "./src/contracts.ts",
+    "./neynar": "./src/neynar.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }

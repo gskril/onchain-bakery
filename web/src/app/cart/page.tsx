@@ -258,7 +258,6 @@ export default function Cart() {
                       {/* Buttons */}
                       <div className="flex flex-col items-end gap-2 sm:flex-row">
                         <StripeForm
-                          usdPrice={usdValue}
                           inStockCartItems={cartItemIdsInStock}
                           text={
                             hasSufficientBalance ? 'Pay with Card' : 'Buy Bread'
@@ -395,24 +394,21 @@ function FormInputs({
 }
 
 function StripeForm({
-  usdPrice,
   inStockCartItems,
   text,
 }: {
-  usdPrice?: string
   inStockCartItems?: bigint[]
   text: string
 }) {
   const { address } = useAccount()
 
-  if (!usdPrice || !inStockCartItems) {
+  if (!inStockCartItems?.length) {
     console.error('Unable to show Stripe form')
     return null
   }
 
   return (
     <form action={createCheckoutSession} className="flex flex-col gap-2">
-      <input name="usdPrice" type="hidden" value={usdPrice} />
       <input name="address" type="hidden" value={address} />
       <input name="tokenIds" type="hidden" value={inStockCartItems.join(',')} />
 

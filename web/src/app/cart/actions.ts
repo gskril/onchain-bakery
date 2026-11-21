@@ -5,6 +5,7 @@ import Stripe from 'stripe'
 import { createPublicClient, http, isAddress, isHex } from 'viem'
 import { z } from 'zod'
 
+import { parseTokenIds, quoteCardOrder } from '@/lib/card-order'
 import { primaryChain } from '@/lib/constants'
 import { redis } from '@/lib/redis'
 import { twilio } from '@/lib/twilio'
@@ -73,9 +74,19 @@ export async function createCheckoutSession(formData: FormData): Promise<void> {
   let session: Stripe.Checkout.Session | undefined
 
   try {
-    const usdPrice = formData.get('usdPrice') as string
-    const address = formData.get('address') as string
-    const tokenIds = formData.get('tokenIds') as string
+    const address = formData.get('address')
+    const requestedTokenIds = parseTokenIds(formData.get('tokenIds'))
+
+    if (typeof address !== 'string' || !isAddress(address)) {
+      throw new Error('Invalid address')
+    }
+
+    if (!requestedTokenIds) {
+      throw new Error('Invalid token IDs')
+    }
+
+    // The price and items are derived from onchain data, never from the form
+    const quote = await quoteCardOrder(address, requestedTokenIds)
 
     const DOMAIN = new URL(process.env.DOMAIN || 'http://localhost:3000').origin
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '')
@@ -86,7 +97,7 @@ export async function createCheckoutSession(formData: FormData): Promise<void> {
         {
           price_data: {
             currency: 'usd',
-            unit_amount: Number(usdPrice) * 100,
+            unit_amount: quote.usdCents,
             product_data: {
               name: 'Bread',
               description: 'Pickup is in Manhattan this weekend.',
@@ -100,7 +111,8 @@ export async function createCheckoutSession(formData: FormData): Promise<void> {
       cancel_url: `${DOMAIN}/cart`,
       metadata: {
         address,
-        tokenIds,
+        tokenIds: quote.tokenIds.join(','),
+        ethPrice: String(quote.ethPrice),
       },
     })
 

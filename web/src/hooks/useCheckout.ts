@@ -6,6 +6,7 @@ import { formatEther } from 'viem/utils'
 import { useAccount, usePublicClient } from 'wagmi'
 
 import { primaryChain } from '@/lib/constants'
+import { toUsdValue } from '@/lib/pricing'
 import { wagmiConfig } from '@/lib/web3'
 
 import { useCart } from './useCart'
@@ -118,7 +119,7 @@ async function getInitialCheckoutData(cart: bigint[], address: Hex) {
 
   const orderPriceFormatted = formatEther(orderPriceRaw)
   const discountFormatted = formatEther(discountRaw)
-  const usdValue = (Number(orderPriceFormatted) * ethPrice).toFixed(0)
+  const usdValue = toUsdValue(orderPriceRaw, ethPrice)
 
   return {
     ethPrice,

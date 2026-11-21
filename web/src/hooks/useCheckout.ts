@@ -1,5 +1,5 @@
 // Aggregate as much logic as possible here instead of having a ton of hooks on the checkout page
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { breadContract } from 'shared/src/contracts'
 import { Hex, publicActions } from 'viem'
 import { formatEther } from 'viem/utils'
@@ -24,7 +24,7 @@ export function useCheckout() {
 
   return useQuery({
     retry: 0,
-    queryKey: ['checkout'],
+    queryKey: ['checkout', address, cart.map(String)],
     queryFn: async () => {
       if (!address) return null
 
@@ -79,13 +79,14 @@ export function useCheckout() {
 
 export function useInitialCheckoutData(cart: bigint[], address?: Hex) {
   return useQuery({
-    queryKey: ['initialCheckoutData'],
+    queryKey: ['initialCheckoutData', address, cart.map(String)],
     queryFn: async () => {
       return await getInitialCheckoutData(
         cart,
         address || '0x0000000000000000000000000000000000000000'
       )
     },
+    placeholderData: keepPreviousData,
   })
 }
 

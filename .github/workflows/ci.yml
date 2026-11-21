@@ -32,11 +32,9 @@ jobs:
       - name: Lint and format
         run: pnpm exec biome ci .
 
+      # Contracts are typechecked and tested in contracts.yml
       - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Test
-        run: pnpm test
+        run: pnpm -r --parallel --filter '!contracts' typecheck
 
       - name: Build web
         run: pnpm web:build

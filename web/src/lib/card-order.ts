@@ -1,4 +1,4 @@
-import { breadContract } from 'shared/src/contracts'
+import { breadContract } from 'shared/contracts'
 import { type Address, createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 

@@ -1,17 +1,16 @@
-import { Hex, getContractAddress, toHex } from 'viem'
-import { generatePrivateKey } from 'viem/accounts'
-import { privateKeyToAccount } from 'viem/accounts'
+import { getContractAddress, type Hex, toHex } from 'viem'
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 
 import { create2Factory } from './create2'
 
-// generateDeployerPrivateKey('0x000')
+// _generateDeployerPrivateKey('0x000')
 
 /**
  * Generate a private key that will deploy a smart contract with a vanity address.
  *
  * @param vanity The first few characters of the address you want to generate, case insensitive.
  */
-function generateDeployerPrivateKey(vanity: Hex) {
+function _generateDeployerPrivateKey(vanity: Hex) {
   let tries = 0
 
   while (true) {

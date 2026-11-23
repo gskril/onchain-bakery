@@ -1,7 +1,7 @@
 // Aggregate as much logic as possible here instead of having a ton of hooks on the checkout page
 import { useQuery } from '@tanstack/react-query'
-import { breadContract } from 'shared/src/contracts'
-import { Hex, publicActions } from 'viem'
+import { breadContract } from 'shared/contracts'
+import { type Hex, publicActions } from 'viem'
 import { formatEther } from 'viem/utils'
 import { useAccount, usePublicClient } from 'wagmi'
 

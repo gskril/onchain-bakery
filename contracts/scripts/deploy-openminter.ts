@@ -3,11 +3,11 @@ import { encodeAbiParameters, encodePacked } from 'viem'
 
 import { create2Factory } from './create2'
 import { generateCreate2Salt } from './vanity'
+import { getDeployerWalletClient } from './wallet'
 
 async function main() {
   const publicClient = await hre.viem.getPublicClient()
-  const walletClients = await hre.viem.getWalletClients()
-  const walletClient = walletClients[0]
+  const walletClient = await getDeployerWalletClient()
 
   const args = [
     '0xB2EAD1C95A41Dc617fFAe193d75386Bf65D31F7c', // _bread

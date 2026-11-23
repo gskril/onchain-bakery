@@ -1,8 +1,8 @@
 import { Neynar } from 'shared/neynar'
-import { Hex } from 'viem'
+import type { Hex } from 'viem'
 
-import { redis, twilio } from './lib.js'
-import { sendDirectCast } from './warpcast.js'
+import { redis, twilio } from './lib.ts'
+import { sendDirectCast } from './warpcast.ts'
 
 const neynar = new Neynar(process.env.NEYNAR_API_KEY)
 

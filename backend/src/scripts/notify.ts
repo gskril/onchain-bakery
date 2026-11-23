@@ -2,8 +2,8 @@ import 'dotenv/config'
 import { breadContract } from 'shared/contracts'
 import { createPublicClient, decodeEventLog, http } from 'viem'
 
-import { openMints } from '../lib.js'
-import { sendMessage } from '../messenger.js'
+import { openMints } from '../lib.ts'
+import { sendMessage } from '../messenger.ts'
 
 const fromBlock = 18788443n
 const toBlock = 'latest'

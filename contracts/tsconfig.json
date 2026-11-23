@@ -1,11 +1,10 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2020",
+    // Hardhat 2 loads its config and scripts through ts-node as CommonJS
     "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true
-  }
+    "moduleResolution": "node10",
+    "verbatimModuleSyntax": false
+  },
+  "exclude": ["node_modules", "cache", "coverage"]
 }

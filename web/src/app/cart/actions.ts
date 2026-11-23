@@ -17,7 +17,7 @@ const schema = z.object({
 })
 
 export async function savePhoneNumber(
-  prevState: any,
+  _prevState: any,
   formData: FormData
 ): Promise<{
   ok: boolean
@@ -63,7 +63,7 @@ export async function savePhoneNumber(
 
   try {
     await redis.set(account, isValid.phoneNumber)
-  } catch (error) {
+  } catch (_error) {
     return { ok: false, message: 'Failed to save phone number' }
   }
 

@@ -1,9 +1,9 @@
 'use server'
 
-import { proofOfBreadContract } from 'shared/src/contracts'
+import { proofOfBreadContract } from 'shared/contracts'
 import {
-  Hex,
   createClient,
+  type Hex,
   http,
   isAddress,
   publicActions,
@@ -23,7 +23,7 @@ const schema = z.object({
 const isOpen = false
 
 export async function claimProofOfBread(
-  prevState: any,
+  _prevState: any,
   formData: FormData
 ): Promise<{
   ok: boolean
@@ -99,7 +99,7 @@ export async function claimProofOfBread(
       functionName: 'distributeBread',
       args: [[address], [BigInt(tokenId)]],
     })
-  } catch (error) {
+  } catch (_error) {
     return { ok: false, message: 'Transaction failed on the backend' }
   }
 

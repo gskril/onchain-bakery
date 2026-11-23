@@ -1,4 +1,4 @@
-import { type PublicClient, formatEther, parseAbi } from 'viem'
+import { formatEther, type PublicClient, parseAbi } from 'viem'
 
 type ReadClient = Pick<PublicClient, 'readContract'>
 

@@ -3,11 +3,11 @@ import hre from 'hardhat'
 import { getBreadDeploymentInfo } from './bread'
 import { create2Factory } from './create2'
 import { generateCreate2Salt } from './vanity'
+import { getDeployerWalletClient } from './wallet'
 
 async function main() {
   const publicClient = await hre.viem.getPublicClient()
-  const walletClients = await hre.viem.getWalletClients()
-  const walletClient = walletClients[0]
+  const walletClient = await getDeployerWalletClient()
 
   const { args, initCode } = await getBreadDeploymentInfo()
   const { salt, expectedAddress } = await generateCreate2Salt({

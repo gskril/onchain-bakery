@@ -1,16 +1,10 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "moduleResolution": "Node",
-    "forceConsistentCasingInFileNames": true,
-    "declaration": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "strict": true
+    // Consumers run this source directly (Next.js bundles it, Node strips types), so only erasable syntax is allowed
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "types": ["node"]
   },
-  "include": ["./src/**/*.ts"],
-  "compileOnSave": true
+  "include": ["src"]
 }

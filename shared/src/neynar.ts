@@ -1,7 +1,11 @@
-import { Address, NeynarError, NeynarVerificationData } from './neynar-types'
+import type {
+  Address,
+  NeynarError,
+  NeynarVerificationData,
+} from './neynar-types.ts'
 
 export class Neynar {
-  private headers: HeadersInit
+  private headers: Record<string, string>
 
   constructor(API_KEY: string | undefined) {
     if (!API_KEY) {
@@ -22,9 +26,9 @@ export class Neynar {
       headers: this.headers,
     })
 
-    const data = await res.json()
+    const data = (await res.json()) as NeynarVerificationData | NeynarError
 
-    if (data.code) {
+    if ('code' in data && data.code) {
       if ((data as NeynarError).code === 'NotFound') {
         return { error: 'Address is not associated with a Farcaster account' }
       } else {

@@ -1,12 +1,12 @@
-import { VariantProps, cva } from 'class-variance-authority'
-import React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import type React from 'react'
 
 import { cn } from '@/lib/utils'
 
 import { Spinner } from './Spinner'
 
 export const buttonStyles = cva(
-  'flex flex-row gap-2 items-center justify-center font-pangram border-brand-primary w-fit rounded-full border px-4 py-1 text-center text-xl uppercase disabled:cursor-not-allowed',
+  'font-pangram border-brand-primary flex w-fit flex-row items-center justify-center gap-2 rounded-full border px-4 py-1 text-center text-xl uppercase disabled:cursor-not-allowed',
   {
     variants: {
       variant: {
@@ -44,7 +44,7 @@ export function Button({
 }
 
 export const buttonFilledStyles = cva(
-  'bg-brand-primary border-brand-primary border-2 text-brand-background-primary mt-2 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2 font-semibold disabled:cursor-not-allowed disabled:bg-[#7E97EF]',
+  'bg-brand-primary border-brand-primary text-brand-background-primary mt-2 flex w-full items-center justify-center gap-2 rounded-lg border-2 px-4 py-2 font-semibold disabled:cursor-not-allowed disabled:bg-[#7E97EF]',
   {
     variants: {
       variant: {

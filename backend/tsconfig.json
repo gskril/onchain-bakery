@@ -1,15 +1,12 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "moduleResolution": "Bundler",
-    "forceConsistentCasingInFileNames": true,
-    "declaration": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "strict": true
+    // Run directly with Node's built-in type stripping, so there is no build step
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "types": ["node"]
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["src"]
 }

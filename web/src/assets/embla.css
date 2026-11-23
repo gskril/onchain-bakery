@@ -67,7 +67,6 @@
   appearance: none;
   background-color: transparent;
   touch-action: manipulation;
-  display: inline-flex;
   text-decoration: none;
   cursor: pointer;
   border: 0;

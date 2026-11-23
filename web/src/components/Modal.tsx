@@ -12,7 +12,7 @@ export function Modal({
   return (
     <div className="fixed z-10 flex h-full w-full items-center justify-center p-6">
       <div
-        className="absolute bottom-0 left-0 right-0 top-0 bg-black/50"
+        className="absolute top-0 right-0 bottom-0 left-0 bg-black/50"
         onClick={() => setIsModalOpen(false)}
       />
 

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { fromHex } from 'viem/utils'
 import z from 'zod'
 
@@ -9,7 +9,7 @@ const schema = z.object({
 })
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const safeParse = schema.safeParse(await params)
@@ -24,7 +24,7 @@ export async function GET(
   if (id.match(/^\d+$/)) {
     idBigint = BigInt(id)
   } else {
-    idBigint = fromHex(('0x' + id) as any, 'bigint')
+    idBigint = fromHex(`0x${id}` as any, 'bigint')
   }
 
   const product = products.find((product) => product.id === idBigint)

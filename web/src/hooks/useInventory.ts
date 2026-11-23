@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { breadContract } from 'shared/contracts'
 import { formatEther, publicActions } from 'viem'
 
@@ -12,10 +12,12 @@ type Props = {
 
 export function useInventory({ tokenIds }: Props) {
   return useQuery({
-    queryKey: ['inventory'],
+    // bigints can't be hashed into a query key
+    queryKey: ['inventory', tokenIds?.map(String)],
     queryFn: async () => {
       return getInventory({ tokenIds })
     },
+    placeholderData: keepPreviousData,
   })
 }
 

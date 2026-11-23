@@ -1,8 +1,8 @@
 import { breadContract } from 'shared/contracts'
 import { createPublicClient, webSocket } from 'viem'
 
-import { openMints } from './lib.js'
-import { sendMessage } from './messenger.js'
+import { openMints } from './lib.ts'
+import { sendMessage } from './messenger.ts'
 
 export function subscribe() {
   console.log('Subscribing to contract events')

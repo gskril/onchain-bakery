@@ -1,6 +1,6 @@
 // Mostly yoinked from https://codesandbox.io/s/dgnqct?file=/src/js/EmblaCarousel.tsx
 import useEmblaCarousel from 'embla-carousel-react'
-import React from 'react'
+import type React from 'react'
 
 import '@/assets/embla.css'
 

@@ -22,11 +22,9 @@ export function Products() {
 
   if (!inventory.data || inventory.data.length === 0) {
     return (
-      <>
-        <p className="pt-4 text-center text-lg">
-          No bread available right now &#9785;
-        </p>
-      </>
+      <p className="pt-4 text-center text-lg">
+        No bread available right now &#9785;
+      </p>
     )
   }
 
@@ -42,8 +40,8 @@ export function Products() {
             className="border-brand-primary w-full rounded-lg border sm:max-w-72"
           />
 
-          <div className="bg-brand-background-secondary relative mb-4 mt-8 flex h-full w-full flex-col items-start gap-4 rounded-lg p-6 pb-4 text-left">
-            <div className="text-brand-background-secondary bg-brand-primary absolute -top-4 right-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold italic sm:-right-4 sm:-top-6">
+          <div className="bg-brand-background-secondary relative mt-8 mb-4 flex h-full w-full flex-col items-start gap-4 rounded-lg p-6 pb-4 text-left">
+            <div className="text-brand-background-secondary bg-brand-primary absolute -top-4 right-0 flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold italic sm:-top-6 sm:-right-4">
               {product.quantity.formatted} left
             </div>
 

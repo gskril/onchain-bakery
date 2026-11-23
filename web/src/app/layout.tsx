@@ -1,12 +1,11 @@
 import '@rainbow-me/rainbowkit/styles.css'
 import type { Metadata } from 'next'
-import PlausibleProvider from 'next-plausible'
 import localFont from 'next/font/local'
+import PlausibleProvider from 'next-plausible'
 
 import { ClientProviders } from '@/components/ClientProviders'
 import { cn } from '@/lib/utils'
 
-import tailwindConfig from '../../tailwind.config'
 import './globals.css'
 
 export function generateMetadata(): Metadata {
